@@ -18,8 +18,9 @@ else:
     os.mkdir("outputs")
 
 #--------------------PARAMETERS----------------------
-
+"""
 #BLAST
+
 query_proteins = "ABQ62066.1, ABQ62091.1, ABQ62490.1" #Write the protein IDs here. Eg: "ABQ62066.1, ABQ62091.1, ABQ62490.1"
 hitlist_range = 5000 #Desired minimum number of found sequences.
 blast_database = "refseq_protein"
@@ -52,7 +53,7 @@ generate_tree = True
 #If tree:
 tree_type = "NJ" #Either write NJ (Neighbor joining) or ML (Maximum likehood).
 bootstrap_replications = "500" #Write 250, 500, 1000, 2000 or 5000.
-
+"""
 #-----------------------------------------------------
 
 my_sequences = obtain_fasta_file(query_proteins)
