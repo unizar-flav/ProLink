@@ -4,7 +4,7 @@ from Bio.Seq import Seq
 from Bio.SeqRecord import SeqRecord
 import subprocess
 from csv import reader
-from .ProLink.modules.pfam import search_hmmer_pfam
+from .pfam import search_hmmer_pfam
 import os
 
 def cluster(found_sequences_fastafile, my_seq_record, similarity, cluster_results_file, cluster_evaluation_file, cluster_results_fastafile):
