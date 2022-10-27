@@ -11,13 +11,14 @@ from modules.subprocess_functions import align
 from modules.subprocess_functions import weblogo3
 from modules.subprocess_functions import tree
 import os
-
+import sys
 if os.path.isdir("./outputs"):
     print("outputs directory already exists")
 else:
     os.mkdir("outputs")
 
 #--------------------PARAMETERS----------------------
+#For local executing of the script:
 """
 #BLAST
 
@@ -54,6 +55,39 @@ generate_tree = True
 tree_type = "NJ" #Either write NJ (Neighbor joining) or ML (Maximum likehood).
 bootstrap_replications = "500" #Write 250, 500, 1000, 2000 or 5000.
 """
+#For Google Colab executing:
+query_proteins = sys.argv[1]
+hitlist_range = sys.argv[2]
+blast_database = sys.argv[3]
+smart_blast_ = sys.argv[4]
+#If smart_blast:
+max_low_identity_seqs = sys.argv[5]
+min_low_identity_seqs = sys.argv[6]
+expected_min_identity = sys.argv[7]
+additional_hits = sys.argv[8]
+
+remove_gaps = sys.argv[9]
+
+#CLUSTERING
+similarity = sys.argv[10]
+smart_clustering_ = sys.argv[11]
+#If smart_clustering:
+min_number_of_clusters_to_cluster_again = sys.argv[12]
+max_number_of_clusters_to_cluster_again = sys.argv[13]
+
+#ALIGNMENT
+align_seqs = sys.argv[14]
+
+#SEQUENCE LOGO GENERATION
+generate_logo = sys.argv[15]
+#if logo:
+weblogo_format = sys.argv[16]
+
+#PHYLOGENETIC TREE GENERATION
+generate_tree = sys.argv[17]
+#If tree:
+tree_type = sys.argv[18]
+bootstrap_replications = sys.argv[19]
 #-----------------------------------------------------
 
 my_sequences = obtain_fasta_file(query_proteins)
