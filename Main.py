@@ -10,7 +10,6 @@ from modules.clustering import s_cluster
 from modules.subprocess_functions import align
 from modules.subprocess_functions import weblogo3
 from modules.subprocess_functions import tree
-from shell_utils import shell, cd
 import os
 
 if os.path.isdir("./outputs"):
