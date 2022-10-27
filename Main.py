@@ -89,7 +89,7 @@ for seq_n, my_seq_record in enumerate(my_sequences):
             weblogo_output = "./outputs/"+"protein_"+str(my_sequence_index) +'/logo'+'.'+str(weblogo_format)
             weblogo3(weblogo_format, muscle_output, weblogo_output)
         if generate_tree:
-            mega_config_input = "./modules/mega_configs/"+tree_type+"_"+bootstrap_replications+".mao"
+            mega_config_input = "./ProLink/modules/mega_configs/"+tree_type+"_"+bootstrap_replications+".mao"
             mega_output = "./outputs/"+"protein_"+str(my_sequence_index) +"/"+tree_type +"_"+bootstrap_replications+"_tree" 
             tree(mega_config_input, muscle_output, mega_output)
 
