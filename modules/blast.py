@@ -59,7 +59,7 @@ def s_parse(my_sequence_index, hitlist_range, blast_filename, remove_gaps, expec
     sequence_index= 0
     for alignment in records.alignments:
         hsp = alignment.hsps[0]
-        if sequence_index < 15000:
+        if sequence_index < 12000:
           if low_identity_seqs < max_low_identity_seqs:
               rec_f = SeqRecord(
                           Seq(hsp.sbjct,
@@ -124,7 +124,7 @@ def s_blast(my_sequence_index, blast_database, hitlist_range, my_seq_record, bla
         blast(hitlist_range, blast_database, blast_filename,  my_seq_record)
         low_identity_seqs = 0
         #s_parse(my_sequence_index, hitlist_range, blast_filename, remove_gaps, expected_min_identity, low_identity_seqs, max_low_identity_seqs)
-        while s_parse(my_sequence_index, hitlist_range, blast_filename, remove_gaps, expected_min_identity, low_identity_seqs, max_low_identity_seqs) < min_low_identity_seqs and hitlist_range < 15000:
+        while s_parse(my_sequence_index, hitlist_range, blast_filename, remove_gaps, expected_min_identity, low_identity_seqs, max_low_identity_seqs) < min_low_identity_seqs and hitlist_range < 12000:
             print()
             print("The number of low identity sequences is below the desired value")
             os.remove(blast_filename)
