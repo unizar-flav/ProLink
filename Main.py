@@ -35,6 +35,7 @@ additional_hits = 2000 #The new blast will search for hitlist_range + aditional_
 remove_gaps = True
 
 #CLUSTERING
+cluster_seqs = True
 similarity = 0.5 #Initial similarity treshold to group the sequences into clusters.
 smart_clustering_ = True
 #If smart_clustering:
@@ -69,6 +70,7 @@ additional_hits = int(sys.argv[8])
 remove_gaps = sys.argv[9]
 
 #CLUSTERING
+cluster_seqs = sys.argv[20]
 similarity = float(sys.argv[10])
 smart_clustering_ = sys.argv[11]
 #If smart_clustering:
@@ -111,10 +113,11 @@ for seq_n, my_seq_record in enumerate(my_sequences):
     cluster_results_file = "./outputs/"+"protein_"+str(my_sequence_index) + "/cluster_results_"+ str(similarity)
     cluster_evaluation_file = "./outputs/"+"protein_"+str(my_sequence_index) +  "/cluster_results_evaluation_" + str(similarity)
 
-    if smart_clustering_:
-        s_cluster(found_sequences_fastafile, my_seq_record, similarity, min_number_of_clusters_to_cluster_again, max_number_of_clusters_to_cluster_again, cluster_results_file, cluster_evaluation_file, cluster_results_fastafile)
-    else:
-        cluster(found_sequences_fastafile, my_seq_record, similarity, cluster_results_file, cluster_evaluation_file, cluster_results_fastafile)
+    if cluster_seqs:
+        if smart_clustering_:
+            s_cluster(found_sequences_fastafile, my_seq_record, similarity, min_number_of_clusters_to_cluster_again, max_number_of_clusters_to_cluster_again, cluster_results_file, cluster_evaluation_file, cluster_results_fastafile)
+        else:
+            cluster(found_sequences_fastafile, my_seq_record, similarity, cluster_results_file, cluster_evaluation_file, cluster_results_fastafile)
     
 
     if align_seqs:
