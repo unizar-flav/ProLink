@@ -10,6 +10,7 @@ The script is designed to be executed in Google Colab.
 **Step 1:** Run the first cell in order to install the environment required for the script. It is only neededed to do once everytime the execution environment is initialized. 
 
 **Step 2:** Introduce the desired parameters in the form of the second cell and execute it.
+
 ***Parameters***
 
 | Argument name                             | Description                                                |
