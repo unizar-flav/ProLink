@@ -15,6 +15,6 @@ The script is designed to be executed in Google Colab.
 
 | Argument name                             | Description                                                |
 | ----------------------------------------- | ---------------------------------------------------------- |
-| query_proteins                            | UniProt code of the query proteins.  
-                                            |Eg: "ABQ62066.1, ABQ62091.1, ABQ62490.1"|
+| query_proteins                            | UniProt code of the query proteins.                        |
+                                              Eg: "ABQ62066.1, ABQ62091.1, ABQ62490.1"                   |
 | hitlist_database                          | Desired minimum number of found sequences.                 |
