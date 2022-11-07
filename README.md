@@ -15,6 +15,11 @@ The script is designed to be executed in Google Colab.
 
 | Argument name                             | Description                                                |
 | ----------------------------------------- | ---------------------------------------------------------- |
-| query_proteins                            | UniProt code of the query proteins.                        |
-                                              Eg: "ABQ62066.1, ABQ62091.1, ABQ62490.1"                   |
-| hitlist_database                          | Desired minimum number of found sequences.                 |
+| query_proteins                            | UniProt code of the query proteins. Eg: "ABQ62066.1, ABQ62091.1, ABQ62490.1"|
+| blast_database                            | Database used in blast. Eg: "refseq_protein".              |
+| smart_blast_                              | Boolean parameter to select "smart blast" or regular blast.|
+| max_low_identity_seqs                     | Maximum number of low identity seqs to find when using "smart blast".|
+| min_low_identity_seqs                     | Minimum number of low identity seqs to find when using "smart blast".|
+| expected_min_identity                     | Maximum identity percentage to consider a sequence a low identity seq when using "smart blast".|
+| additional_hits                           | Number of additional sequences to find when using "smart blast".|
+| min_low_identity_seqs                     | Minimum number of low identity seqs to find when using "smart blast".|
