@@ -92,10 +92,14 @@ tree_type = str(sys.argv[18])
 bootstrap_replications = str(sys.argv[19])
 #-----------------------------------------------------
 
-my_sequences = obtain_fasta_file(query_proteins)
-for seq_n, my_seq_record in enumerate(my_sequences):
+
+
+def pro_link(query_proteins, hitlist_range, blast_database, smart_blast_, max_low_identity_seqs, min_low_identity_seqs, expected_min_identity, additional_hits, remove_gaps, cluster_seqs, similarity, smart_clustering_, min_number_of_clusters_to_cluster_again, max_number_of_clusters_to_cluster_again, align_seqs, generate_logo, weblogo_format, generate_tree, tree_type, bootstrap_replications):
+    my_sequences = obtain_fasta_file(query_proteins)
+    for seq_n, my_seq_record in enumerate(my_sequences):
 
     my_sequence_index = seq_n + 1
+    
     os.mkdir("./outputs/protein_" + str(my_sequence_index))
     with open('./outputs/protein_' + str(my_sequence_index) + '/report.txt', 'w') as f:
         f.write('Protein_'+str(my_sequence_index)+" report:")
@@ -133,3 +137,5 @@ for seq_n, my_seq_record in enumerate(my_sequences):
 
     else:
         print("Process finished (no clustering)")
+
+pro_link(query_proteins, hitlist_range, blast_database, smart_blast_, max_low_identity_seqs, min_low_identity_seqs, expected_min_identity, additional_hits, remove_gaps, cluster_seqs, similarity, smart_clustering_, min_number_of_clusters_to_cluster_again, max_number_of_clusters_to_cluster_again, align_seqs, generate_logo, weblogo_format, generate_tree, tree_type, bootstrap_replications)
