@@ -96,7 +96,7 @@ def pro_link(query_proteins, hitlist_range, blast_database, smart_blast_, max_lo
     print("hola")
     now = str(datetime.now()).replace(" ", "_")
     print(now)
-    outputs_dir = "outputs" + str(now)
+    outputs_dir = "outputs_" + str(now)
     os.mkdir("./" + outputs_dir)
 
     my_sequences = obtain_fasta_file(query_proteins, outputs_dir)
