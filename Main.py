@@ -1,15 +1,15 @@
 from genericpath import isdir
 import os
 import subprocess
-from modules.obtaining_sequences import obtain_fasta_file
-from modules.blast import blast
-from modules.blast import parse
-from modules.blast import s_blast
-from modules.clustering import cluster
-from modules.clustering import s_cluster
-from modules.subprocess_functions import align
-from modules.subprocess_functions import weblogo3
-from modules.subprocess_functions import tree
+from .modules.obtaining_sequences import obtain_fasta_file
+from .modules.blast import blast
+from .modules.blast import parse
+from .modules.blast import s_blast
+from .modules.clustering import cluster
+from .modules.clustering import s_cluster
+from .modules.subprocess_functions import align
+from .modules.subprocess_functions import weblogo3
+from .modules.subprocess_functions import tree
 import os
 import sys
 if os.path.isdir("./outputs"):
@@ -55,7 +55,7 @@ generate_tree = True
 #If tree:
 tree_type = "NJ" #Either write NJ (Neighbor joining) or ML (Maximum likehood).
 bootstrap_replications = "500" #Write 250, 500, 1000, 2000 or 5000.
-"""
+
 #For Google Colab executing:
 query_proteins = str(sys.argv[1])
 hitlist_range = int(sys.argv[2])
@@ -90,6 +90,7 @@ generate_tree = sys.argv[17]
 #If tree:
 tree_type = str(sys.argv[18])
 bootstrap_replications = str(sys.argv[19])
+"""
 #-----------------------------------------------------
 
 
