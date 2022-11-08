@@ -105,7 +105,7 @@ def pro_link(query_proteins, hitlist_range, blast_database, smart_blast_, max_lo
         my_sequence_index = seq_n + 1
 
         os.mkdir("./"+ outputs_dir +"/protein_" + str(my_sequence_index))
-        with open("./" + outputs_dir + "/protein_' + str(my_sequence_index) + '/report.txt', 'w') as f:
+        with open("./" + outputs_dir + "/protein_" + str(my_sequence_index) + '/report.txt', 'w') as f:
             f.write('Protein_'+str(my_sequence_index)+" report:")
             f.writelines("Protein_id: " + str(my_seq_record.id))
         blast_filename = "./" + outputs_dir +"/protein_"+str(my_sequence_index)+"/blast_results.xml"
