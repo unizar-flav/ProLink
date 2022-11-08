@@ -40,8 +40,8 @@ def parse(my_sequence_index, hitlist_range, blast_filename, remove_gaps, expecte
                     low_identity_seqs += 1
                     print("Low identity sequence")
             print()
-            if remove_gaps:
-                rec_f.seq=rec_f.seq.ungap("-")
+            rec_f.id=rec_f.id.replace(" ", "_")
+            rec_f.seq=rec_f.seq.ungap("-")
             found_sequences.append(rec_f)
     found_sequences_fastafile= "./" + outputs_dir + "/protein_" + str(my_sequence_index) + "/found_sequences.fasta"
     SeqIO.write(found_sequences, found_sequences_fastafile, "fasta")
@@ -73,8 +73,8 @@ def s_parse(my_sequence_index, hitlist_range, blast_filename, remove_gaps, expec
                   low_identity_seqs += 1
                   print("low identity seq!")
               print()
-              if remove_gaps:
-                  rec_f.seq=rec_f.seq.ungap("-")
+              rec_f.id=rec_f.id.replace(" ", "_")
+              rec_f.seq=rec_f.seq.ungap("-")
               found_sequences.append(rec_f)
           else:
               break
