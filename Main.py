@@ -141,6 +141,6 @@ def pro_link(query_proteins, hitlist_range, blast_database, smart_blast_, max_lo
                 tree(mega_config_input, muscle_output, mega_output)
 
         else:
-            print("Process finished (no clustering)")
+            print("Process finished (no alignment)")
 
 
