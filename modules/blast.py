@@ -40,6 +40,7 @@ def parse(my_sequence_index, hitlist_range, blast_filename, remove_gaps, expecte
                     low_identity_seqs += 1
                     print("Low identity sequence")
             print()
+            rec_f.description = ""
             rec_f.id=rec_f.id.replace(" ", "_")
             rec_f.seq=rec_f.seq.ungap("-")
             found_sequences.append(rec_f)
@@ -73,6 +74,7 @@ def s_parse(my_sequence_index, hitlist_range, blast_filename, remove_gaps, expec
                   low_identity_seqs += 1
                   print("low identity seq!")
               print()
+              rec_f.description = ""
               rec_f.id=rec_f.id.replace(" ", "_")
               rec_f.seq=rec_f.seq.ungap("-")
               found_sequences.append(rec_f)
