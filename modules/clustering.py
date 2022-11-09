@@ -43,7 +43,7 @@ def cluster(found_sequences_fastafile, my_seq_record, similarity, cluster_result
                         domains = "SD"
                     rec_c = SeqRecord(
                         Seq(str(seq_record.seq)),
-                        id= cluster_id + cluster_center_seq_description.replace(" <unknown description>", "") + "|" +domains
+                        id= cluster_id + cluster_center_seq_description.replace(" <unknown description>", "") + "|" +domains,
                         description = ""
                     )
                     
