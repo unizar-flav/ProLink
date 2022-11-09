@@ -20,30 +20,35 @@ def cluster(found_sequences_fastafile, my_seq_record, similarity, cluster_result
     if header != None:
         for row in csv_reader:
             cluster_center_seq_description = row[4]
-            cluster_id = "Cluster:"+row[0] +"_Seqs:"+ row[1] +"_ASI:"+ row[2] +"_MSI:"+ row[3]
+            cluster_id = "C"+row[0] 
             for seq_record in SeqIO.parse(found_sequences_fastafile, "fasta"):
                 if seq_record.description == cluster_center_seq_description:
+                    
+                    """
                     rec_c = SeqRecord(
                         Seq(str(seq_record.seq)),
                         id= cluster_id,
                         description = cluster_center_seq_description.replace(" <unknown description>", "")
                     )
+                    """
                     try:
                         subject_sequence_domains = search_hmmer_pfam(str(seq_record.seq)).keys()
                         print(subject_sequence_domains)
                     except KeyError:
                         print("No domains found")
-                        subject_sequence_domains = "No domains found"
+                        subject_sequence_domains = "No_domains_found"
                     if my_sequence_domains != subject_sequence_domains:
-                        domains = " Different_domains:" + str(subject_sequence_domains).replace("dict_keys", "").replace("([","").replace("])","").replace("'","")
+                        domains = "DD:" + str(subject_sequence_domains).replace("dict_keys", "").replace("([","").replace("])","").replace("'","")
                     else:
-                        domains = " Same_domains:" + str(subject_sequence_domains).replace("dict_keys", "").replace("([","").replace("])","").replace("'","")
-                    rec_c_m = SeqRecord(
+                        domains = "SD"
+                    rec_c = SeqRecord(
                         Seq(str(seq_record.seq)),
-                        id= cluster_id,
-                        description = cluster_center_seq_description.replace(" <unknown description>", "") + domains
+                        id= cluster_id + cluster_center_seq_description.replace(" <unknown description>", "") + "|" +domains
+                        description = ""
                     )
-                    clustered_sequences.append(rec_c_m)
+                    
+                    
+                    clustered_sequences.append(rec_c)
                     number_of_clusters += 1
                     print("Cluster number " + str(number_of_clusters))
                     print(seq_record.description)
