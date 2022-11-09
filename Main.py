@@ -111,6 +111,7 @@ def pro_link(query_proteins, hitlist_range, blast_database, smart_blast_, max_lo
         found_sequences_fastafile= "./" + outputs_dir +"/protein_"+str(my_sequence_index) + "/found_sequences.fasta"
 
         if smart_blast_:
+            Print("Smart Blast")
             s_blast(my_sequence_index, blast_database, hitlist_range, my_seq_record, blast_filename, found_sequences_fastafile, remove_gaps, expected_min_identity, min_low_identity_seqs, max_low_identity_seqs, additional_hits, outputs_dir)
         else:
             blast(hitlist_range, blast_database, blast_filename,  my_seq_record)
@@ -122,6 +123,7 @@ def pro_link(query_proteins, hitlist_range, blast_database, smart_blast_, max_lo
 
         if cluster_seqs:
             if smart_clustering_:
+                print("Smart Clustering")
                 s_cluster(found_sequences_fastafile, my_seq_record, similarity, min_number_of_clusters_to_cluster_again, max_number_of_clusters_to_cluster_again, cluster_results_file, cluster_evaluation_file, cluster_results_fastafile)
             else:
                 cluster(found_sequences_fastafile, my_seq_record, similarity, cluster_results_file, cluster_evaluation_file, cluster_results_fastafile)
