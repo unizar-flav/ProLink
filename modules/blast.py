@@ -83,6 +83,7 @@ def s_parse(my_sequence_index, hitlist_range, blast_filename, remove_gaps, expec
           break
     found_sequences_fastafile= "./" + outputs_dir + "/protein_" + str(my_sequence_index) + "/found_sequences.fasta"
     SeqIO.write(found_sequences, found_sequences_fastafile, "fasta")
+    print(sequence_index)
     return low_identity_seqs
   
 def s_blast(my_sequence_index, blast_database, hitlist_range, my_seq_record, blast_filename, found_sequences_fastafile, remove_gaps, expected_min_identity, min_low_identity_seqs, max_low_identity_seqs, additional_hits, outputs_dir):  
