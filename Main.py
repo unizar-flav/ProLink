@@ -127,20 +127,36 @@ def pro_link(query_proteins, hitlist_range, blast_database, smart_blast_, max_lo
                 s_cluster(found_sequences_fastafile, my_seq_record, similarity, min_number_of_clusters_to_cluster_again, max_number_of_clusters_to_cluster_again, cluster_results_file, cluster_evaluation_file, cluster_results_fastafile)
             else:
                 cluster(found_sequences_fastafile, my_seq_record, similarity, cluster_results_file, cluster_evaluation_file, cluster_results_fastafile)
+        
+            if align_seqs:
+                muscle_output= "./" + outputs_dir + "/protein_"+str(my_sequence_index) + "/cluster_results_evaluation_"  "aligned" ".fasta"
+                align(cluster_results_fastafile, muscle_output)
+                if generate_logo:
+                    weblogo_output = "./" + outputs_dir + "/protein_"+str(my_sequence_index) +'/logo'+'.'+str(weblogo_format)
+                    weblogo3(weblogo_format, muscle_output, weblogo_output)
+                if generate_tree:
+                    mega_config_input = "./ProLink/modules/mega_configs/"+tree_type+"_"+bootstrap_replications+".mao"
+                    mega_output = "./" + outputs_dir + "/protein_"+str(my_sequence_index) +"/"+tree_type +"_"+bootstrap_replications+"_tree" 
+                    tree(mega_config_input, muscle_output, mega_output)
 
-
-        if align_seqs:
-            muscle_output= "./" + outputs_dir + "/protein_"+str(my_sequence_index) + "/cluster_results_evaluation_"  "aligned" ".fasta"
-            align(cluster_results_fastafile, muscle_output)
-            if generate_logo:
-                weblogo_output = "./" + outputs_dir + "/protein_"+str(my_sequence_index) +'/logo'+'.'+str(weblogo_format)
-                weblogo3(weblogo_format, muscle_output, weblogo_output)
-            if generate_tree:
-                mega_config_input = "./ProLink/modules/mega_configs/"+tree_type+"_"+bootstrap_replications+".mao"
-                mega_output = "./" + outputs_dir + "/protein_"+str(my_sequence_index) +"/"+tree_type +"_"+bootstrap_replications+"_tree" 
-                tree(mega_config_input, muscle_output, mega_output)
-
+            else:
+                print("Process finished (no alignment)")
         else:
-            print("Process finished (no alignment)")
+            if align_seqs:
+                muscle_output= "./" + outputs_dir + "/protein_"+str(my_sequence_index) + "/found_sequences_"  "aligned" ".fasta"
+                align(found_sequences_fastafile, muscle_output)
+                if generate_logo:
+                    weblogo_output = "./" + outputs_dir + "/protein_"+str(my_sequence_index) +'/logo'+'.'+str(weblogo_format)
+                    weblogo3(weblogo_format, muscle_output, weblogo_output)
+                if generate_tree:
+                    mega_config_input = "./ProLink/modules/mega_configs/"+tree_type+"_"+bootstrap_replications+".mao"
+                    mega_output = "./" + outputs_dir + "/protein_"+str(my_sequence_index) +"/"+tree_type +"_"+bootstrap_replications+"_tree" 
+                    tree(mega_config_input, muscle_output, mega_output)
+
+            else:
+                print("Process finished (no alignment)")    
+                
+                
+          
 
 
