@@ -174,7 +174,7 @@ def pro_link(query_proteins, **parameters):
                     weblogo3(weblogo_format, muscle_output, weblogo_output)
                 if generate_tree:
                     mega_config_input = "./ProLink/modules/mega_configs/"+tree_type+"_"+bootstrap_replications+".mao"
-                    mega_output = "./" + outputs_dir + "/protein_"+str(my_sequence_index) +"/"+tree_type +"_"+bootstrap_replications+"_tree" 
+                    mega_output = "./" + outputs_dir + "/protein_"+str(my_sequence_index) +"/"+tree_type +"_"+str(bootstrap_replications)+"_tree" 
                     tree(mega_config_input, muscle_output, mega_output)
 
             else:
