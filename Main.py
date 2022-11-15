@@ -92,7 +92,7 @@ bootstrap_replications = str(sys.argv[19])
 
 
 
-def pro_link(query_proteins, hitlist_range, blast_database, smart_blast_, max_low_identity_seqs, min_low_identity_seqs, expected_min_identity, additional_hits, remove_gaps, cluster_seqs, similarity, smart_clustering_, min_number_of_clusters_to_cluster_again, max_number_of_clusters_to_cluster_again, align_seqs, generate_logo, weblogo_format, generate_tree, tree_type, bootstrap_replications):
+def pro_link(query_proteins, **parameters):
     
     hitlist_range = parameters['Blast']['hitlist_range']
     blast_database = parameters['Blast']['blast_database']
