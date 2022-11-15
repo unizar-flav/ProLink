@@ -183,6 +183,8 @@ def pro_link(query_proteins, **parameters):
             else:
                 print("Process finished (no alignment)")    
                 
+    return outputs_dir
+                
                 
           
 
