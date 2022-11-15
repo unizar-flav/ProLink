@@ -93,7 +93,7 @@ bootstrap_replications = str(sys.argv[19])
 
 
 def pro_link(query_proteins, **parameters):
-    
+    print(parameters)
     hitlist_range = int(parameters['Blast']['hitlist_range'])
     blast_database = str(parameters['Blast']['blast_database'])
     smart_blast_ = bool(parameters['Blast']['smart_blast_'])
