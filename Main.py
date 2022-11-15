@@ -94,29 +94,29 @@ bootstrap_replications = str(sys.argv[19])
 
 def pro_link(query_proteins, **parameters):
     
-    hitlist_range = parameters['Blast']['hitlist_range']
-    blast_database = parameters['Blast']['blast_database']
-    smart_blast_ = parameters['Blast']['smart_blast_']
-    max_low_identity_seqs = parameters['Blast']['max_low_identity_seqs']
-    min_low_identity_seqs = parameters['Blast']['min_low_identity_seqs']
-    expected_min_identity = parameters['Blast']['expected_min_identity']
-    additional_hits = parameters['Blast']['additional_hits']
-    remove_gaps = parameters['Blast']['remove_gaps']
+    hitlist_range = int(parameters['Blast']['hitlist_range'])
+    blast_database = str(parameters['Blast']['blast_database'])
+    smart_blast_ = bool(parameters['Blast']['smart_blast_'])
+    max_low_identity_seqs = int(parameters['Blast']['max_low_identity_seqs'])
+    min_low_identity_seqs = int(parameters['Blast']['min_low_identity_seqs'])
+    expected_min_identity = int(parameters['Blast']['expected_min_identity'])
+    additional_hits = int(parameters['Blast']['additional_hits'])
+    remove_gaps = bool(parameters['Blast']['remove_gaps'])
     
-    cluster_seqs = parameters['Clustering']['cluster_seqs']
-    similarity = parameters['Clustering']['similarity']
-    smart_clustering_ = parameters['Clustering']['smart_clustering_']
-    min_number_of_clusters_to_cluster_again = parameters['Clustering']['min_number_of_clusters_to_cluster_again']
-    max_number_of_clusters_to_cluster_again = parameters['Clustering']['max_number_of_clusters_to_cluster_again']
+    cluster_seqs = bool(parameters['Clustering']['cluster_seqs'])
+    similarity = float(parameters['Clustering']['similarity'])
+    smart_clustering_ = bool(parameters['Clustering']['smart_clustering_'])
+    min_number_of_clusters_to_cluster_again = int(parameters['Clustering']['min_number_of_clusters_to_cluster_again'])
+    max_number_of_clusters_to_cluster_again = int(parameters['Clustering']['max_number_of_clusters_to_cluster_again'])
     
-    align_seqs = parameters['Alignment']['align_seqs']
+    align_seqs = bool(parameters['Alignment']['align_seqs'])
     
-    generate_logo = parameters['Weblogo']['generate_logo']
-    weblogo_format = parameters['Weblogo']['weblogo_format']
+    generate_logo = bool(parameters['Weblogo']['generate_logo'])
+    weblogo_format = str(parameters['Weblogo']['weblogo_format'])
     
-    generate_tree = parameters['Tree']['generate_tree']
-    tree_type = parameters['Tree']['tree_type']
-    bootstrap_replications = parameters['Tree']['bootstrap_replications']
+    generate_tree = bool(parameters['Tree']['generate_tree'])
+    tree_type = str(parameters['Tree']['tree_type'])
+    bootstrap_replications = int(parameters['Tree']['bootstrap_replications'])
     
     
     
