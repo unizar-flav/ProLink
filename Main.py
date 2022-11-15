@@ -93,7 +93,7 @@ bootstrap_replications = str(sys.argv[19])
 
 
 def pro_link(query_proteins, **parameters):
-    print(parameters)
+    
     hitlist_range = int(parameters['Blast']['hitlist_range'])
     blast_database = str(parameters['Blast']['blast_database'])
     smart_blast_ = bool(parameters['Blast']['smart_blast_'])
@@ -154,13 +154,16 @@ def pro_link(query_proteins, **parameters):
         
             if align_seqs:
                 muscle_output= "./" + outputs_dir + "/protein_"+str(my_sequence_index) + "/cluster_results_evaluation_"  "aligned" ".fasta"
+                print("Aligning sequences")
                 align(cluster_results_fastafile, muscle_output)
                 if generate_logo:
                     weblogo_output = "./" + outputs_dir + "/protein_"+str(my_sequence_index) +'/logo'+'.'+str(weblogo_format)
+                    print("Generating sequence logo")
                     weblogo3(weblogo_format, muscle_output, weblogo_output)
                 if generate_tree:
                     mega_config_input = "./ProLink/modules/mega_configs/"+tree_type+"_"+bootstrap_replications+".mao"
                     mega_output = "./" + outputs_dir + "/protein_"+str(my_sequence_index) +"/"+tree_type +"_"+bootstrap_replications+"_tree" 
+                    print("Generating tree")
                     tree(mega_config_input, muscle_output, mega_output)
 
             else:
@@ -168,13 +171,16 @@ def pro_link(query_proteins, **parameters):
         else:
             if align_seqs:
                 muscle_output= "./" + outputs_dir + "/protein_"+str(my_sequence_index) + "/found_sequences_"  "aligned" ".fasta"
+                print("Aligning sequences")
                 align(found_sequences_fastafile, muscle_output)
                 if generate_logo:
                     weblogo_output = "./" + outputs_dir + "/protein_"+str(my_sequence_index) +'/logo'+'.'+str(weblogo_format)
+                    print("Generating sequence logo")
                     weblogo3(weblogo_format, muscle_output, weblogo_output)
                 if generate_tree:
                     mega_config_input = "./ProLink/modules/mega_configs/"+tree_type+"_"+bootstrap_replications+".mao"
                     mega_output = "./" + outputs_dir + "/protein_"+str(my_sequence_index) +"/"+tree_type +"_"+bootstrap_replications+"_tree" 
+                    print("Generating tree")
                     tree(mega_config_input, muscle_output, mega_output)
 
             else:
