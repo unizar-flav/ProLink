@@ -99,7 +99,7 @@ def pro_link(query_proteins, **parameters):
     smart_blast_ = bool(parameters['Blast']['smart_blast_'])
     max_low_identity_seqs = int(parameters['Blast']['max_low_identity_seqs'])
     min_low_identity_seqs = int(parameters['Blast']['min_low_identity_seqs'])
-    expected_min_identity = int(parameters['Blast']['expected_min_identity'])
+    expected_min_identity = float(parameters['Blast']['expected_min_identity'])
     additional_hits = int(parameters['Blast']['additional_hits'])
     remove_gaps = bool(parameters['Blast']['remove_gaps'])
     
