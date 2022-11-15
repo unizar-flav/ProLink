@@ -12,7 +12,7 @@ from .modules.subprocess_functions import weblogo3
 from .modules.subprocess_functions import tree
 import os
 import sys
-from datetime import datetime
+
 
 #--------------------PARAMETERS----------------------
 #For local executing of the script:
@@ -118,11 +118,7 @@ def pro_link(query_proteins, **parameters):
     tree_type = str(parameters['Tree']['tree_type'])
     bootstrap_replications = str(parameters['Tree']['bootstrap_replications'])
     
-    
-    
-    now = str(datetime.now()).replace(" ", "_")
-    print(now)
-    outputs_dir = "outputs_" + str(now)
+    outputs_dir = str(parameters['Outputs']['outputs_dir'])
     os.mkdir("./" + outputs_dir)
 
     my_sequences = obtain_fasta_file(query_proteins, outputs_dir)
