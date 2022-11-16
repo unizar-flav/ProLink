@@ -50,8 +50,9 @@ def cluster(found_sequences_fastafile, my_seq_record, similarity, cluster_result
                     string = rec_c.id
                     new_string = string[:string.find("|_")+1].replace("ref", "") + string[string.find("[")+1:string.find("]")] + string[string.find("]|")+1:]
                     rec_c.id = new_string
-                    clustered_sequences.append(rec_c)
                     """
+                    
+                    clustered_sequences.append(rec_c)
                     number_of_clusters += 1 
                     break
     SeqIO.write(clustered_sequences, cluster_results_fastafile, "fasta")
