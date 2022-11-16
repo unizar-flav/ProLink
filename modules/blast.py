@@ -41,7 +41,7 @@ def parse(my_sequence_index, hitlist_range, blast_filename, remove_gaps, expecte
                     print("Low identity sequence")
             print()
             rec_f.description = ""
-            rec_f.id=rec_f.id.replace(" ", "_")
+            rec_f.id=rec_f.id.replace(" ", "_").replace(" <unknown description>", "")
             rec_f.seq=rec_f.seq.ungap("-")
             found_sequences.append(rec_f)
     found_sequences_fastafile= "./" + outputs_dir + "/protein_" + str(my_sequence_index) + "/found_sequences.fasta"
@@ -74,7 +74,7 @@ def s_parse(my_sequence_index, hitlist_range, blast_filename, remove_gaps, expec
                   print("low identity seq!")
               print()
               rec_f.description = ""
-              rec_f.id=rec_f.id.replace(" ", "_")
+              rec_f.id=rec_f.id.replace(" ", "_").replace(" <unknown description>", "")
               rec_f.seq=rec_f.seq.ungap("-")
               found_sequences.append(rec_f)
           else:
