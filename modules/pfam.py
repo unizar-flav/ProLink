@@ -68,30 +68,30 @@ def search_hmmer_pfam(seq) -> dict:
         matches[pfam_id]['type'] = 'Pfam-A'
     return matches
   
-  def fasta_to_dfasta(my_seq_record, fa_to_dfa_input, fa_to_dfa_output):
-    print("Checking Pfam domains")
-    my_sequence_domains = search_hmmer_pfam(str(my_seq_record.seq)).keys()
+def fasta_to_dfasta(my_seq_record, fa_to_dfa_input, fa_to_dfa_output):
+  print("Checking Pfam domains")
+  my_sequence_domains = search_hmmer_pfam(str(my_seq_record.seq)).keys()
     
-    d_sequences = []
-    for seq_record in SeqIO.parse(fa_to_dfa_input, "fasta"):
-      try:
-        subject_sequence_domains = search_hmmer_pfam(str(seq_record.seq)).keys()
-        print(subject_sequence_domains)
-      except KeyError:
-        subject_sequence_domains = "No_domains_found"
-      if my_sequence_domains != subject_sequence_domains:
-        domains = "DD:" + str(subject_sequence_domains).replace("dict_keys", "").replace("([","").replace("])","").replace("'","")
-      else:
-        domains = "SD"
-      rec_d = SeqRecord(
-        Seq(str(seq_record.seq)),
-        id= seq_record.id + seq_record.description + "|" +domains,
-        description = ""
-      )
-      string = rec_d.id
-      new_string = string[:string.find("|_")+1].replace("ref", "") + string[string.find("[")+1:string.find("]")] + string[string.find("]|")+1:]
-      rec_d.id = new_string
-      d_sequences.append(rec_d)
-    SeqIO.write(d_sequences, fa_to_dfa_output, "fasta")
+  d_sequences = []
+  for seq_record in SeqIO.parse(fa_to_dfa_input, "fasta"):
+    try:
+      subject_sequence_domains = search_hmmer_pfam(str(seq_record.seq)).keys()
+      print(subject_sequence_domains)
+    except KeyError:
+      subject_sequence_domains = "No_domains_found"
+    if my_sequence_domains != subject_sequence_domains:
+      domains = "DD:" + str(subject_sequence_domains).replace("dict_keys", "").replace("([","").replace("])","").replace("'","")
+    else:
+      domains = "SD"
+    rec_d = SeqRecord(
+      Seq(str(seq_record.seq)),
+      id= seq_record.id + seq_record.description + "|" +domains,
+      description = ""
+    )
+    string = rec_d.id
+    new_string = string[:string.find("|_")+1].replace("ref", "") + string[string.find("[")+1:string.find("]")] + string[string.find("]|")+1:]
+    rec_d.id = new_string
+    d_sequences.append(rec_d)
+  SeqIO.write(d_sequences, fa_to_dfa_output, "fasta")
 
 
