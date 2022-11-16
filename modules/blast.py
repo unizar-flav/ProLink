@@ -68,7 +68,7 @@ def s_parse(my_sequence_index, hitlist_range, blast_filename, remove_gaps, expec
               print("Sequence num " + str(sequence_index))
               print('>', alignment.title) 
               print(hsp.sbjct)
-              print(expected_min_identity)
+              
               if (hsp.identities / alignment.length) < expected_min_identity:
                   low_identity_seqs += 1
                   print("low identity seq!")
