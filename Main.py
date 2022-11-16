@@ -7,6 +7,7 @@ from .modules.blast import parse
 from .modules.blast import s_blast
 from .modules.clustering import cluster
 from .modules.clustering import s_cluster
+from .modules.pfam import fasta_to_dfasta
 from .modules.subprocess_functions import align
 from .modules.subprocess_functions import weblogo3
 from .modules.subprocess_functions import tree
@@ -109,6 +110,8 @@ def pro_link(query_proteins, **parameters):
     min_number_of_clusters_to_cluster_again = int(parameters['Clustering']['min_number_of_clusters_to_cluster_again'])
     max_number_of_clusters_to_cluster_again = int(parameters['Clustering']['max_number_of_clusters_to_cluster_again'])
     
+    check_pfam_domains = bool(parameters['Pfam domains']['check_pfam_domains'])
+    
     align_seqs = bool(parameters['Alignment']['align_seqs'])
     
     generate_logo = bool(parameters['Weblogo']['generate_logo'])
@@ -137,17 +140,25 @@ def pro_link(query_proteins, **parameters):
             blast(hitlist_range, blast_database, blast_filename,  my_seq_record)
             parse(my_sequence_index, hitlist_range, blast_filename, remove_gaps, expected_min_identity, outputs_dir)
 
-        cluster_results_fastafile = "./" + outputs_dir + "/protein_"+str(my_sequence_index) + "/cluster_results_evaluation_" + str(similarity) + ".fasta"
-        cluster_results_file = "./" + outputs_dir + "/protein_"+str(my_sequence_index) + "/cluster_results_"+ str(similarity)
-        cluster_evaluation_file = "./" + outputs_dir +"/protein_"+str(my_sequence_index) +  "/cluster_results_evaluation_" + str(similarity)
-
+      
         if cluster_seqs:
+            
+            cluster_results_fastafile = "./" + outputs_dir + "/protein_"+str(my_sequence_index) + "/cluster_results_evaluation_" + str(similarity) + ".fasta"
+            cluster_results_file = "./" + outputs_dir + "/protein_"+str(my_sequence_index) + "/cluster_results_"+ str(similarity)
+            cluster_evaluation_file = "./" + outputs_dir +"/protein_"+str(my_sequence_index) +  "/cluster_results_evaluation_" + str(similarity)
+            
+            
             if smart_clustering_:
                 print("Smart Clustering")
                 s_cluster(found_sequences_fastafile, my_seq_record, similarity, min_number_of_clusters_to_cluster_again, max_number_of_clusters_to_cluster_again, cluster_results_file, cluster_evaluation_file, cluster_results_fastafile)
             else:
                 cluster(found_sequences_fastafile, my_seq_record, similarity, cluster_results_file, cluster_evaluation_file, cluster_results_fastafile)
-        
+            
+            if check_pfam_domains:
+                cluster_results_fastafile_pfam = = "./" + outputs_dir + "/protein_"+str(my_sequence_index) + "/cluster_results_evaluation_" + str(similarity) + "_pfam.fasta"
+                fasta_to_dfasta(my_seq_record, cluster_results_fastafile, cluster_results_fastafile_pfam)
+                cluster_results_fastafile = cluster_results_fastafile_pfam
+            
             if align_seqs:
                 muscle_output= "./" + outputs_dir + "/protein_"+str(my_sequence_index) + "/cluster_results_evaluation_"  "aligned" ".fasta"
                 print("Aligning sequences")
@@ -165,6 +176,11 @@ def pro_link(query_proteins, **parameters):
             else:
                 print("Process finished (no alignment)")
         else:
+            if check_pfam_domains:
+                found_sequences_fastafile_pfam = = "./" + outputs_dir + "/protein_"+str(my_sequence_index) + "/cluster_results_evaluation_" + str(similarity) + "_pfam.fasta"
+                fasta_to_dfasta(my_seq_record, found_sequences_fastafile, found_sequences_fastafile_pfam)
+                found_sequences_fastafile = found_sequences_fastafile_pfam
+            
             if align_seqs:
                 muscle_output= "./" + outputs_dir + "/protein_"+str(my_sequence_index) + "/found_sequences_"  "aligned" ".fasta"
                 print("Aligning sequences")
