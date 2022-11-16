@@ -13,7 +13,7 @@ def cluster(found_sequences_fastafile, my_seq_record, similarity, cluster_result
     
     clustered_sequences = []
     number_of_clusters = 0
-    my_sequence_domains = search_hmmer_pfam(str(my_seq_record.seq)).keys()
+    #my_sequence_domains = search_hmmer_pfam(str(my_seq_record.seq)).keys()
     read_obj = open(cluster_evaluation_file, 'r')
     csv_reader = reader(read_obj)
     header = next(csv_reader)
@@ -30,7 +30,7 @@ def cluster(found_sequences_fastafile, my_seq_record, similarity, cluster_result
                         id= cluster_id,
                         description = cluster_center_seq_description.replace(" <unknown description>", "")
                     )
-                    """
+                    
                     try:
                         subject_sequence_domains = search_hmmer_pfam(str(seq_record.seq)).keys()
                         print(subject_sequence_domains)
@@ -41,20 +41,19 @@ def cluster(found_sequences_fastafile, my_seq_record, similarity, cluster_result
                         domains = "DD:" + str(subject_sequence_domains).replace("dict_keys", "").replace("([","").replace("])","").replace("'","")
                     else:
                         domains = "SD"
+                    """
                     rec_c = SeqRecord(
                         Seq(str(seq_record.seq)),
                         id= cluster_id + cluster_center_seq_description.replace(" <unknown description>", "") + "|" +domains,
                         description = ""
                     )
+                    """
                     string = rec_c.id
                     new_string = string[:string.find("|_")+1].replace("ref", "") + string[string.find("[")+1:string.find("]")] + string[string.find("]|")+1:]
                     rec_c.id = new_string
                     clustered_sequences.append(rec_c)
-                    number_of_clusters += 1
-                    print("Cluster number " + str(number_of_clusters))
-                    print(seq_record.description)
-                    print(seq_record.seq)
-                    print()  
+                    """
+                    number_of_clusters += 1 
                     break
     SeqIO.write(clustered_sequences, cluster_results_fastafile, "fasta")
     print("Number of clusters: "+ str(number_of_clusters))
