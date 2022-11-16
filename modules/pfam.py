@@ -80,7 +80,6 @@ def fasta_to_dfasta(my_seq_record, fa_to_dfa_input, fa_to_dfa_output):
   for seq_record in SeqIO.parse(fa_to_dfa_input, "fasta"):
     try:
       subject_sequence_domains = search_hmmer_pfam(str(seq_record.seq)).keys()
-      print(subject_sequence_domains)
     except KeyError:
       subject_sequence_domains = "No_domains_found"
     if my_sequence_domains != subject_sequence_domains:
