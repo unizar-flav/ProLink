@@ -94,6 +94,7 @@ def fasta_to_dfasta(my_seq_record, fa_to_dfa_input, fa_to_dfa_output):
     string = rec_d.id
     new_string = string[:string.find("|_")+1].replace("ref", "") + string[string.find("[")+1:string.find("]")] + string[string.find("]|")+1:]
     rec_d.id = new_string
+    rec_d.description = ""
     d_sequences.append(rec_d)
   SeqIO.write(d_sequences, fa_to_dfa_output, "fasta")
 
