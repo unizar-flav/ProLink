@@ -1,3 +1,19 @@
+"""                                        
+                                 __                                    
+                                / /                                    
+                               / /                                     
+           ______ _____ _____ / /    __  ______ __ _                    
+          / __  // ___// _  // /    / / / __  // ///                   
+         / /_/ // /   / // // /___ / / / / / // _ \                     
+        / ____//_/   /____//_____//_/ /_/ /_//_/ \_\                      
+       / /                                                             
+      / /                    Created by Víctor Sanz                                         
+     /_/                    University of Zaragoza                                         
+                                                                   
+                                                                       
+                                                                       
+"""
+
 from genericpath import isdir
 import os
 import subprocess
@@ -13,85 +29,6 @@ from .modules.subprocess_functions import weblogo3
 from .modules.subprocess_functions import tree
 import os
 import sys
-
-
-#--------------------PARAMETERS----------------------
-#For local executing of the script:
-"""
-#BLAST
-
-query_proteins = "ABQ62066.1, ABQ62091.1, ABQ62490.1" #Write the protein IDs here. Eg: "ABQ62066.1, ABQ62091.1, ABQ62490.1"
-hitlist_range = 5000 #Desired minimum number of found sequences.
-blast_database = "refseq_protein"
-smart_blast_ = True
-#If smart_blast:
-max_low_identity_seqs = 1
-min_low_identity_seqs = 1 #If the number of sequences with a low identity identity percentage is below this value, the script will blast again until this value is reached.
-expected_min_identity = 0.25 #Maximum identity percentage to consider a sequence a "low identity sequence".
-additional_hits = 2000 #The new blast will search for hitlist_range + aditional_hits sequences.
-
-remove_gaps = True
-
-#CLUSTERING
-cluster_seqs = True
-similarity = 0.5 #Initial similarity treshold to group the sequences into clusters.
-smart_clustering_ = True
-#If smart_clustering:
-min_number_of_clusters_to_cluster_again = 250
-max_number_of_clusters_to_cluster_again = 700
-
-#ALIGNMENT
-align_seqs = True
-
-#SEQUENCE LOGO GENERATION
-generate_logo = True
-#if logo:
-weblogo_format = "png"
-
-#PHYLOGENETIC TREE GENERATION
-generate_tree = True
-#If tree:
-tree_type = "NJ" #Either write NJ (Neighbor joining) or ML (Maximum likehood).
-bootstrap_replications = "500" #Write 250, 500, 1000, 2000 or 5000.
-
-#For Google Colab executing:
-query_proteins = str(sys.argv[1])
-hitlist_range = int(sys.argv[2])
-blast_database = str(sys.argv[3])
-smart_blast_ = sys.argv[4]
-#If smart_blast:
-max_low_identity_seqs = int(sys.argv[5])
-min_low_identity_seqs = int(sys.argv[6])
-expected_min_identity = float(sys.argv[7])
-additional_hits = int(sys.argv[8])
-
-remove_gaps = sys.argv[9]
-
-#CLUSTERING
-cluster_seqs = sys.argv[20]
-similarity = float(sys.argv[10])
-smart_clustering_ = sys.argv[11]
-#If smart_clustering:
-min_number_of_clusters_to_cluster_again = int(sys.argv[12])
-max_number_of_clusters_to_cluster_again = int(sys.argv[13])
-
-#ALIGNMENT
-align_seqs = sys.argv[14]
-
-#SEQUENCE LOGO GENERATION
-generate_logo = sys.argv[15]
-#if logo:
-weblogo_format = str(sys.argv[16])
-
-#PHYLOGENETIC TREE GENERATION
-generate_tree = sys.argv[17]
-#If tree:
-tree_type = str(sys.argv[18])
-bootstrap_replications = str(sys.argv[19])
-"""
-#-----------------------------------------------------
-
-
 
 def pro_link(query_proteins, **parameters):
     
