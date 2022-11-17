@@ -8,7 +8,7 @@ ProLink is a python script that allows to excecute multiple proteomic analysis t
 ## Usage
 The script is designed to be executed in Google Colab.
 
-**Step 1:** Run the first cell in order to install the environment required for the script. It is only needed to do once everytime the execution environment is initialized. 
+**Step 1:** Run the first cell in order to install the dependencies required for the script. It is only needed to do once everytime the execution environment is initialized. 
 
 **Step 2:** Introduce the desired parameters in the form of the second cell and execute it.
 
