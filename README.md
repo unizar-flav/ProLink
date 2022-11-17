@@ -37,10 +37,17 @@ The script is designed to be executed in Google Colab.
 
 
 ## References
+
   > Chiu, J.K.H., Ong, R.TH. Clustering biological sequences with dynamic sequence similarity threshold. BMC Bioinformatics 23, 108 (2022).     https://doi.org/10.1186/s12859-022-04643-9
+  
   > Ondov, B. D., et al. (2016). Mash: fast genome and metagenome distance estimation using MinHash. Genome Biology, 17(1), 132.
+  
   > Steinegger, M. and J. Söding. (2017). MMseqs2 enables sensitive protein sequence searching for the analysis of massive data sets. Nature Biotechnology, 35, 1026.
+  
   > Bakan A, Meireles LM, Bahar I. ProDy: Protein Dynamics Inferred from Theory and Experiments. Bioinformatics 2011 27(11):1575-1577.
+  
   > Edgar, R. C. (2004). MUSCLE: multiple sequence alignment with high accuracy and high throughput. Nucleic Acids Research, 32(5), 1792-1797. https://doi.org/10.1093/nar/gkh340
+  
   > Crooks GE, Hon G, Chandonia JM, Brenner SE WebLogo: A sequence logo generator, Genome Research, 14:1188-1190, (2004).
+  
   > Koichiro Tamura, Glen Stecher, and Sudhir Kumar (2021) MEGA11: Molecular Evolutionary Genetics Analysis version 11. Molecular Biology and Evolution 38:3022-3027.
