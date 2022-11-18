@@ -73,9 +73,12 @@ def search_hmmer_pfam(seq) -> dict:
     return matches
   
 def fasta_to_dfasta(my_seq_record, fa_to_dfa_input, fa_to_dfa_output):
-  print("Checking Pfam domains")
-  my_sequence_domains = search_hmmer_pfam(str(my_seq_record.seq)).keys()
-    
+  print("Checking Pfam domains") 
+  try:
+    my_sequence_domains = search_hmmer_pfam(str(my_seq_record.seq)).keys()
+  except KeyError:
+    my_sequence_domains = search_hmmer_pfam(str(my_seq_record.seq)).keys()
+  
   d_sequences = []
   for seq_record in SeqIO.parse(fa_to_dfa_input, "fasta"):
     try:
