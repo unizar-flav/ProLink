@@ -14,34 +14,34 @@ The script is designed to be executed in Google Colab.
 
 ***Parameters***
 
-| Argument name                             | Description                                                | 
-| ----------------------------------------- | ---------------------------------------------------------- |
-| query_proteins                            | UniProt code of the query proteins. Eg: "ABQ62066.1, ABQ62091.1, ABQ62490.1"|
-| hitlist_range                             | Number of found sequences obtained via Blast.|
-| blast_database                            | Database used in blast. Eg: "refseq_protein".              |
-| smart_blast_                              | Boolean parameter to select "smart blast" or regular blast.|
-| cluster_seqs                              | Boolean parameter to select if clustering the sequences or not.|
-| similarity                                | Initial similarity treshold to group the sequences into clusters.|
-| smart_clustering                          | Boolean parameter to select "smart clustering" or regular clustering.|
-| check_pfam_domains   | Boolean parameter to select if checking the Pfam domains of the sequences or not.|
-| align_seqs                              | Boolean parameter to select if aligning the sequences or not.|
-| generate_logo                             | Boolean parameter to select if generating a sequence logo or not.|
-| generate_tree                             | Boolean parameter to select if generating a phylogenetic tree or not.|
+| Argument name                             | Description                                                                                      | 
+| ----------------------------------------- | -------------------------------------------------------------------------------------------------|
+| query_proteins                            | UniProt code of the query proteins. Eg: "ABQ62066.1, ABQ62091.1, ABQ62490.1".                    |
+| hitlist_range                             | Number of found sequences obtained via Blast.                                                    |
+| blast_database                            | Database used in blast.                                                                          |
+| smart_blast_                              | Boolean parameter to select "smart blast" or regular blast.                                      |
+| cluster_seqs                              | Boolean parameter to select if clustering the sequences or not.                                  |
+| similarity                                | Initial similarity treshold to group the sequences into clusters.                                |
+| smart_clustering                          | Boolean parameter to select "smart clustering" or regular clustering.                            |
+| check_pfam_domains                        | Boolean parameter to select if checking the Pfam domains of the sequences or not.                |
+| align_seqs                                | Boolean parameter to select if aligning the sequences or not.                                    |
+| generate_logo                             | Boolean parameter to select if generating a sequence logo or not.                                |
+| generate_tree                             | Boolean parameter to select if generating a phylogenetic tree or not.                            |
 | tree_type                                 | Type of phylogenetic tree. Needs to be either "NJ" (Neighbor joining) or "ML" (Maximum likehood).|
 
 
 ***Advanced parameters (in ProLink/parameters.cfg)***
-| Argument name                             | Description                                                | Default value|
-| ----------------------------------------- | ---------------------------------------------------------- |--------------|
-| max_low_identity_seqs                     | Maximum number of low identity seqs to find when using "smart blast".| 1|
-| min_low_identity_seqs                     | Minimum number of low identity seqs to find when using "smart blast".| 1|
-| expected_min_identity                     | Maximum identity percentage to consider a sequence a low identity seq when using "smart blast".| 0.25|
-| additional_hits                           | Number of additional sequences to find when using "smart blast".| 2000|
-| min_number_of_clusters_to_cluster_again   | Minimum number of clusters allowed when using "smart clustering".| 250|
-| max_number_of_clusters_to_cluster_again   | Maximum number of clusters allowed when using "smart clustering".| 700|
-| weblogo_format                            | Output format when using generate_logo. | png|
-| bootstrap_replications                    | Number of bootstrap replications when generating the tree.| 250|
-| outputs_dir                    | Name of the outputs directory. | outputs|
+| Argument name                             | Description                                                                                    | Default value|
+| ----------------------------------------- | -----------------------------------------------------------------------------------------------|--------------|
+| max_low_identity_seqs                     | Maximum number of low identity seqs to find when using "smart blast".                          |             1|
+| min_low_identity_seqs                     | Minimum number of low identity seqs to find when using "smart blast".                          |             1|
+| expected_min_identity                     | Maximum identity percentage to consider a sequence a low identity seq when using "smart blast".|          0.25|
+| additional_hits                           | Number of additional sequences to find when using "smart blast".                               |          2000|
+| min_number_of_clusters_to_cluster_again   | Minimum number of clusters allowed when using "smart clustering".                              |           250|
+| max_number_of_clusters_to_cluster_again   | Maximum number of clusters allowed when using "smart clustering".                              |           700|
+| weblogo_format                            | Output format when using generate_logo.                                                        | png          |
+| bootstrap_replications                    | Number of bootstrap replications when generating the tree.                                     |           250|
+| outputs_dir                               | Name of the outputs directory.                                                                 | outputs      |
 
 **Step 3:** Run the "Execute the script" cell. 
 
