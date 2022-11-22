@@ -17,6 +17,7 @@ The script is designed to be executed in Google Colab.
 | Argument name                             | Description                                                | 
 | ----------------------------------------- | ---------------------------------------------------------- |
 | query_proteins                            | UniProt code of the query proteins. Eg: "ABQ62066.1, ABQ62091.1, ABQ62490.1"|
+| hitlist_range                             | Number of found sequences obtained via Blast.|
 | blast_database                            | Database used in blast. Eg: "refseq_protein".              |
 | smart_blast_                              | Boolean parameter to select "smart blast" or regular blast.|
 | cluster_seqs                              | Boolean parameter to select if clustering the sequences or not.|
@@ -29,7 +30,7 @@ The script is designed to be executed in Google Colab.
 | tree_type                                 | Type of phylogenetic tree. Needs to be either "NJ" (Neighbor joining) or "ML" (Maximum likehood).|
 
 
-***Advanced parameters***
+***Advanced parameters (in ProLink/parameters.cfg)***
 | Argument name                             | Description                                                | Default value|
 | ----------------------------------------- | ---------------------------------------------------------- |--------------|
 | max_low_identity_seqs                     | Maximum number of low identity seqs to find when using "smart blast".| 1|
@@ -41,6 +42,37 @@ The script is designed to be executed in Google Colab.
 | weblogo_format                            | Output format when using generate_logo. | png|
 | bootstrap_replications                    | Number of bootstrap replications when generating the tree.| 250|
 | outputs_dir                    | Name of the outputs directory. | outputs|
+
+**Step 3:** Run the "Execute the script" cell. 
+
+If the "download_outputs" parameter is marked, the outputs directory will be automatically downloaded to your device when finished.
+As an additional option, one single file or directory can be downloaded using the "(Optional) Download outputs manually" cell.
+
+## Advanced functions
+
+### Smart blast
+
+Smart blast allows to search for homologous sequences via the Blast tool, but making sure that low identity seqs are also represented in the output.
+
+Firstly, a regular Blast with is launched, and hitlist_range seqs are obtained. 
+
+If the number of low identity seqs in the found seqs are below the min_low_identity_seqs parameter, a new regular Blast will be launched but with hitlist_range += additional_hits.
+
+Smart blast will stop when the number of low identity seqs reach max_low_identity_seqs, or when more than 10000 sequences are found (this limit is due to the computing capacity of the Google collab servers when clustering. In a future update, this value will be included as an advanced parameter).
+
+### Smart clustering
+
+ALFATClust is the tool that is used to cluster the sequences. It is a recent and relatively fast tool, but it does not let the user choose the number of clusters produced when grouping the sequences.
+
+Smart clustering allows to obtain a number of clusters that is in a determined range. 
+
+Firstly, a regular clustering with the determined similarity is executed. 
+
+If the number of clusters is avobe the max_number_of_clusters_to_cluster_again value, the sequences will be clustered again but with similarity -= 0.1, in order to obtain an inferior number of clusters.
+
+On the contrary, if the number of clusters is below the min_number_of_clusters_to_cluster_again, the sequences will be clustered again but with similarity += 0.1, in order to obtain a superior number of clusters.
+
+Smart clustering will stop when the number of clusters is between min_number_of_clusters_to_cluster_again and max_number_of_clusters_to_cluster_again.
 
 ## References
 
