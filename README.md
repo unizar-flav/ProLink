@@ -31,17 +31,17 @@ The script is designed to be executed in Google Colab.
 
 
 ***Advanced parameters (in ProLink/parameters.cfg)***
-| Argument name                             | Description                                                                                    | Default value|
-| ----------------------------------------- | -----------------------------------------------------------------------------------------------|--------------|
-| max_low_identity_seqs                     | Maximum number of low identity seqs to find when using "smart blast".                          |             1|
-| min_low_identity_seqs                     | Minimum number of low identity seqs to find when using "smart blast".                          |             1|
-| expected_min_identity                     | Maximum identity percentage to consider a sequence a low identity seq when using "smart blast".|          0.25|
-| additional_hits                           | Number of additional sequences to find when using "smart blast".                               |          2000|
-| min_number_of_clusters_to_cluster_again   | Minimum number of clusters allowed when using "smart clustering".                              |           250|
-| max_number_of_clusters_to_cluster_again   | Maximum number of clusters allowed when using "smart clustering".                              |           700|
-| weblogo_format                            | Output format when using generate_logo.                                                        | png          |
-| bootstrap_replications                    | Number of bootstrap replications when generating the tree.                                     |           250|
-| outputs_dir                               | Name of the outputs directory.                                                                 | outputs      |
+| Argument name                             | Description                                                                                        | Default value|
+| ----------------------------------------- | ---------------------------------------------------------------------------------------------------|--------------|
+| max_low_identity_seqs                     | Maximum number of low identity seqs to find when using "smart blast".                              |             1|
+| min_low_identity_seqs                     | Minimum number of low identity seqs to find when using "smart blast".                              |             1|
+| expected_min_identity                     | Maximum identity percentage to consider a sequence a low identity seq when using "smart blast".    |          0.25|
+| additional_hits                           | Number of additional sequences to find when using "smart blast".                                   |          2000|
+| min_number_of_clusters_to_cluster_again   | Minimum number of clusters allowed when using "smart clustering".                                  |           250|
+| max_number_of_clusters_to_cluster_again   | Maximum number of clusters allowed when using "smart clustering".                                  |           700|
+| weblogo_format                            | Output format when using generate_logo.                                                            | png          |
+| bootstrap_replications                    | Number of bootstrap replications when generating the tree. Needs to be 100, 250, 500, 1000 or 2000.|           100|
+| outputs_dir                               | Name of the outputs directory.                                                                     | outputs      |
 
 **Step 3:** Run the "Execute the script" cell. 
 
