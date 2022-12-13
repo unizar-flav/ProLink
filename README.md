@@ -1,6 +1,6 @@
 # ***ProLink*** 
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1EhX_gO05Fmn_-ikvEkz90rf9S9p0imtp?usp=sharing)
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/unizar-flav/ProLink/blob/master/ProLink.ipynb)
 
 ## Overview
 ProLink is a python script that allows to excecute multiple proteomic analysis tools automatically.
@@ -39,9 +39,9 @@ The script is designed to be executed in Google Colab.
 | additional_hits                           | Number of additional sequences to find when using "smart blast".                                   |          2000|
 | min_number_of_clusters_to_cluster_again   | Minimum number of clusters allowed when using "smart clustering".                                  |           250|
 | max_number_of_clusters_to_cluster_again   | Maximum number of clusters allowed when using "smart clustering".                                  |           700|
-| weblogo_format                            | Output format when using generate_logo.                                                            | png          |
+| weblogo_format                            | Output format when using generate_logo.                                                            | 'png'        |
 | bootstrap_replications                    | Number of bootstrap replications when generating the tree. Needs to be 100, 250, 500, 1000 or 2000.|           100|
-| outputs_dir                               | Name of the outputs directory.                                                                     | outputs      |
+| outputs_dir                               | Name of the outputs directory.                                                                     | 'outputs'    |
 
 **Step 3:** Run the "Execute the script" cell. 
 
