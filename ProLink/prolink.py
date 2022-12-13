@@ -73,8 +73,9 @@ def pro_link(query_proteins: str, parameters_default: dict = parameters_default,
     # Output
     outputs_dir = str(parameters['outputs_dir'])
 
-
+    os.makedirs(outputs_dir, exist_ok=True)
     my_sequences = obtain_fasta_file(query_proteins, outputs_dir)
+
     for seq_n, my_seq_record in enumerate(my_sequences, 1):
 
         output_dir_n = f"./{outputs_dir}/protein_{seq_n}"
