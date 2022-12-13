@@ -1,7 +1,8 @@
-from Bio import Entrez
-from Bio import SeqIO
+
+from Bio import Entrez, SeqIO
 from Bio.Seq import Seq
 from Bio.SeqRecord import SeqRecord
+
 
 def obtain_fasta_file(id, outputs_dir):
     print("Obtaining sequences")
