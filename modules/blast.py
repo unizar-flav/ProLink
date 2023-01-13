@@ -42,7 +42,8 @@ def parse(my_sequence_index, hitlist_range, blast_filename, remove_gaps, expecte
             print()
             rec_f.description = ""
             rec_f.id=rec_f.id.replace(" ", "_").replace(" <unknown description>", "")
-            rec_f.seq=rec_f.seq.ungap("-")
+            if remove_gaps:
+                rec_f.seq=rec_f.seq.ungap("-")
             found_sequences.append(rec_f)
     found_sequences_fastafile= "./" + outputs_dir + "/protein_" + str(my_sequence_index) + "/found_sequences.fasta"
     SeqIO.write(found_sequences, found_sequences_fastafile, "fasta")
@@ -75,7 +76,8 @@ def s_parse(my_sequence_index, hitlist_range, blast_filename, remove_gaps, expec
               print()
               rec_f.description = ""
               rec_f.id=rec_f.id.replace(" ", "_").replace(" <unknown description>", "")
-              rec_f.seq=rec_f.seq.ungap("-")
+              if remove_gaps:
+                rec_f.seq=rec_f.seq.ungap("-")
               found_sequences.append(rec_f)
           else:
               break
