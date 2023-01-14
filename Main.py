@@ -20,9 +20,9 @@ import subprocess
 from .modules.obtaining_sequences import obtain_fasta_file
 from .modules.blast import blast
 from .modules.blast import parse
-from .modules.blast import s_blast
+from .modules.blast import p_blast
 from .modules.clustering import cluster
-from .modules.clustering import s_cluster
+from .modules.clustering import p_cluster
 from .modules.pfam import fasta_to_dfasta
 from .modules.subprocess_functions import align
 from .modules.subprocess_functions import weblogo3
@@ -34,7 +34,7 @@ def pro_link(query_proteins, **parameters):
     
     hitlist_range = int(parameters['Blast']['hitlist_range'])
     blast_database = str(parameters['Blast']['blast_database'])
-    smart_blast_ = bool(parameters['Blast']['smart_blast_'])
+    pro_blast_ = bool(parameters['Blast']['pro_blast_'])
     max_low_identity_seqs = int(parameters['Blast']['max_low_identity_seqs'])
     min_low_identity_seqs = int(parameters['Blast']['min_low_identity_seqs'])
     expected_min_identity = float(parameters['Blast']['expected_min_identity'])
@@ -43,7 +43,7 @@ def pro_link(query_proteins, **parameters):
     
     cluster_seqs = bool(parameters['Clustering']['cluster_seqs'])
     similarity = float(parameters['Clustering']['similarity'])
-    smart_clustering_ = bool(parameters['Clustering']['smart_clustering_'])
+    pro_clustering_ = bool(parameters['Clustering']['pro_clustering_'])
     min_number_of_clusters_to_cluster_again = int(parameters['Clustering']['min_number_of_clusters_to_cluster_again'])
     max_number_of_clusters_to_cluster_again = int(parameters['Clustering']['max_number_of_clusters_to_cluster_again'])
     
@@ -70,9 +70,9 @@ def pro_link(query_proteins, **parameters):
         blast_filename = "./" + outputs_dir +"/protein_"+str(my_sequence_index)+"/blast_results.xml"
         found_sequences_fastafile= "./" + outputs_dir +"/protein_"+str(my_sequence_index) + "/found_sequences.fasta"
 
-        if smart_blast_:
-            print("Smart Blast")
-            s_blast(my_sequence_index, blast_database, hitlist_range, my_seq_record, blast_filename, found_sequences_fastafile, remove_gaps, expected_min_identity, min_low_identity_seqs, max_low_identity_seqs, additional_hits, outputs_dir)
+        if pro_blast_:
+            print("Pro BLAST")
+            p_blast(my_sequence_index, blast_database, hitlist_range, my_seq_record, blast_filename, found_sequences_fastafile, remove_gaps, expected_min_identity, min_low_identity_seqs, max_low_identity_seqs, additional_hits, outputs_dir)
         else:
             blast(hitlist_range, blast_database, blast_filename,  my_seq_record)
             parse(my_sequence_index, hitlist_range, blast_filename, remove_gaps, expected_min_identity, outputs_dir)
@@ -85,9 +85,9 @@ def pro_link(query_proteins, **parameters):
             cluster_evaluation_file = "./" + outputs_dir +"/protein_"+str(my_sequence_index) +  "/cluster_results_evaluation_" + str(similarity)
             
             
-            if smart_clustering_:
-                print("Smart Clustering")
-                s_cluster(found_sequences_fastafile, my_seq_record, similarity, min_number_of_clusters_to_cluster_again, max_number_of_clusters_to_cluster_again, cluster_results_file, cluster_evaluation_file, cluster_results_fastafile)
+            if pro_clustering_:
+                print("Pro Clustering")
+                p_cluster(found_sequences_fastafile, my_seq_record, similarity, min_number_of_clusters_to_cluster_again, max_number_of_clusters_to_cluster_again, cluster_results_file, cluster_evaluation_file, cluster_results_fastafile)
             else:
                 cluster(found_sequences_fastafile, my_seq_record, similarity, cluster_results_file, cluster_evaluation_file, cluster_results_fastafile)
             
