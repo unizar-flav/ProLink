@@ -19,10 +19,10 @@ The script is designed to be executed in Google Colab.
 | query_proteins                            | UniProt code of the query proteins. Eg: "ABQ62066.1, ABQ62091.1, ABQ62490.1".                    |
 | hitlist_range                             | Number of found sequences obtained via Blast.                                                    |
 | blast_database                            | Database used in blast.                                                                          |
-| smart_blast_                              | Boolean parameter to select "smart blast" or regular blast.                                      |
+| pro_blast_                                | Boolean parameter to select "Pro BLAST" or regular BLAST.                                        |
 | cluster_seqs                              | Boolean parameter to select if clustering the sequences or not.                                  |
 | similarity                                | Initial similarity treshold to group the sequences into clusters.                                |
-| smart_clustering                          | Boolean parameter to select "smart clustering" or regular clustering.                            |
+| pro_clustering                            | Boolean parameter to select "pro clustering" or regular clustering.                              |
 | check_pfam_domains                        | Boolean parameter to select if checking the Pfam domains of the sequences or not.                |
 | align_seqs                                | Boolean parameter to select if aligning the sequences or not.                                    |
 | generate_logo                             | Boolean parameter to select if generating a sequence logo or not.                                |
@@ -33,12 +33,12 @@ The script is designed to be executed in Google Colab.
 ***Advanced parameters (in ProLink/parameters.cfg)***
 | Argument name                             | Description                                                                                        | Default value|
 | ----------------------------------------- | ---------------------------------------------------------------------------------------------------|--------------|
-| max_low_identity_seqs                     | Maximum number of low identity seqs to find when using "smart blast".                              |             1|
-| min_low_identity_seqs                     | Minimum number of low identity seqs to find when using "smart blast".                              |             1|
-| expected_min_identity                     | Maximum identity percentage to consider a sequence a low identity seq when using "smart blast".    |          0.25|
-| additional_hits                           | Number of additional sequences to find when using "smart blast".                                   |          2000|
-| min_number_of_clusters_to_cluster_again   | Minimum number of clusters allowed when using "smart clustering".                                  |           250|
-| max_number_of_clusters_to_cluster_again   | Maximum number of clusters allowed when using "smart clustering".                                  |           700|
+| max_low_identity_seqs                     | Maximum number of low identity seqs to find when using "Pro BLAST".                                |             1|
+| min_low_identity_seqs                     | Minimum number of low identity seqs to find when using "Pro BLAST".                                |             1|
+| expected_min_identity                     | Maximum identity percentage to consider a sequence a low identity seq when using "Pro BLAST".      |          0.25|
+| additional_hits                           | Number of additional sequences to find when using "Pro BLAST".                                     |          2000|
+| min_number_of_clusters_to_cluster_again   | Minimum number of clusters allowed when using "Pro clustering".                                    |           250|
+| max_number_of_clusters_to_cluster_again   | Maximum number of clusters allowed when using "Pro clustering".                                    |           700|
 | weblogo_format                            | Output format when using generate_logo.                                                            | png          |
 | bootstrap_replications                    | Number of bootstrap replications when generating the tree. Needs to be 100, 250, 500, 1000 or 2000.|           100|
 | outputs_dir                               | Name of the outputs directory.                                                                     | outputs      |
@@ -50,21 +50,21 @@ As an additional option, one single file or directory can be downloaded using th
 
 ## Advanced functions
 
-### Smart blast
+### Pro BLAST
 
-Smart blast allows to search for homologous sequences via the Blast tool, but making sure that low identity seqs are also represented in the output.
+Pro BLAST allows to search for homologous sequences via the Blast tool, but making sure that low identity seqs are also represented in the output.
 
 Firstly, a regular Blast with is launched, and hitlist_range seqs are obtained. 
 
 If the number of low identity seqs in the found seqs are below the min_low_identity_seqs parameter, a new regular Blast will be launched but with hitlist_range += additional_hits.
 
-Smart blast will stop when the number of low identity seqs reach max_low_identity_seqs, or when more than 10000 sequences are found (this limit is due to the computing capacity of the Google collab servers when clustering. In a future update, this value will be included as an advanced parameter).
+Pro BLAST will stop when the number of low identity seqs reach max_low_identity_seqs, or when more than 10000 sequences are found (this limit is due to the computing capacity of the Google collab servers when clustering. In a future update, this value will be included as an advanced parameter).
 
-### Smart clustering
+### Pro clustering
 
 ALFATClust is the tool that is used to cluster the sequences. It is a recent and relatively fast tool, but it does not let the user choose the number of clusters produced when grouping the sequences.
 
-Smart clustering allows to obtain a number of clusters that is in a determined range. 
+Pro clustering allows to obtain a number of clusters that is in a determined range. 
 
 Firstly, a regular clustering with the determined similarity is executed. 
 
@@ -72,7 +72,7 @@ If the number of clusters is avobe the max_number_of_clusters_to_cluster_again v
 
 On the contrary, if the number of clusters is below the min_number_of_clusters_to_cluster_again, the sequences will be clustered again but with similarity += 0.1, in order to obtain a superior number of clusters.
 
-Smart clustering will stop when the number of clusters is between min_number_of_clusters_to_cluster_again and max_number_of_clusters_to_cluster_again.
+Pro clustering will stop when the number of clusters is between min_number_of_clusters_to_cluster_again and max_number_of_clusters_to_cluster_again.
 
 ## References
 
