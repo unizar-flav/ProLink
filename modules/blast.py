@@ -49,7 +49,7 @@ def parse(my_sequence_index, hitlist_range, blast_filename, remove_gaps, expecte
     SeqIO.write(found_sequences, found_sequences_fastafile, "fasta")
     return low_identity_seqs
 
-def s_parse(my_sequence_index, hitlist_range, blast_filename, remove_gaps, expected_min_identity, low_identity_seqs, max_low_identity_seqs, outputs_dir):
+def p_parse(my_sequence_index, hitlist_range, blast_filename, remove_gaps, expected_min_identity, low_identity_seqs, max_low_identity_seqs, outputs_dir):
     with open(blast_filename,"r") as f:
         xml_string = f.read()
         xml_string = xml_string.replace('CREATE_VIEW', '')
@@ -87,7 +87,7 @@ def s_parse(my_sequence_index, hitlist_range, blast_filename, remove_gaps, expec
     SeqIO.write(found_sequences, found_sequences_fastafile, "fasta")
     return low_identity_seqs
   
-def s_blast(my_sequence_index, blast_database, hitlist_range, my_seq_record, blast_filename, found_sequences_fastafile, remove_gaps, expected_min_identity, min_low_identity_seqs, max_low_identity_seqs, additional_hits, outputs_dir):  
+def p_blast(my_sequence_index, blast_database, hitlist_range, my_seq_record, blast_filename, found_sequences_fastafile, remove_gaps, expected_min_identity, min_low_identity_seqs, max_low_identity_seqs, additional_hits, outputs_dir):  
     blast(hitlist_range, blast_database, blast_filename,  my_seq_record)
     
     if parse(my_sequence_index, hitlist_range, blast_filename, remove_gaps, expected_min_identity, outputs_dir) < min_low_identity_seqs:
@@ -99,7 +99,7 @@ def s_blast(my_sequence_index, blast_database, hitlist_range, my_seq_record, bla
         print("Blasting again with " + str(hitlist_range) + " hits")
         blast(hitlist_range, blast_database, blast_filename,  my_seq_record)
         low_identity_seqs = 0
-        while s_parse(my_sequence_index, hitlist_range, blast_filename, remove_gaps, expected_min_identity, low_identity_seqs, max_low_identity_seqs, outputs_dir) < min_low_identity_seqs and hitlist_range < 10000:
+        while p_parse(my_sequence_index, hitlist_range, blast_filename, remove_gaps, expected_min_identity, low_identity_seqs, max_low_identity_seqs, outputs_dir) < min_low_identity_seqs and hitlist_range < 10000:
             print()
             print("The number of low identity sequences is below the desired value")
             os.remove(blast_filename)
@@ -108,7 +108,7 @@ def s_blast(my_sequence_index, blast_database, hitlist_range, my_seq_record, bla
             print("Blasting again with " + str(hitlist_range) + " hits")
             blast(hitlist_range, blast_database, blast_filename,  my_seq_record)
             low_identity_seqs = 0
-            s_parse(my_sequence_index, hitlist_range, blast_filename, remove_gaps, expected_min_identity, low_identity_seqs, max_low_identity_seqs, outputs_dir)
+            p_parse(my_sequence_index, hitlist_range, blast_filename, remove_gaps, expected_min_identity, low_identity_seqs, max_low_identity_seqs, outputs_dir)
     print()
-    print("Smart blast done succesfully")
+    print("Pro blast done succesfully")
     print()
