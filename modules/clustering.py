@@ -61,7 +61,7 @@ def cluster(found_sequences_fastafile, my_seq_record, similarity, cluster_result
 
 
 
-def s_cluster(found_sequences_fastafile, my_seq_record, similarity, min_number_of_clusters_to_cluster_again, max_number_of_clusters_to_cluster_again, cluster_results_file, cluster_evaluation_file, cluster_results_fastafile):
+def p_cluster(found_sequences_fastafile, my_seq_record, similarity, min_number_of_clusters_to_cluster_again, max_number_of_clusters_to_cluster_again, cluster_results_file, cluster_evaluation_file, cluster_results_fastafile):
     num_of_clusters = cluster(found_sequences_fastafile, my_seq_record, similarity, cluster_results_file, cluster_evaluation_file, cluster_results_fastafile)
     #print("Number of clusters: " + str(number_of_clusters))
     #print(str(cluster_results_file))
@@ -69,7 +69,7 @@ def s_cluster(found_sequences_fastafile, my_seq_record, similarity, min_number_o
         
         if min_number_of_clusters_to_cluster_again < num_of_clusters:
             print("The number of clusters is between the desired values")
-            print("Smart clustering done succesfully")
+            print("Pro clustering done succesfully")
 
         if num_of_clusters < min_number_of_clusters_to_cluster_again:
             print("The number of clusters is below the minimum")
