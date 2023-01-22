@@ -62,29 +62,29 @@ def cluster(found_sequences_fastafile, my_seq_record, similarity, cluster_result
 
 
 def p_cluster(found_sequences_fastafile, my_seq_record, similarity, min_number_of_clusters_to_cluster_again, max_number_of_clusters_to_cluster_again, cluster_results_file, cluster_evaluation_file, cluster_results_fastafile):
-    num_of_clusters = cluster(found_sequences_fastafile, my_seq_record, similarity, cluster_results_file, cluster_evaluation_file, cluster_results_fastafile)
+    number_of_clusters = cluster(found_sequences_fastafile, my_seq_record, similarity, cluster_results_file, cluster_evaluation_file, cluster_results_fastafile)
     #print("Number of clusters: " + str(number_of_clusters))
     #print(str(cluster_results_file))
-    while num_of_clusters <= min_number_of_clusters_to_cluster_again or num_of_clusters >= max_number_of_clusters_to_cluster_again:
+    while number_of_clusters <= min_number_of_clusters_to_cluster_again or number_of_clusters >= max_number_of_clusters_to_cluster_again:
         
-        if min_number_of_clusters_to_cluster_again < num_of_clusters:
+        if min_number_of_clusters_to_cluster_again < number_of_clusters:
             print("The number of clusters is between the desired values")
             print("Pro clustering done succesfully")
 
-        if num_of_clusters < min_number_of_clusters_to_cluster_again:
+        if number_of_clusters < min_number_of_clusters_to_cluster_again:
             print("The number of clusters is below the minimum")
             os.remove(cluster_results_file)
             os.remove(cluster_evaluation_file)
             os.remove(cluster_results_fastafile)
             similarity += 0.1
             print("Clustering again with " + str(similarity) + " similarity")
-            num_of_clusters = cluster(found_sequences_fastafile, my_seq_record, similarity, cluster_results_file, cluster_evaluation_file, cluster_results_fastafile)
+            number_of_clusters = cluster(found_sequences_fastafile, my_seq_record, similarity, cluster_results_file, cluster_evaluation_file, cluster_results_fastafile)
 
-        elif num_of_clusters >= max_number_of_clusters_to_cluster_again:
+        elif number_of_clusters >= max_number_of_clusters_to_cluster_again:
             print("The number of clusters exceeds the maximum")
             os.remove(cluster_results_file)
             os.remove(cluster_evaluation_file)
             os.remove(cluster_results_fastafile)
             similarity -= 0.1
             print("Clustering again with " + str(similarity) + " similarity")
-            num_of_clusters = cluster(found_sequences_fastafile, my_seq_record, similarity, cluster_results_file, cluster_evaluation_file, cluster_results_fastafile)
+            number_of_clusters = cluster(found_sequences_fastafile, my_seq_record, similarity, cluster_results_file, cluster_evaluation_file, cluster_results_fastafile)
