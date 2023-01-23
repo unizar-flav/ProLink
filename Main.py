@@ -109,6 +109,7 @@ def pro_link(query_proteins, **parameters):
                     mega_output = "./" + outputs_dir + "/protein_"+str(my_sequence_index) +"/"+tree_type +"_"+bootstrap_replications+"_tree" 
                     print("Generating tree")
                     tree(mega_config_input, muscle_output, mega_output)
+                print("Process finished")
 
             else:
                 print("Process finished (no alignment)")
@@ -131,6 +132,7 @@ def pro_link(query_proteins, **parameters):
                     mega_output = "./" + outputs_dir + "/protein_"+str(my_sequence_index) +"/"+tree_type +"_"+bootstrap_replications+"_tree" 
                     print("Generating tree")
                     tree(mega_config_input, muscle_output, mega_output)
+                print("Process finished")
 
             else:
                 print("Process finished (no alignment)")    
