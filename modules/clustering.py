@@ -9,10 +9,11 @@ import os
 
 def cluster(found_sequences_fastafile, my_seq_record, similarity, cluster_results_file, cluster_evaluation_file, cluster_results_fastafile):
     print("Clustering sequences with ALFATClust")
+    print("Outputs:")
     print(found_sequences_fastafile)
     print(cluster_results_file)
     print(cluster_evaluation_file)
-    print(str(similarity))
+    print("Similarity= " + str(similarity))
     subprocess.call(['alfatclust.py', '-i', found_sequences_fastafile, '-o', cluster_results_file, '-e', cluster_evaluation_file, '-ea' ,'-l' , str(similarity)])
     
     clustered_sequences = []
