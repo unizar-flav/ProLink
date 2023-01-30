@@ -74,8 +74,7 @@ On the contrary, if the number of clusters is below the min_number_of_clusters_t
 
 Pro clustering will stop when the number of clusters is between min_number_of_clusters_to_cluster_again and max_number_of_clusters_to_cluster_again.
 
-## Explicative diagram
-![alt text](https://github.com/unizar-flav/ProLink/blob/main/diagram.png?raw=true)
+
 
 ## References
 
