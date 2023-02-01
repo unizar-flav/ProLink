@@ -22,7 +22,7 @@ The script is designed to be executed in Google Colab.
 | pro_blast_                                | Boolean parameter to select "Pro BLAST" or regular BLAST.                                        |
 | cluster_seqs                              | Boolean parameter to select if clustering the sequences or not.                                  |
 | similarity                                | Initial similarity treshold to group the sequences into clusters.                                |
-| pro_clustering                            | Boolean parameter to select "pro clustering" or regular clustering.                              |
+| pro_clustering_                           | Boolean parameter to select "pro clustering" or regular clustering.                              |
 | check_pfam_domains                        | Boolean parameter to select if checking the Pfam domains of the sequences or not.                |
 | align_seqs                                | Boolean parameter to select if aligning the sequences or not.                                    |
 | generate_logo                             | Boolean parameter to select if generating a sequence logo or not.                                |
