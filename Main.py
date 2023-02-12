@@ -80,9 +80,9 @@ def pro_link(query_proteins, **parameters):
       
         if cluster_seqs:
             
-            cluster_results_fastafile = "./" + outputs_dir + "/protein_"+str(my_sequence_index) + "/cluster_results_evaluation_" + str(similarity) + ".fasta"
-            cluster_results_file = "./" + outputs_dir + "/protein_"+str(my_sequence_index) + "/cluster_results_"+ str(similarity)
-            cluster_evaluation_file = "./" + outputs_dir +"/protein_"+str(my_sequence_index) +  "/cluster_results_evaluation_" + str(similarity)
+            cluster_results_fastafile = "./" + outputs_dir + "/protein_"+str(my_sequence_index) + "/cluster_results_evaluation_" + ".fasta"
+            cluster_results_file = "./" + outputs_dir + "/protein_"+str(my_sequence_index) + "/cluster_results_"
+            cluster_evaluation_file = "./" + outputs_dir +"/protein_"+str(my_sequence_index) +  "/cluster_results_evaluation_" 
             
             
             if pro_clustering_:
