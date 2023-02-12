@@ -92,7 +92,7 @@ def pro_link(query_proteins, **parameters):
                 cluster(found_sequences_fastafile, my_seq_record, similarity, cluster_results_file, cluster_evaluation_file, cluster_results_fastafile)
             
             if check_pfam_domains:
-                cluster_results_fastafile_pfam = "./" + outputs_dir + "/protein_"+str(my_sequence_index) + "/cluster_results_evaluation_" + str(similarity) + "_pfam.fasta"
+                cluster_results_fastafile_pfam = "./" + outputs_dir + "/protein_"+str(my_sequence_index) + "/cluster_results_evaluation_"  + "_pfam.fasta"
                 fasta_to_dfasta(my_seq_record, cluster_results_fastafile, cluster_results_fastafile_pfam)
                 cluster_results_fastafile = cluster_results_fastafile_pfam
             
@@ -115,7 +115,7 @@ def pro_link(query_proteins, **parameters):
                 print("Process finished (no alignment)")
         else:
             if check_pfam_domains:
-                found_sequences_fastafile_pfam = "./" + outputs_dir + "/protein_"+str(my_sequence_index) + "/cluster_results_evaluation_" + str(similarity) + "_pfam.fasta"
+                found_sequences_fastafile_pfam = "./" + outputs_dir + "/protein_"+str(my_sequence_index) + "/cluster_results_evaluation_" + "_pfam.fasta"
                 fasta_to_dfasta(my_seq_record, found_sequences_fastafile, found_sequences_fastafile_pfam)
                 found_sequences_fastafile = found_sequences_fastafile_pfam
             
