@@ -1,0 +1,11 @@
+*.so
+*.pyc
+**/__pycache__
+
+# distribution / packaging
+build/
+dist/
+*.egg-info
+
+.ipynb_checkpoints
+.vscode

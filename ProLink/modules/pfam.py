@@ -1,17 +1,12 @@
+
+import urllib
+
 from Bio import SeqIO
 from Bio.Seq import Seq
 from Bio.SeqRecord import SeqRecord
 
-"""
-  Simple interface to Pfam families
-  =================================
 
-"""
-
-import urllib
-
-
-def search_hmmer_pfam(seq) -> dict:
+def search_hmmer_pfam(seq:str) -> dict:
     """
         Use HMMER to search for the Pfam families of a sequence
 
@@ -71,14 +66,14 @@ def search_hmmer_pfam(seq) -> dict:
         matches[pfam_id]['locations']['start'] = child['Env. Start']
         matches[pfam_id]['type'] = 'Pfam-A'
     return matches
-  
+
 def fasta_to_dfasta(my_seq_record, fa_to_dfa_input, fa_to_dfa_output):
-  print("Checking Pfam domains") 
+  print("Checking Pfam domains")
   try:
     my_sequence_domains = search_hmmer_pfam(str(my_seq_record.seq)).keys()
   except KeyError:
     my_sequence_domains = search_hmmer_pfam(str(my_seq_record.seq)).keys()
-  
+
   d_sequences = []
   for seq_record in SeqIO.parse(fa_to_dfa_input, "fasta"):
     try:

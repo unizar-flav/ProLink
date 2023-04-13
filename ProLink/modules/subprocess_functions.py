@@ -1,4 +1,6 @@
+
 import subprocess
+
 
 def align(muscle_input, muscle_output):
     subprocess.call(['muscle', '-super5', muscle_input, '-output', muscle_output])
