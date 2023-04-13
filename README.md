@@ -1,9 +1,11 @@
 # ***ProLink*** 
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1EhX_gO05Fmn_-ikvEkz90rf9S9p0imtp?usp=sharing)
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/unizar-flav/ProLink/blob/master/ProLink.ipynb)
+
 
 ## Overview
 ProLink is a python script that allows to excecute multiple proteomic analysis tools automatically.
+
 
 ## Usage
 The script is designed to be executed in Google Colab.
@@ -29,7 +31,6 @@ The script is designed to be executed in Google Colab.
 | generate_tree                             | Boolean parameter to select if generating a phylogenetic tree or not.                            |
 | tree_type                                 | Type of phylogenetic tree. Needs to be either "NJ" (Neighbor joining) or "ML" (Maximum likehood).|
 
-
 ***Advanced parameters (in ProLink/parameters.cfg)***
 | Argument name                             | Description                                                                                        | Default value|
 | ----------------------------------------- | ---------------------------------------------------------------------------------------------------|--------------|
@@ -39,14 +40,15 @@ The script is designed to be executed in Google Colab.
 | additional_hits                           | Number of additional sequences to find when using "Pro BLAST".                                     |          2000|
 | min_number_of_clusters_to_cluster_again   | Minimum number of clusters allowed when using "Pro clustering".                                    |           250|
 | max_number_of_clusters_to_cluster_again   | Maximum number of clusters allowed when using "Pro clustering".                                    |           700|
-| weblogo_format                            | Output format when using generate_logo.                                                            | png          |
+| weblogo_format                            | Output format when using generate_logo.                                                            | 'png'        |
 | bootstrap_replications                    | Number of bootstrap replications when generating the tree. Needs to be 100, 250, 500, 1000 or 2000.|           100|
-| outputs_dir                               | Name of the outputs directory.                                                                     | outputs      |
+| outputs_dir                               | Name of the outputs directory.                                                                     | 'outputs'    |
 
 **Step 3:** Run the "Execute the script" cell. 
 
 If the "download_outputs" parameter is marked, the outputs directory will be automatically downloaded to your device when finished.
 As an additional option, one single file or directory can be downloaded using the "(Optional) Download outputs manually" cell.
+
 
 ## Advanced functions
 
@@ -73,7 +75,6 @@ If the number of clusters is avobe the max_number_of_clusters_to_cluster_again v
 On the contrary, if the number of clusters is below the min_number_of_clusters_to_cluster_again, the sequences will be clustered again but with similarity += 0.1, in order to obtain a superior number of clusters.
 
 Pro clustering will stop when the number of clusters is between min_number_of_clusters_to_cluster_again and max_number_of_clusters_to_cluster_again.
-
 
 
 ## References
