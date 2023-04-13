@@ -11,7 +11,7 @@ with open(os.path.join(current_path, "README.md")) as f:
 setup(
     name="ProLink",
     version="0.1.0",
-    description="Excecute multiple proteomic analysis tools automatically",
+    description="Execute multiple proteomic analysis tools automatically",
     long_description=readme_text,
     long_description_content_type="text/markdown",
     url="https://github.com/unizar-flav/ProLink",

@@ -4,7 +4,7 @@
 
 
 ## Overview
-ProLink is a python script that allows to excecute multiple proteomic analysis tools automatically.
+ProLink is a python script that allows to execute multiple proteomic analysis tools automatically.
 
 
 ## Usage
