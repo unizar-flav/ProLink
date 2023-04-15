@@ -92,61 +92,38 @@ def pro_link(query_proteins:str, parameters_default:dict = parameters_default, *
             parse(seq_n, hitlist_range, blast_filename, remove_gaps, expected_min_identity, outputs_dir)
 
         if cluster_seqs:
-
             cluster_results_file = f"{output_dir_n}/cluster_results_{similarity}"
             cluster_results_fastafile = f"{output_dir_n}/cluster_results_evaluation_{similarity}.fasta"
             cluster_evaluation_file = f"{output_dir_n}/cluster_results_evaluation_{similarity}"
-
             if pro_clustering_:
                 print("Pro Clustering")
                 p_cluster(found_sequences_fastafile, my_seq_record, similarity, min_number_of_clusters_to_cluster_again, max_number_of_clusters_to_cluster_again, cluster_results_file, cluster_evaluation_file, cluster_results_fastafile)
             else:
                 cluster(found_sequences_fastafile, my_seq_record, similarity, cluster_results_file, cluster_evaluation_file, cluster_results_fastafile)
-
-            if check_pfam_domains:
-                cluster_results_fastafile_pfam = f"{output_dir_n}/cluster_results_evaluation_{similarity}_pfam.fasta"
-                fasta_to_dfasta(my_seq_record, cluster_results_fastafile, cluster_results_fastafile_pfam)
-                cluster_results_fastafile = cluster_results_fastafile_pfam
-
-            if align_seqs:
-                print("Aligning sequences")
-                muscle_output = f"{output_dir_n}/cluster_results_evaluation_{similarity}_aligned.fasta"
-                align(cluster_results_fastafile, muscle_output)
-                if generate_logo:
-                    print("Generating sequence logo")
-                    weblogo_output = f"{output_dir_n}/logo.{weblogo_format}"
-                    weblogo3(weblogo_format, muscle_output, weblogo_output)
-                if generate_tree:
-                    print("Generating tree")
-                    mega_config_input = f"{ProLink_path}/mega_configs/{tree_type}_{bootstrap_replications}.mao"
-                    mega_output = f"{output_dir_n}/{tree_type}_{bootstrap_replications}_tree"
-                    tree(mega_config_input, muscle_output, mega_output)
-                print("Process finished")
-            else:
-                print("Process finished (no alignment)")
-
+            sequences_fastafile = cluster_results_fastafile
+            sequences_fastafile_pfam = f"{output_dir_n}/cluster_results_evaluation_{similarity}_pfam.fasta"
+            muscle_output = f"{output_dir_n}/cluster_results_evaluation_{similarity}_aligned.fasta"
         else:
+            sequences_fastafile = found_sequences_fastafile
+            sequences_fastafile_pfam = f"{output_dir_n}/found_sequences_pfam.fasta"
+            muscle_output = f"{output_dir_n}/found_sequences_aligned.fasta"
 
-            if check_pfam_domains:
-                found_sequences_fastafile_pfam = f"{output_dir_n}/cluster_results_evaluation_{similarity}_pfam.fasta"
-                fasta_to_dfasta(my_seq_record, found_sequences_fastafile, found_sequences_fastafile_pfam)
-                found_sequences_fastafile = found_sequences_fastafile_pfam
+        if check_pfam_domains:
+            fasta_to_dfasta(my_seq_record, sequences_fastafile, sequences_fastafile_pfam)
+            sequences_fastafile = sequences_fastafile_pfam
 
-            if align_seqs:
-                print("Aligning sequences")
-                muscle_output = f"{output_dir_n}/found_sequences_aligned.fasta"
-                align(found_sequences_fastafile, muscle_output)
-                if generate_logo:
-                    print("Generating sequence logo")
-                    weblogo_output = f"{output_dir_n}/logo.{weblogo_format}"
-                    weblogo3(weblogo_format, muscle_output, weblogo_output)
-                if generate_tree:
-                    print("Generating tree")
-                    mega_config_input = f"{ProLink_path}/mega_configs/{tree_type}_{bootstrap_replications}.mao"
-                    mega_output = f"{output_dir_n}/{tree_type}_{bootstrap_replications}_tree"
-                    tree(mega_config_input, muscle_output, mega_output)
-                print("Process finished")
-            else:
-                print("Process finished (no alignment)")
+        if align_seqs:
+            print("Aligning sequences")
+            align(sequences_fastafile, muscle_output)
+            if generate_logo:
+                print("Generating sequence logo")
+                weblogo_output = f"{output_dir_n}/logo.{weblogo_format}"
+                weblogo3(weblogo_format, muscle_output, weblogo_output)
+            if generate_tree:
+                print("Generating tree")
+                mega_output = f"{output_dir_n}/cluster_results_evaluation_{similarity}_aligned.mega"
+                tree(tree_type, bootstrap_replications, muscle_output, mega_output)
+        else:
+            print("Skipping alignment")
 
-    return outputs_dir
+        print("Process finished")
