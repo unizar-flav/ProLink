@@ -14,6 +14,6 @@ def weblogo3(weblogo_format, muscle_output, weblogo_output):
 def tree(tree_type, bootstrap_replications, muscle_output, mega_output):
     mega_config_input = "/ProLink/ProLink/mega_configs/" + tree_type + "_" + bootstrap_replications + ".mao"
     print(mega_config_input)
-    mega_config_input = f"/ProLink/ProLink/mega_configs/{tree_type}_{bootstrap_reploications}.mao"
+    mega_config_input = f"/ProLink/ProLink/mega_configs/{tree_type}_{bootstrap_replications}.mao"
     print(mega_config_input)
     subprocess.call(['megacc', '-a', mega_config_input, '-d', muscle_output, '-o', mega_output])
