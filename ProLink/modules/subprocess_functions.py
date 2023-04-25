@@ -3,6 +3,9 @@ import subprocess
 
 
 def align(muscle_input, muscle_output):
+    print("in align")
+    print(muscle_input)
+    print(muscle_output)
     subprocess.call(['muscle', '-super5', muscle_input, '-output', muscle_output])
 
 def weblogo3(weblogo_format, muscle_output, weblogo_output):
