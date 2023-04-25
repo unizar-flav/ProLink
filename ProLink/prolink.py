@@ -70,6 +70,7 @@ def pro_link(query_proteins:str, parameters_default:dict = parameters_default, *
     generate_tree = bool(parameters['generate_tree'])
     tree_type = str(parameters['tree_type'])
     bootstrap_replications = str(parameters['bootstrap_replications'])
+    print(bootstrap_replications)
     # Output
     outputs_dir = str(parameters['outputs_dir'])
 
