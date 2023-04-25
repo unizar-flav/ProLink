@@ -114,8 +114,6 @@ def pro_link(query_proteins:str, parameters_default:dict = parameters_default, *
 
         if align_seqs:
             print("Aligning sequences")
-            print(sequences_fastafile)
-            print(muscle_output)
             align(sequences_fastafile, muscle_output)
             if generate_logo:
                 print("Generating sequence logo")
