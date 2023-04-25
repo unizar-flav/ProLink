@@ -73,7 +73,7 @@ def pro_link(query_proteins:str, parameters_default:dict = parameters_default, *
     # Output
     outputs_dir = str(parameters['outputs_dir'])
 
-    print(hitlist_range, blast_database, pro_clast_, max_low_identity_seqs, min_low_identity_seqs, expected_min_identity, additional_hits, remove_gaps, cluster_seqs, similarity, pro_clustering_, min_number_of_clusters_to_cluster_again ,max_number_of_clusters_to_cluster_again ,check_pfam_domains ,align_seqs ,generate_logo ,weblogo_format ,generate_tree ,tree_type ,bootstrap_replications ,outputs_dir)
+    print(hitlist_range, blast_database, pro_blast_, max_low_identity_seqs, min_low_identity_seqs, expected_min_identity, additional_hits, remove_gaps, cluster_seqs, similarity, pro_clustering_, min_number_of_clusters_to_cluster_again ,max_number_of_clusters_to_cluster_again ,check_pfam_domains ,align_seqs ,generate_logo ,weblogo_format ,generate_tree ,tree_type ,bootstrap_replications ,outputs_dir)
     
     os.makedirs(outputs_dir, exist_ok=True)
     my_sequences = obtain_fasta_file(query_proteins, outputs_dir)
