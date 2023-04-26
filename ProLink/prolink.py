@@ -20,14 +20,13 @@ import configparser
 import os
 from copy import deepcopy
 
+from . import ProLink_path
 from .modules.blast import blast, p_blast, parse
 from .modules.clustering import cluster, p_cluster
 from .modules.obtaining_sequences import obtain_fasta_file
 from .modules.pfam import fasta_to_dfasta
 from .modules.subprocess_functions import align, tree, weblogo3
 
-
-ProLink_path = os.path.dirname(os.path.realpath(__file__))
 
 # read default parameters from configuration file (as a plain dictionary)
 config = configparser.ConfigParser()
@@ -73,8 +72,6 @@ def pro_link(query_proteins:str, parameters_default:dict = parameters_default, *
     # Output
     outputs_dir = str(parameters['outputs_dir'])
 
-    print(bootstrap_replications)
-    
     os.makedirs(outputs_dir, exist_ok=True)
     my_sequences = obtain_fasta_file(query_proteins, outputs_dir)
 
