@@ -16,24 +16,15 @@
 
 """
 
-import configparser
 import os
 from copy import deepcopy
 
-from . import ProLink_path
+from . import ProLink_path, parameters_default
 from .modules.blast import blast, p_blast, parse
 from .modules.clustering import cluster, p_cluster
 from .modules.obtaining_sequences import get_seq
 from .modules.pfam import fasta_to_dfasta
 from .modules.subprocess_functions import align, tree, weblogo3
-
-
-# read default parameters from configuration file (as a plain dictionary)
-config = configparser.ConfigParser()
-config.read(os.path.join(ProLink_path, 'parameters.cfg'))
-parameters_default = {}
-for section in config.sections():
-    parameters_default.update(dict(config[section]))
 
 
 def pro_link(query_proteins:list[str], parameters_default:dict = parameters_default, **parameters):
@@ -75,7 +66,7 @@ def pro_link(query_proteins:list[str], parameters_default:dict = parameters_defa
     os.makedirs(outputs_dir, exist_ok=True)
     my_sequences = get_seq(query_proteins, f"{outputs_dir}/my_sequences.fasta")
 
-    for seq_n, my_seq_record in enumerate(my_sequences, 1):
+    for seq_n, seq_record in enumerate(my_sequences, 1):
 
         output_dir_n = f"./{outputs_dir}/protein_{seq_n}"
         os.makedirs(output_dir_n, exist_ok=True)
@@ -85,9 +76,9 @@ def pro_link(query_proteins:list[str], parameters_default:dict = parameters_defa
 
         if pro_blast_:
             print("Pro BLAST")
-            p_blast(seq_n, blast_database, hitlist_range, my_seq_record, blast_filename, found_sequences_fastafile, remove_gaps, expected_min_identity, min_low_identity_seqs, max_low_identity_seqs, additional_hits, outputs_dir)
+            p_blast(seq_n, blast_database, hitlist_range, seq_record, blast_filename, found_sequences_fastafile, remove_gaps, expected_min_identity, min_low_identity_seqs, max_low_identity_seqs, additional_hits, outputs_dir)
         else:
-            blast(hitlist_range, blast_database, blast_filename,  my_seq_record)
+            blast(hitlist_range, blast_database, blast_filename,  seq_record)
             parse(seq_n, hitlist_range, blast_filename, remove_gaps, expected_min_identity, outputs_dir)
 
         if cluster_seqs:
@@ -96,9 +87,9 @@ def pro_link(query_proteins:list[str], parameters_default:dict = parameters_defa
             cluster_evaluation_file = f"{output_dir_n}/cluster_results_evaluation_{similarity}"
             if pro_clustering_:
                 print("Pro Clustering")
-                p_cluster(found_sequences_fastafile, my_seq_record, similarity, min_number_of_clusters_to_cluster_again, max_number_of_clusters_to_cluster_again, cluster_results_file, cluster_evaluation_file, cluster_results_fastafile)
+                p_cluster(found_sequences_fastafile, seq_record, similarity, min_number_of_clusters_to_cluster_again, max_number_of_clusters_to_cluster_again, cluster_results_file, cluster_evaluation_file, cluster_results_fastafile)
             else:
-                cluster(found_sequences_fastafile, my_seq_record, similarity, cluster_results_file, cluster_evaluation_file, cluster_results_fastafile)
+                cluster(found_sequences_fastafile, seq_record, similarity, cluster_results_file, cluster_evaluation_file, cluster_results_fastafile)
             sequences_fastafile = cluster_results_fastafile
             sequences_fastafile_pfam = f"{output_dir_n}/cluster_results_evaluation_{similarity}_pfam.fasta"
             muscle_output = f"{output_dir_n}/cluster_results_evaluation_{similarity}_aligned.fasta"
@@ -108,7 +99,7 @@ def pro_link(query_proteins:list[str], parameters_default:dict = parameters_defa
             muscle_output = f"{output_dir_n}/found_sequences_aligned.fasta"
 
         if check_pfam_domains:
-            fasta_to_dfasta(my_seq_record, sequences_fastafile, sequences_fastafile_pfam)
+            fasta_to_dfasta(seq_record, sequences_fastafile, sequences_fastafile_pfam)
             sequences_fastafile = sequences_fastafile_pfam
 
         if align_seqs:
