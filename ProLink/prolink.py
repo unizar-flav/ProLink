@@ -76,10 +76,10 @@ def pro_link(query_proteins:list[str], parameters_default:dict = parameters_defa
 
         if pro_blast_:
             print("Pro BLAST")
-            p_blast(seq_n, blast_database, hitlist_range, seq_record, blast_filename, found_sequences_fastafile, remove_gaps, expected_min_identity, min_low_identity_seqs, max_low_identity_seqs, additional_hits, outputs_dir)
+            p_blast(seq_record, blast_filename, found_sequences_fastafile, remove_gaps, expected_min_identity, min_low_identity_seqs, max_low_identity_seqs, additional_hits, hitlist_range, database=blast_database)
         else:
-            blast(hitlist_range, blast_database, blast_filename,  seq_record)
-            parse(seq_n, hitlist_range, blast_filename, remove_gaps, expected_min_identity, outputs_dir)
+            blast(seq_record, blast_filename, hitlist_size=hitlist_range, database=blast_database)
+            parse(blast_filename, found_sequences_fastafile, remove_gaps, expected_min_identity)
 
         if cluster_seqs:
             cluster_results_file = f"{output_dir_n}/cluster_results_{similarity}"
