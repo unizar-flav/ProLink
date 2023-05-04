@@ -15,7 +15,6 @@ def main():
         help='Extra options to pass: option name and value, separated by a colon (e.g. --options option1:value1 option2:value2)')
     args = parser.parse_args()
     
-    query_proteins = ", ".join(args.UNIPROT_ID)
     options = dict()
     if args.options:
         for opt in args.options:
@@ -24,7 +23,7 @@ def main():
                 print(f"ERROR: Options must be specified as 'option:value'. Got '{opt}'")
                 exit(1)
             options[opt_val[0]] = opt_val[1]
-    pro_link(query_proteins, **options)
+    pro_link(args.UNIPROT_ID, **options)
 
 
 if __name__ == '__main__':

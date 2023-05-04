@@ -23,7 +23,7 @@ from copy import deepcopy
 from . import ProLink_path
 from .modules.blast import blast, p_blast, parse
 from .modules.clustering import cluster, p_cluster
-from .modules.obtaining_sequences import obtain_fasta_file
+from .modules.obtaining_sequences import get_seq
 from .modules.pfam import fasta_to_dfasta
 from .modules.subprocess_functions import align, tree, weblogo3
 
@@ -36,7 +36,7 @@ for section in config.sections():
     parameters_default.update(dict(config[section]))
 
 
-def pro_link(query_proteins:str, parameters_default:dict = parameters_default, **parameters):
+def pro_link(query_proteins:list[str], parameters_default:dict = parameters_default, **parameters):
 
     # assign default parameters that are not specified
     parameters_default = deepcopy(parameters_default)
@@ -73,7 +73,7 @@ def pro_link(query_proteins:str, parameters_default:dict = parameters_default, *
     outputs_dir = str(parameters['outputs_dir'])
 
     os.makedirs(outputs_dir, exist_ok=True)
-    my_sequences = obtain_fasta_file(query_proteins, outputs_dir)
+    my_sequences = get_seq(query_proteins, f"{outputs_dir}/my_sequences.fasta")
 
     for seq_n, my_seq_record in enumerate(my_sequences, 1):
 
