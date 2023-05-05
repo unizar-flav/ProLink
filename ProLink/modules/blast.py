@@ -139,20 +139,17 @@ def p_blast(seq_record:SeqRecord, blast_filename:str, found_sequences_fastafile:
     **kwargs
         Additional keyword arguments to pass to the 'qblast' function or 'blastp' program
     '''
-    include_low_identity = True
-    blast(seq_record, blast_filename, database, hitlist, local, **kwargs)
-    if blast_parse(blast_filename, found_sequences_fastafile, expected_min_identity, remove_gaps, include_low_identity) < min_low_identity_seqs:
-        print("\nThe number of low identity sequences is below the desired value")
+    max_hitlist = 10000
+    max_iter = 100
+    for iteration in range(max_iter):
+        blast(seq_record, blast_filename, database, hitlist, local, **kwargs)
+        n_low_identity_seqs = blast_parse(blast_filename, found_sequences_fastafile, expected_min_identity, remove_gaps, True, max_low_identity_seqs, max_hitlist)
+        if n_low_identity_seqs >= min_low_identity_seqs or hitlist >= max_hitlist:
+            break
         os.remove(blast_filename)
         os.remove(found_sequences_fastafile)
         hitlist += additional_hits
-        print(f"Blasting again with {hitlist} hits")
-        blast(seq_record, blast_filename, database, hitlist, local, **kwargs)
-        while blast_parse(blast_filename, found_sequences_fastafile, expected_min_identity, remove_gaps, include_low_identity, max_low_identity_seqs, 10000) < min_low_identity_seqs and hitlist < 10000:
-            print("\nThe number of low identity sequences is below the desired value")
-            os.remove(blast_filename)
-            os.remove(found_sequences_fastafile)
-            hitlist += additional_hits
-            blast(seq_record, blast_filename, database, hitlist, local, **kwargs)
-            blast_parse(blast_filename, found_sequences_fastafile, expected_min_identity, remove_gaps, include_low_identity, max_low_identity_seqs, 10000)
-    print("\nPro blast done succesfully\n")
+        print(f"\nThe number of low identity sequences is below the desired value\nBlasting again with {hitlist} hits")
+    else:
+        raise Exception("Pro Blast failed - maximum number of iterations reached")
+    print("\nPro Blast done succesfully\n")
