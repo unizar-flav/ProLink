@@ -7,10 +7,11 @@ from Bio.Blast import NCBIWWW, NCBIXML
 from Bio.Seq import Seq
 from Bio.SeqRecord import SeqRecord
 
+from .subprocess_functions import blastp
 from .. import parameters_default
 
 
-def blast(seq_record:SeqRecord, blast_filename:str, **qblast_kwargs) -> None:
+def blast(seq_record:SeqRecord, blast_filename:str, database:str=None, hitlist:int=None, local:bool=False, **kwargs) -> None:
     '''
     Perform a BLAST search of a sequence
 
@@ -20,23 +21,33 @@ def blast(seq_record:SeqRecord, blast_filename:str, **qblast_kwargs) -> None:
         Sequence to search
     blast_filename : str
         Path of the file to write the BLAST results (XML format)
-    **qblast_kwargs
-        Keyword arguments to pass to the 'qblast' function
-        i.e. database, hitlist_size, etc.
+    database : str, optional
+        Database to search in (def: taken from 'parameters.cfg')
+    hitlist : int, optional
+        Number of hits to request (def: taken from 'parameters.cfg')
+    local : bool, optional
+        Use local BLASTp (def: False)
+        BLAST+ must be installed and configured (executable in PATH and databases in BLASTDB)
+    **kwargs
+        Additional keyword arguments to pass to the 'qblast' function or 'blastp' program
     '''
-    # default needed values
-    qblast_kwargs['program'] = 'blastp'
-    qblast_kwargs['database'] = qblast_kwargs.get('database', parameters_default['blast_database'])
-    qblast_kwargs['sequence'] = seq_record.seq
-    qblast_kwargs['hitlist_size'] = qblast_kwargs.get('hitlist_size', parameters_default['hitlist_size'])
-    qblast_kwargs['format_type'] = 'XML'
-    print(f"---- Searching in BLAST ----")
-    print(f"Hitlist size:    {qblast_kwargs['hitlist_size']}")
-    print(f"Database:        {qblast_kwargs['database']}")
-    print(f"Output filename: {blast_filename}")
-    result_handle = NCBIWWW.qblast(**qblast_kwargs)
-    with open(blast_filename, 'w') as f:
-        f.write(result_handle.read())
+    if not local:
+        kwargs['program'] = 'blastp'
+        kwargs['database'] = database or parameters_default['blast_database']
+        kwargs['sequence'] = seq_record.seq
+        kwargs['hitlist_size'] = hitlist or parameters_default['hitlist_size']
+        kwargs['format_type'] = 'XML'
+        print(f"---- Searching in BLAST (remote) ----")
+        print(f"Hitlist size:    {kwargs['hitlist_size']}")
+        print(f"Database:        {kwargs['database']}")
+        print(f"Output filename: {blast_filename}")
+        result_handle = NCBIWWW.qblast(**kwargs)
+        with open(blast_filename, 'w') as f:
+            f.write(result_handle.read())
+    else:
+        kwargs['db'] = database or parameters_default['blast_database']
+        kwargs['max_target_seqs'] = hitlist or parameters_default['hitlist_size']
+        blastp(seq_record, blast_filename, **kwargs)
 
 
 def parse(blast_filename:str, found_sequences_fastafile:str, remove_gaps:bool, expected_min_identity:int) -> int:
@@ -140,7 +151,7 @@ def p_parse(blast_filename:str, found_sequences_fastafile:str, remove_gaps:bool,
     return low_identity_seqs
 
 
-def p_blast(seq_record:SeqRecord, blast_filename:str, found_sequences_fastafile:str, remove_gaps:bool, expected_min_identity:int, min_low_identity_seqs:int, max_low_identity_seqs:int, additional_hits:int, hitlist_range:int, **qblast_kwargs) -> None:
+def p_blast(seq_record:SeqRecord, blast_filename:str, found_sequences_fastafile:str, remove_gaps:bool, expected_min_identity:int, min_low_identity_seqs:int, max_low_identity_seqs:int, additional_hits:int, hitlist:int, database:str=None, local:bool=False, **kwargs) -> None:
     '''
     Perform a Pro BLAST search of a sequence
 
@@ -162,27 +173,31 @@ def p_blast(seq_record:SeqRecord, blast_filename:str, found_sequences_fastafile:
         Maximum number of low identity sequences
     additional_hits : int
         Number of additional hits to add on each iteration
-    hitlist_range : int
+    hitlist : int
         Initial number of hits to search
-    **qblast_kwargs
-        Keyword arguments for the 'qblast' function
-        i.e. database, hitlist_size, etc.
+    database : str
+        Database to search in (def: taken from 'parameters.cfg')
+    local : bool, optional
+        Use local BLASTp (def: False)
+        BLAST+ must be installed and configured (executable in PATH and databases in BLASTDB)
+    **kwargs
+        Additional keyword arguments to pass to the 'qblast' function or 'blastp' program
     '''
-    blast(seq_record, blast_filename, hitlist_size=hitlist_range, **qblast_kwargs)
+    blast(seq_record, blast_filename, database, hitlist, local, **kwargs)
     if parse(blast_filename, found_sequences_fastafile, remove_gaps, expected_min_identity) < min_low_identity_seqs:
         print("\nThe number of low identity sequences is below the desired value")
         os.remove(blast_filename)
         os.remove(found_sequences_fastafile)
-        hitlist_range += additional_hits
-        print(f"Blasting again with {hitlist_range} hits")
-        blast(seq_record, blast_filename, hitlist_size=hitlist_range, **qblast_kwargs)
+        hitlist += additional_hits
+        print(f"Blasting again with {hitlist} hits")
+        blast(seq_record, blast_filename, database, hitlist, local, **kwargs)
         low_identity_seqs = 0
-        while p_parse(blast_filename, found_sequences_fastafile, remove_gaps, expected_min_identity, low_identity_seqs, max_low_identity_seqs) < min_low_identity_seqs and hitlist_range < 10000:
+        while p_parse(blast_filename, found_sequences_fastafile, remove_gaps, expected_min_identity, low_identity_seqs, max_low_identity_seqs) < min_low_identity_seqs and hitlist < 10000:
             print("\nThe number of low identity sequences is below the desired value")
             os.remove(blast_filename)
             os.remove(found_sequences_fastafile)
-            hitlist_range += additional_hits
-            blast(seq_record, blast_filename, hitlist_size=hitlist_range, **qblast_kwargs)
+            hitlist += additional_hits
+            blast(seq_record, blast_filename, database, hitlist, local, **kwargs)
             low_identity_seqs = 0
             p_parse(blast_filename, found_sequences_fastafile, remove_gaps, expected_min_identity, low_identity_seqs, max_low_identity_seqs)
     print("\nPro blast done succesfully\n")
