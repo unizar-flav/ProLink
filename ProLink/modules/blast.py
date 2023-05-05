@@ -85,6 +85,8 @@ def blast_parse(blast_filename:str, found_sequences_fastafile:str, expected_min_
     for alignment in records.alignments:
         for hsp in alignment.hsps:
             rec_f = SeqRecord(Seq(hsp.sbjct), id=alignment.title)
+            if 'partial' in alignment.title.lower():
+                continue
             print('>', alignment.title)
             print(hsp.sbjct)
             identity = hsp.identities / alignment.length
