@@ -20,7 +20,7 @@ import os
 from copy import deepcopy
 
 from . import ProLink_path, parameters_default
-from .modules.blast import blast, p_blast, parse
+from .modules.blast import blast, p_blast, blast_parse
 from .modules.clustering import cluster, p_cluster
 from .modules.obtaining_sequences import get_seq
 from .modules.pfam import fasta_to_dfasta
@@ -80,7 +80,7 @@ def pro_link(query_proteins:list[str], parameters_default:dict = parameters_defa
             p_blast(seq_record, blast_filename, found_sequences_fastafile, remove_gaps, expected_min_identity, min_low_identity_seqs, max_low_identity_seqs, additional_hits, hitlist_size, blast_database, blast_local)
         else:
             blast(seq_record, blast_filename, blast_database, hitlist_size, blast_local)
-            parse(blast_filename, found_sequences_fastafile, remove_gaps, expected_min_identity)
+            blast_parse(blast_filename, found_sequences_fastafile, expected_min_identity, remove_gaps)
 
         if cluster_seqs:
             cluster_results_file = f"{output_dir_n}/cluster_results_{similarity}"
