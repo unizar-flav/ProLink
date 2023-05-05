@@ -28,7 +28,7 @@ def blast(seq_record:SeqRecord, blast_filename:str, **qblast_kwargs) -> None:
     qblast_kwargs['program'] = 'blastp'
     qblast_kwargs['database'] = qblast_kwargs.get('database', parameters_default['blast_database'])
     qblast_kwargs['sequence'] = seq_record.seq
-    qblast_kwargs['hitlist_size'] = qblast_kwargs.get('hitlist_size', parameters_default['hitlist_range'])
+    qblast_kwargs['hitlist_size'] = qblast_kwargs.get('hitlist_size', parameters_default['hitlist_size'])
     qblast_kwargs['format_type'] = 'XML'
     print(f"---- Searching in BLAST ----")
     print(f"Hitlist size:    {qblast_kwargs['hitlist_size']}")
