@@ -22,9 +22,9 @@ def blast(seq_record:SeqRecord, blast_filename:str, database:str=None, hitlist:i
     blast_filename : str
         Path of the file to write the BLAST results (XML format)
     database : str, optional
-        Database to search in (def: taken from 'parameters.cfg')
+        Database to search in (def: taken from 'parameters_default')
     hitlist : int, optional
-        Number of hits to request (def: taken from 'parameters.cfg')
+        Number of hits to request (def: taken from 'parameters_default')
     local : bool, optional
         Use local BLASTp (def: False)
         BLAST+ must be installed and configured (executable in PATH and databases in BLASTDB)
@@ -134,7 +134,7 @@ def p_blast(seq_record:SeqRecord, blast_filename:str, found_sequences_fastafile:
     hitlist : int
         Initial number of hits to search
     database : str
-        Database to search in (def: taken from 'parameters.cfg')
+        Database to search in (def: taken from 'parameters_default')
     local : bool, optional
         Use local BLASTp (def: False)
         BLAST+ must be installed and configured (executable in PATH and databases in BLASTDB)

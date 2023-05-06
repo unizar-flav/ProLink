@@ -27,7 +27,7 @@ setup(
     ],
     install_requires=["biopython"],
     packages=["ProLink", "ProLink.modules"],
-    package_data={"ProLink": ["parameters.cfg", "mega_configs/*"]},
+    package_data={"ProLink": ["parameters.yaml", "mega_configs/*"]},
     include_package_data=True,
     entry_points={
         "console_scripts": ["prolink=ProLink.__main__:main"]

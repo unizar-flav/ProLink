@@ -1,4 +1,5 @@
 biopython
+yaml
 
 python-igraph
 leidenalg

@@ -19,7 +19,7 @@ The script is designed to be executed in Google Colab.
 | Argument name                             | Description                                                                                      | 
 | ----------------------------------------- | -------------------------------------------------------------------------------------------------|
 | query_proteins                            | UniProt code of the query proteins. Eg: "ABQ62066.1, ABQ62091.1, ABQ62490.1".                    |
-| hitlist_range                             | Number of found sequences obtained via Blast.                                                    |
+| hitlist_size                              | Number of found sequences obtained via Blast.                                                    |
 | blast_database                            | Database used in blast.                                                                          |
 | pro_blast_                                | Boolean parameter to select "Pro BLAST" or regular BLAST.                                        |
 | cluster_seqs                              | Boolean parameter to select if clustering the sequences or not.                                  |
@@ -31,7 +31,7 @@ The script is designed to be executed in Google Colab.
 | generate_tree                             | Boolean parameter to select if generating a phylogenetic tree or not.                            |
 | tree_type                                 | Type of phylogenetic tree. Needs to be either "NJ" (Neighbor joining) or "ML" (Maximum likehood).|
 
-***Advanced parameters (in ProLink/parameters.cfg)***
+***Advanced parameters (in ProLink/parameters.yaml)***
 | Argument name                             | Description                                                                                        | Default value|
 | ----------------------------------------- | ---------------------------------------------------------------------------------------------------|--------------|
 | max_low_identity_seqs                     | Maximum number of low identity seqs to find when using "Pro BLAST".                                |             1|
@@ -56,9 +56,9 @@ As an additional option, one single file or directory can be downloaded using th
 
 Pro BLAST allows to search for homologous sequences via the Blast tool, but making sure that low identity seqs are also represented in the output.
 
-Firstly, a regular Blast with is launched, and hitlist_range seqs are obtained. 
+Firstly, a regular Blast is launched, and hitlist_size seqs are obtained. 
 
-If the number of low identity seqs in the found seqs are below the min_low_identity_seqs parameter, a new regular Blast will be launched but with hitlist_range += additional_hits.
+If the number of low identity seqs in the found seqs are below the min_low_identity_seqs parameter, a new regular Blast will be launched but with hitlist_size += additional_hits.
 
 Pro BLAST will stop when the number of low identity seqs reach max_low_identity_seqs, or when more than 10000 sequences are found (this limit is due to the computing capacity of the Google collab servers when clustering. In a future update, this value will be included as an advanced parameter).
 
