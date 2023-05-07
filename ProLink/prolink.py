@@ -100,8 +100,11 @@ def pro_link(query_proteins:list[str], parameters_default:dict = parameters_defa
             muscle_output = f"{output_dir_n}/found_sequences_aligned.fasta"
 
         if check_pfam_domains:
-            fasta_to_dfasta(seq_record, sequences_fastafile, sequences_fastafile_pfam)
-            sequences_fastafile = sequences_fastafile_pfam
+            try:
+                fasta_to_dfasta(seq_record, sequences_fastafile, sequences_fastafile_pfam)
+                sequences_fastafile = sequences_fastafile_pfam
+            except:
+                print("Error while checking Pfam domains. No Pfam domains found. Skipping.")
 
         if align_seqs:
             print("Aligning sequences")

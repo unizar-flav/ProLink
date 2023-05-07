@@ -84,8 +84,7 @@ def fasta_to_dfasta(seq_record:SeqRecord, fasta_input:str, fasta_output:str) -> 
     try:
         my_sequence_domains = search_hmmer_pfam(str(seq_record.seq)).keys()
     except:
-        print("No Pfam domains found for the query sequence. Skipping.")
-        return
+        raise Exception('No matching Pfam domains were found for the query sequence.')
     d_sequences = []
     for seq_record in SeqIO.parse(fasta_input, "fasta"):
         try:
