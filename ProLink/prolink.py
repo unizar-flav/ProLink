@@ -69,7 +69,7 @@ def pro_link(query_proteins:list[str], parameters_default:dict = parameters_defa
 
     for seq_n, seq_record in enumerate(my_sequences, 1):
 
-        output_dir_n = f"./{outputs_dir}/protein_{seq_n}"
+        output_dir_n = f"./{outputs_dir}/{seq_n:02d}_{seq_record.id}"
         os.makedirs(output_dir_n, exist_ok=True)
 
         blast_filename = f"{output_dir_n}/blast_results.xml"
