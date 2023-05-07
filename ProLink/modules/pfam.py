@@ -31,7 +31,7 @@ def search_hmmer_pfam(seq:str) -> dict:
         'https://www.ebi.ac.uk/Tools/hmmer/search/hmmscan',
         urllib.parse.urlencode(parameters).encode('utf-8'))
     results_url = urllib.request.urlopen(request).geturl()
-    res_params = {'format' : 'tsv' }
+    res_params = {'format': 'tsv'}
     modified_res_url = results_url.replace('results', 'download') + '?' + urllib.parse.urlencode(res_params)
     result_request = urllib.request.Request(modified_res_url)
     try:
@@ -67,6 +67,7 @@ def search_hmmer_pfam(seq:str) -> dict:
         matches[pfam_id]['type'] = 'Pfam-A'
     return matches
 
+
 def fasta_to_dfasta(seq_record:SeqRecord, fasta_input:str, fasta_output:str) -> None:
     '''
     Find the Pfam domain of a sequence and compare them with the Pfam domains of the sequences in a fasta file
@@ -92,15 +93,14 @@ def fasta_to_dfasta(seq_record:SeqRecord, fasta_input:str, fasta_output:str) -> 
         except:
             subject_sequence_domains = "No_domains_found"
         if my_sequence_domains != subject_sequence_domains:
-            domains = "DD:" + str(subject_sequence_domains).replace("dict_keys", "").replace("([","").replace("])","").replace("'","")
+            domains = "DD:" + str(subject_sequence_domains).replace("dict_keys", "").replace("([", "").replace("])", "").replace("'", "")
         else:
             domains = "SD"
-        rec_d = SeqRecord(
-            Seq(str(seq_record.seq)),
-            id = seq_record.id + seq_record.description + "|" + domains,
-            description = "")
+        rec_d = SeqRecord(Seq(str(seq_record.seq)),
+                          id=seq_record.id + seq_record.description + "|" + domains,
+                          description="")
         string = rec_d.id
-        new_string = string[:string.find("|_")+1].replace("ref", "") + string[string.find("[")+1:string.find("]")] + string[string.find("]|")+1:]
+        new_string = string[:string.find("|_") + 1].replace("ref", "") + string[string.find("[") + 1:string.find("]")] + string[string.find("]|") + 1:]
         rec_d.id = new_string
         rec_d.description = ""
         d_sequences.append(rec_d)

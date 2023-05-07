@@ -11,7 +11,12 @@ from .subprocess_functions import blastp
 from .. import parameters_default
 
 
-def blast(seq_record:SeqRecord, blast_filename:str, database:str=None, hitlist:int=None, local:bool=False, **kwargs) -> None:
+def blast(seq_record:SeqRecord,
+          blast_filename:str,
+          database:str = None,
+          hitlist:int = None,
+          local:bool = False,
+          **kwargs) -> None:
     '''
     Perform a BLAST search of a sequence
 
@@ -50,7 +55,13 @@ def blast(seq_record:SeqRecord, blast_filename:str, database:str=None, hitlist:i
         blastp(seq_record, blast_filename, **kwargs)
 
 
-def blast_parse(blast_filename:str, found_sequences_fastafile:str, expected_min_identity:float, remove_gaps:bool=True, include_low_identity:bool=True, max_low_identity_seqs:int=None, max_found_sequences:int=None) -> int:
+def blast_parse(blast_filename:str,
+                found_sequences_fastafile:str,
+                expected_min_identity:float,
+                remove_gaps:bool = True,
+                include_low_identity:bool = True,
+                max_low_identity_seqs:int = None,
+                max_found_sequences:int = None) -> int:
     '''
     Parse BLAST results
 
@@ -76,12 +87,12 @@ def blast_parse(blast_filename:str, found_sequences_fastafile:str, expected_min_
     n_low_identity_seqs : int
         Number of found sequences with identity lower than the expected
     '''
-    with open(blast_filename,"r") as f:
+    with open(blast_filename, "r") as f:
         xml_string = f.read()
         xml_string = xml_string.replace('CREATE_VIEW', '')
         records = NCBIXML.read(StringIO(xml_string))
     n_low_identity_seqs = 0
-    found_sequences=[]
+    found_sequences = []
     for alignment in records.alignments:
         for hsp in alignment.hsps:
             rec_f = SeqRecord(Seq(hsp.sbjct), id=alignment.title)
@@ -95,9 +106,9 @@ def blast_parse(blast_filename:str, found_sequences_fastafile:str, expected_min_
                 print("Low identity sequence!")
             print()
             rec_f.description = ""
-            rec_f.id=rec_f.id.replace(" ", "_").replace(" <unknown description>", "")
+            rec_f.id = rec_f.id.replace(" ", "_").replace(" <unknown description>", "")
             if remove_gaps:
-                rec_f.seq=rec_f.seq.replace("-", "")
+                rec_f.seq = rec_f.seq.replace("-", "")
             if include_low_identity or identity >= expected_min_identity:
                 found_sequences.append(rec_f)
         if max_found_sequences and len(found_sequences) >= max_found_sequences or \
@@ -109,7 +120,18 @@ def blast_parse(blast_filename:str, found_sequences_fastafile:str, expected_min_
     return n_low_identity_seqs
 
 
-def p_blast(seq_record:SeqRecord, blast_filename:str, found_sequences_fastafile:str, remove_gaps:bool, expected_min_identity:int, min_low_identity_seqs:int, max_low_identity_seqs:int, additional_hits:int, hitlist:int, database:str=None, local:bool=False, **kwargs) -> None:
+def p_blast(seq_record:SeqRecord,
+            blast_filename:str,
+            found_sequences_fastafile:str,
+            remove_gaps:bool,
+            expected_min_identity:float,
+            min_low_identity_seqs:int,
+            max_low_identity_seqs:int,
+            additional_hits:int,
+            hitlist:int,
+            database:str = None,
+            local:bool = False,
+            **kwargs) -> None:
     '''
     Perform a Pro BLAST search of a sequence
 
@@ -123,8 +145,8 @@ def p_blast(seq_record:SeqRecord, blast_filename:str, found_sequences_fastafile:
         Path of the file to write the found sequences (FASTA format)
     remove_gaps : bool
         Remove gaps from the found sequences
-    expected_min_identity : int
-        Minimum identity percentage expected in the found sequences
+    expected_min_identity : float
+        Minimum identity percentage expected in the found sequences (0 to 1)
     min_low_identity_seqs : int
         Minimum number of low identity sequences
     max_low_identity_seqs : int

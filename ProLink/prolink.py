@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-"""
+r"""
                                  __
                                 / /
                                / /
@@ -11,7 +11,6 @@
        / /
       / /                    Created by Víctor Sanz
      /_/                    University of Zaragoza
-
 
 
 """
@@ -60,7 +59,7 @@ def pro_link(query_proteins:list[str], parameters_default:dict = parameters_defa
     # Tree
     generate_tree = bool(parameters['generate_tree'])
     tree_type = str(parameters['tree_type'])
-    bootstrap_replications = str(parameters['bootstrap_replications'])
+    bootstrap_replications = int(parameters['bootstrap_replications'])
     # Output
     outputs_dir = str(parameters['outputs_dir'])
 
@@ -112,7 +111,7 @@ def pro_link(query_proteins:list[str], parameters_default:dict = parameters_defa
             if generate_logo:
                 print("Generating sequence logo")
                 weblogo_output = f"{output_dir_n}/logo.{weblogo_format}"
-                weblogo3(weblogo_format, muscle_output, weblogo_output)
+                weblogo3(muscle_output, weblogo_output, weblogo_format)
             if generate_tree:
                 print("Generating tree")
                 mega_output = f"{output_dir_n}/cluster_results_evaluation_{similarity}_aligned.mega"

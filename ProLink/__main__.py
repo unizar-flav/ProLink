@@ -18,7 +18,7 @@ def main():
     options = dict()
     if args.options:
         for opt in args.options:
-            opt_val= opt.split("=")
+            opt_val = opt.split("=")
             if len(opt_val) != 2:
                 print(f"ERROR: Options must be specified as 'option=value'. Got '{opt}'")
                 exit(1)
