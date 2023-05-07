@@ -2,6 +2,9 @@
 *.pyc
 **/__pycache__
 
+# dev & testing
+outputs/
+
 # distribution / packaging
 build/
 dist/
