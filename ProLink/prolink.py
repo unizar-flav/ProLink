@@ -19,11 +19,12 @@ import os
 from copy import deepcopy
 
 from . import ProLink_path, parameters_default
-from .modules.blast import blast, p_blast, blast_parse
+from .modules.blast import blast, blast_parse, p_blast
 from .modules.clustering import cluster, p_cluster
 from .modules.obtaining_sequences import get_seq
 from .modules.pfam import fasta_to_dfasta
-from .modules.subprocess_functions import align, tree, weblogo3
+from .modules.subprocess_functions import align, tree
+from .modules.weblogo import weblogo3
 
 
 def pro_link(query_proteins:list[str], parameters_default:dict = parameters_default, **parameters):

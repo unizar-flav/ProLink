@@ -1,6 +1,3 @@
 biopython
-yaml
-
-python-igraph
-leidenalg
+pyyaml
 weblogo

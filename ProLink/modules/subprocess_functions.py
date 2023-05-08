@@ -22,22 +22,6 @@ def align(muscle_input:str, muscle_output:str) -> None:
     subprocess.call(['muscle', '-super5', muscle_input, '-output', muscle_output])
 
 
-def weblogo3(weblogo_input:str, weblogo_output:str, format:str='png') -> None:
-    '''
-    Run WebLogo v3 to generate a sequence logo
-
-    Parameters
-    ----------
-    filename_input : str
-        Path of the input file (FASTA format from MUSCLE)
-    weblogo_output : str
-        Path of the output file
-    format : str, optional
-        Format of the output image (def: png)
-    '''
-    subprocess.call(['weblogo', '-D', 'fasta','-F', format, '-A', 'protein', '-s', 'large', '-n', '80', '-f', weblogo_input, '-o', weblogo_output])
-
-
 def tree(tree_type:str, bootstrap_replications:int, muscle_output:str, mega_output:str) -> None:
     '''
     Run MEGA-CC to generate a phylogenetic tree
