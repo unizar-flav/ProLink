@@ -84,61 +84,69 @@ def pro_link(query_proteins:list[str], parameters_default:dict = parameters_defa
 
     for seq_n, seq_record in enumerate(my_sequences, 1):
 
-        logger.debug(f"\nSequence {seq_n:02d}: {seq_record.id}\n")
+        try:
+            logger.info(f"\nSequence {seq_n:02d}: {seq_record.id}\n")
 
-        output_dir_n = f"./{outputs_dir}/{seq_n:02d}_{seq_record.id}"
-        logger.debug(f"Create output directory for sequence {seq_n:02d}: {output_dir_n}")
-        os.makedirs(output_dir_n, exist_ok=True)
+            output_dir_n = f"./{outputs_dir}/{seq_n:02d}_{seq_record.id}"
+            logger.debug(f"Create output directory for sequence {seq_n:02d}: {output_dir_n}")
+            os.makedirs(output_dir_n, exist_ok=True)
 
-        blast_filename = f"{output_dir_n}/blast_results.xml"
-        found_sequences_fastafile = f"{output_dir_n}/found_sequences.fasta"
+            blast_filename = f"{output_dir_n}/blast_results.xml"
+            found_sequences_fastafile = f"{output_dir_n}/found_sequences.fasta"
 
-        if pro_blast_:
-            logger.info(f"\n###  Pro BLAST  ###\n")
-            p_blast(seq_record, blast_filename, found_sequences_fastafile, expected_min_identity, min_low_identity_seqs, max_low_identity_seqs, additional_hits, hitlist_size, blast_database, blast_local)
-        else:
-            logger.info(f"\n###  BLAST  ###\n")
-            blast(seq_record, blast_filename, blast_database, hitlist_size, blast_local)
-            blast_parse(blast_filename, found_sequences_fastafile, expected_min_identity, True, max_low_identity_seqs)
-
-        if cluster_seqs:
-            cluster_results_file = f"{output_dir_n}/cluster_results_{similarity}"
-            cluster_evaluation_file = f"{output_dir_n}/cluster_results_evaluation_{similarity}"
-            cluster_results_fastafile = f"{output_dir_n}/cluster_results_evaluation_{similarity}.fasta"
-            if pro_clustering_:
-                logger.info(f"\n###  Pro Clustering  ###\n")
-                p_cluster(found_sequences_fastafile, similarity, cluster_results_file, cluster_evaluation_file, cluster_results_fastafile, [min_number_of_clusters_to_cluster_again, max_number_of_clusters_to_cluster_again])
+            if pro_blast_:
+                logger.info(f"\n###  Pro BLAST  ###\n")
+                p_blast(seq_record, blast_filename, found_sequences_fastafile, expected_min_identity, min_low_identity_seqs, max_low_identity_seqs, additional_hits, hitlist_size, blast_database, blast_local)
             else:
-                logger.info(f"\n###  Clustering  ###\n")
-                cluster(found_sequences_fastafile, similarity, cluster_results_file, cluster_evaluation_file, cluster_results_fastafile)
-            sequences_fastafile = cluster_results_fastafile
-            sequences_fastafile_pfam = f"{output_dir_n}/cluster_results_evaluation_{similarity}_pfam.fasta"
-            muscle_output = f"{output_dir_n}/cluster_results_evaluation_{similarity}_aligned.fasta"
-        else:
-            sequences_fastafile = found_sequences_fastafile
-            sequences_fastafile_pfam = f"{output_dir_n}/found_sequences_pfam.fasta"
-            muscle_output = f"{output_dir_n}/found_sequences_aligned.fasta"
+                logger.info(f"\n###  BLAST  ###\n")
+                blast(seq_record, blast_filename, blast_database, hitlist_size, blast_local)
+                blast_parse(blast_filename, found_sequences_fastafile, expected_min_identity, True, max_low_identity_seqs)
 
-        if check_pfam_domains:
-            logging.info("\nChecking Pfam domains")
-            try:
-                fasta_to_dfasta(seq_record, sequences_fastafile, sequences_fastafile_pfam)
-                sequences_fastafile = sequences_fastafile_pfam
-            except:
-                logging.warning("WARNING: Errors while checking Pfam domains. No Pfam domains found. Skipping.")
+            if cluster_seqs:
+                cluster_results_file = f"{output_dir_n}/cluster_results_{similarity}"
+                cluster_evaluation_file = f"{output_dir_n}/cluster_results_evaluation_{similarity}"
+                cluster_results_fastafile = f"{output_dir_n}/cluster_results_evaluation_{similarity}.fasta"
+                if pro_clustering_:
+                    logger.info(f"\n###  Pro Clustering  ###\n")
+                    p_cluster(found_sequences_fastafile, similarity, cluster_results_file, cluster_evaluation_file, cluster_results_fastafile, [min_number_of_clusters_to_cluster_again, max_number_of_clusters_to_cluster_again])
+                else:
+                    logger.info(f"\n###  Clustering  ###\n")
+                    cluster(found_sequences_fastafile, similarity, cluster_results_file, cluster_evaluation_file, cluster_results_fastafile)
+                sequences_fastafile = cluster_results_fastafile
+                sequences_fastafile_pfam = f"{output_dir_n}/cluster_results_evaluation_{similarity}_pfam.fasta"
+                muscle_output = f"{output_dir_n}/cluster_results_evaluation_{similarity}_aligned.fasta"
+            else:
+                sequences_fastafile = found_sequences_fastafile
+                sequences_fastafile_pfam = f"{output_dir_n}/found_sequences_pfam.fasta"
+                muscle_output = f"{output_dir_n}/found_sequences_aligned.fasta"
 
-        if align_seqs:
-            logging.info("\nAligning sequences")
-            align(sequences_fastafile, muscle_output)
-            if generate_logo:
-                logging.info("\nGenerating sequence logo")
-                weblogo_output = f"{output_dir_n}/logo.{weblogo_format}"
-                weblogo3(muscle_output, weblogo_output, weblogo_format)
-            if generate_tree:
-                logging.info("\nGenerating tree")
-                mega_output = f"{output_dir_n}/cluster_results_evaluation_{similarity}_aligned.mega"
-                tree(tree_type, bootstrap_replications, muscle_output, mega_output)
-        else:
-            logging.info("\nSkipping alignment (and logo and tree))")
+            if check_pfam_domains:
+                logger.info("\nChecking Pfam domains")
+                try:
+                    fasta_to_dfasta(seq_record, sequences_fastafile, sequences_fastafile_pfam)
+                    sequences_fastafile = sequences_fastafile_pfam
+                except:
+                    logger.warning("WARNING: Errors while checking Pfam domains. No Pfam domains found. Skipping.")
 
-        logging.info("Process finished")
+            if align_seqs:
+                logger.info("\nAligning sequences")
+                align(sequences_fastafile, muscle_output)
+                if generate_logo:
+                    logger.info("\nGenerating sequence logo")
+                    weblogo_output = f"{output_dir_n}/logo.{weblogo_format}"
+                    weblogo3(muscle_output, weblogo_output, weblogo_format)
+                if generate_tree:
+                    logger.info("\nGenerating tree")
+                    mega_output = f"{output_dir_n}/cluster_results_evaluation_{similarity}_aligned.mega"
+                    tree(tree_type, bootstrap_replications, muscle_output, mega_output)
+            else:
+                logger.info("\nSkipping alignment (and logo and tree))")
+
+        except Exception as e:
+            logger.error(f"ERROR: {e}")
+            logger.error(f"ERROR: Fatal error on query {seq_record.id}. Aborting.")
+            continue
+
+        logger.info(f"Process finished for query {seq_record.id}.\n\n")
+
+    logger.info(f"End of ProLink. Process finished for all queries.\n\n")
