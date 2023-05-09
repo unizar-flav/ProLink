@@ -1,10 +1,13 @@
 
+import logging
 import urllib
 
 from Bio import SeqIO
 from Bio.Seq import Seq
 from Bio.SeqRecord import SeqRecord
 
+
+logger = logging.getLogger()
 
 def search_hmmer_pfam(seq:str) -> dict:
     '''
@@ -67,7 +70,6 @@ def search_hmmer_pfam(seq:str) -> dict:
         matches[pfam_id]['type'] = 'Pfam-A'
     return matches
 
-
 def fasta_to_dfasta(seq_record:SeqRecord, fasta_input:str, fasta_output:str) -> None:
     '''
     Find the Pfam domain of a sequence and compare them with the Pfam domains of the sequences in a fasta file
@@ -81,7 +83,6 @@ def fasta_to_dfasta(seq_record:SeqRecord, fasta_input:str, fasta_output:str) -> 
     fasta_output : str
         Output fasta file to write
     '''
-    print("Checking Pfam domains")
     try:
         my_sequence_domains = search_hmmer_pfam(str(seq_record.seq)).keys()
     except:
@@ -104,4 +105,5 @@ def fasta_to_dfasta(seq_record:SeqRecord, fasta_input:str, fasta_output:str) -> 
         rec_d.id = new_string
         rec_d.description = ""
         d_sequences.append(rec_d)
+    logger.debug(f"Writing Pfam domains to '{fasta_output}'")
     SeqIO.write(d_sequences, fasta_output, "fasta")

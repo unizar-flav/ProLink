@@ -1,10 +1,21 @@
 #!/usr/bin/env python3
 
 
+import logging
 import os
 
 import yaml
 
+
+# set up logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(message)s',
+    handlers=[
+        logging.FileHandler('ProLink.log', mode='w'),
+        logging.StreamHandler()
+        ]
+    )
 
 # get path to ProLink folder
 ProLink_path = os.path.dirname(os.path.realpath(__file__))

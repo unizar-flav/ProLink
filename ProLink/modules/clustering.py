@@ -1,80 +1,124 @@
+
+import logging
 import os
 import subprocess
 from csv import reader
+from textwrap import dedent
 
 from Bio import SeqIO
 from Bio.Seq import Seq
 from Bio.SeqRecord import SeqRecord
 
-from .pfam import search_hmmer_pfam
 
+logger = logging.getLogger()
 
-def cluster(found_sequences_fastafile, my_seq_record, similarity, cluster_results_file, cluster_evaluation_file, cluster_results_fastafile):
-    print("Clustering sequences with ALFATClust")
-    print("Outputs:")
-    print(found_sequences_fastafile)
-    print(cluster_results_file)
-    print(cluster_evaluation_file)
-    print("Similarity= " + str(similarity))
-    subprocess.call(['alfatclust.py', '-i', found_sequences_fastafile, '-o', cluster_results_file, '-e', cluster_evaluation_file, '-ea' ,'-l' , str(similarity)])
+def cluster(found_sequences_fastafile:str,
+            similarity:float,
+            cluster_results_file:str,
+            cluster_evaluation_file:str,
+            cluster_results_fastafile:str) -> int:
+    '''
+    Cluster sequences with ALFATClust
 
+    Parameters
+    ----------
+    found_sequences_fastafile : str
+        Path of the file with the sequences to cluster (FASTA format)
+    similarity : float
+        Similarity threshold for clustering
+    cluster_results_file : str
+        Path of the file with the clustering results
+    cluster_evaluation_file : str
+        Path of the file with the clustering evaluation
+    cluster_results_fastafile : str
+        Path of the file with the clustered sequences (FASTA format)
+
+    Returns
+    -------
+    int
+        Number of clusters
+    '''
+    logging.info(dedent(f"""
+        -- Clustering sequences with ALFATClust
+        Similarity:               {similarity}
+        Input file:               '{found_sequences_fastafile}'
+        Results file:             '{cluster_results_file}'
+        Evaluation file:          '{cluster_evaluation_file}'
+        """))
+    alfatclust_cmd = ['alfatclust.py', '-i', found_sequences_fastafile, '-o', cluster_results_file, '-e', cluster_evaluation_file, '-ea' ,'-l' , str(similarity)]
+    logging.debug(f"ALFATClust command: {alfatclust_cmd}")
+    alfatclust_run = subprocess.run(alfatclust_cmd)
+    if alfatclust_run.returncode != 0:
+        logger.error(f"ERROR: ALFATClust failed")
+        raise RuntimeError(f"ALFATClust failed")
     clustered_sequences = []
-    number_of_clusters = 0
-    #my_sequence_domains = search_hmmer_pfam(str(my_seq_record.seq)).keys()
-    read_obj = open(cluster_evaluation_file, 'r')
-    csv_reader = reader(read_obj)
-    header = next(csv_reader)
-    if header != None:
-        for row in csv_reader:
-            cluster_center_seq_description = row[4]
-            cluster_id = "C"+row[0]
-            for seq_record in SeqIO.parse(found_sequences_fastafile, "fasta"):
-                if seq_record.description == cluster_center_seq_description:
-                    # rec_c = SeqRecord(
-                    #     Seq(str(seq_record.seq)),
-                    #     id= cluster_id,
-                    #     description = cluster_center_seq_description.replace(" <unknown description>", "")
-                    # )
-
-                    # try:
-                    #     subject_sequence_domains = search_hmmer_pfam(str(seq_record.seq)).keys()
-                    #     print(subject_sequence_domains)
-                    # except KeyError:
-                    #     print("No domains found")
-                    #     subject_sequence_domains = "No_domains_found"
-                    # if my_sequence_domains != subject_sequence_domains:
-                    #     domains = "DD:" + str(subject_sequence_domains).replace("dict_keys", "").replace("([","").replace("])","").replace("'","")
-                    # else:
-                    #     domains = "SD"
-                    rec_c = SeqRecord(
-                        Seq(str(seq_record.seq)),
-                        id= cluster_id + cluster_center_seq_description #.replace(" <unknown description>", "") + "|" +domains,
-                    )
-                    # string = rec_c.id
-                    # new_string = string[:string.find("|_")+1].replace("ref", "") + string[string.find("[")+1:string.find("]")] + string[string.find("]|")+1:]
-                    # rec_c.id = new_string
-                    rec_c.description = ""
-                    clustered_sequences.append(rec_c)
-                    number_of_clusters += 1
-                    break
+    with open(cluster_results_file, 'r') as f:
+        csv_reader = reader(f)
+        header = next(csv_reader)
+        if header != None:
+            for row in csv_reader:
+                cluster_center_seq_description = row[4]
+                cluster_id = "C"+row[0]
+                for seq_record in SeqIO.parse(found_sequences_fastafile, "fasta"):
+                    if seq_record.description == cluster_center_seq_description:
+                        rec_c = SeqRecord(
+                            Seq(str(seq_record.seq)),
+                            id= cluster_id + cluster_center_seq_description #.replace(" <unknown description>", "") + "|" +domains,
+                            )
+                        rec_c.description = ""
+                        clustered_sequences.append(rec_c)
+                        break
+    logger.debug(f"Writing clustered sequences to '{cluster_results_fastafile}'")
     SeqIO.write(clustered_sequences, cluster_results_fastafile, "fasta")
-    print("Number of clusters: "+ str(number_of_clusters))
-    return number_of_clusters
+    n_clusters = len(clustered_sequences)
+    logger.info(f"Clustering done. Number of clusters: {n_clusters}")
+    return n_clusters
 
+def p_cluster(found_sequences_fastafile:str,
+              similarity:float,
+              cluster_results_file:str,
+              cluster_evaluation_file:str,
+              cluster_results_fastafile:str,
+              n_clusters_range:list[int]) -> int:
+    '''
+    Pro Cluster sequences with ALFATClust
 
-def p_cluster(found_sequences_fastafile, my_seq_record, similarity, min_number_of_clusters_to_cluster_again, max_number_of_clusters_to_cluster_again, cluster_results_file, cluster_evaluation_file, cluster_results_fastafile):
-    number_of_clusters = cluster(found_sequences_fastafile, my_seq_record, similarity, cluster_results_file, cluster_evaluation_file, cluster_results_fastafile)
-    while not min_number_of_clusters_to_cluster_again < number_of_clusters < max_number_of_clusters_to_cluster_again:
+    Parameters
+    ----------
+    found_sequences_fastafile : str
+        Path of the file with the sequences to cluster (FASTA format)
+    similarity : float
+        Similarity threshold for clustering
+    cluster_results_file : str
+        Path of the file with the clustering results
+    cluster_evaluation_file : str
+        Path of the file with the clustering evaluation
+    cluster_results_fastafile : str
+        Path of the file with the clustered sequences (FASTA format)
+    n_clusters_range : list[int]
+        Range of number of clusters to cluster the sequences
+
+    Returns
+    -------
+    int
+        Number of clusters
+    '''
+    max_iter = 100
+    for iteration in range(max_iter):
+        logger.info(f"Pro Clustering iteration {iteration+1}\n")
+        n_clusters = cluster(found_sequences_fastafile, similarity, cluster_results_file, cluster_evaluation_file, cluster_results_fastafile)
+        if n_clusters_range[0] <= n_clusters <= n_clusters_range[1]:
+            break
+        logging.info(f"Number of clusters {n_clusters} not in range {n_clusters_range}")
+        sign = 1 if n_clusters < n_clusters_range[0] else -1
+        similarity += sign * 0.1
+        logger.info(f"Clustering again with similarity = {similarity}")
+        logger.debug(f"Removing files: '{cluster_results_file}', '{cluster_evaluation_file}', '{cluster_results_fastafile}'")
         os.remove(cluster_results_file)
         os.remove(cluster_evaluation_file)
         os.remove(cluster_results_fastafile)
-        if number_of_clusters < min_number_of_clusters_to_cluster_again:
-            print("The number of clusters is below the minimum")
-            similarity += 0.1
-        elif number_of_clusters > max_number_of_clusters_to_cluster_again:
-            print("The number of clusters exceeds the maximum")
-            similarity -= 0.1
-        print(f"Clustering again with similarity = {similarity}")
-        number_of_clusters = cluster(found_sequences_fastafile, my_seq_record, similarity, cluster_results_file, cluster_evaluation_file, cluster_results_fastafile)
-    print(f"The number of clusters is between the desired values ({number_of_clusters})")
-    print("Pro clustering done succesfully")
+    else:
+        logger.error(f"ERROR: Pro Clustering failed: maximum number of iterations reached")
+        raise Exception("Maximum number of iterations reached")
+    logger.info(f"Pro Clustering done succesfully: {n_clusters} clusters found\n")
+    return n_clusters
