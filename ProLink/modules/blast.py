@@ -1,7 +1,6 @@
 
 import logging
 import os
-import re
 import subprocess
 from io import StringIO
 from multiprocessing import cpu_count
@@ -137,24 +136,17 @@ def blast_parse(blast_filename:str,
     n_hsp = 0
     n_low_identity_hsp = 0
     accession_numbers = []
-    #TODO: better accession number pattern checking
-    accession_pattern = re.compile(r"WP\_\d{9}(?:\.\d)?")   # https://www.ncbi.nlm.nih.gov/refseq/about/nonredundantproteins/
     for alignment in records.alignments:
         if 'partial' in alignment.title.lower():
             logger.debug(f"Partial found. Skipping sequence '{alignment.title}'")
             continue
-        accession_number = accession_pattern.search(alignment.title)
-        if accession_number is None:
-            logger.info(f"No accession number found. Skipping sequence '{alignment.title}'")
-            continue
-        else:
-            accession_number = accession_number.group(0)
+        accession_number = alignment.accession
+        logger.debug(f"\nAccession number: {accession_number}")
         for hsp in alignment.hsps:
-            logger.debug(f"\nAccession number: {accession_number}")
             logger.debug(f"> {alignment.title}\n{hsp.sbjct}")
             identity = hsp.identities / alignment.length
             if identity < expected_min_identity:
-                logger.info(f"Low identity hit found: {identity:.2f} ({'seq included' if include_low_identity else 'seq not included'})")
+                logger.debug(f"Low identity hit found: {identity:.2f} ({'seq included' if include_low_identity else 'seq not included'})")
                 if not include_low_identity:
                     continue
                 n_low_identity_hsp += 1
