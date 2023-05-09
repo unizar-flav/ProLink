@@ -25,6 +25,7 @@ def get_seq(IDs:list[str], fastafile:str=None) -> list[SeqRecord]:
         List of SeqRecord objects corresponding to the sequences of the IDs
     '''
     seq_list = []
+    IDs = [IDs] if isinstance(IDs, str) else IDs
     Entrez.email = "example@example.com"
     with Entrez.efetch(db="protein", rettype="gb", retmode="text", id=IDs) as handle:
         for seq_record in SeqIO.parse(handle, "gb"):
