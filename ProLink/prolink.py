@@ -50,7 +50,6 @@ def pro_link(query_proteins:list[str], parameters_default:dict = parameters_defa
     min_low_identity_seqs = int(parameters['min_low_identity_seqs'])
     expected_min_identity = float(parameters['expected_min_identity'])
     additional_hits = int(parameters['additional_hits'])
-    remove_gaps = bool(parameters['remove_gaps'])
     # Clustering
     cluster_seqs = bool(parameters['cluster_seqs'])
     similarity = float(parameters['similarity'])
@@ -96,11 +95,11 @@ def pro_link(query_proteins:list[str], parameters_default:dict = parameters_defa
 
         if pro_blast_:
             logger.info(f"\n###  Pro BLAST  ###\n")
-            p_blast(seq_record, blast_filename, found_sequences_fastafile, remove_gaps, expected_min_identity, min_low_identity_seqs, max_low_identity_seqs, additional_hits, hitlist_size, blast_database, blast_local)
+            p_blast(seq_record, blast_filename, found_sequences_fastafile, expected_min_identity, min_low_identity_seqs, max_low_identity_seqs, additional_hits, hitlist_size, blast_database, blast_local)
         else:
             logger.info(f"\n###  BLAST  ###\n")
             blast(seq_record, blast_filename, blast_database, hitlist_size, blast_local)
-            blast_parse(blast_filename, found_sequences_fastafile, expected_min_identity, remove_gaps, True, max_low_identity_seqs)
+            blast_parse(blast_filename, found_sequences_fastafile, expected_min_identity, True, max_low_identity_seqs)
 
         if cluster_seqs:
             cluster_results_file = f"{output_dir_n}/cluster_results_{similarity}"

@@ -8,7 +8,7 @@ from Bio.SeqRecord import SeqRecord
 
 logger = logging.getLogger()
 
-def get_seq(IDs:list[str], fastafile:str=None) -> list[SeqRecord]:
+def get_seq(IDs:list[str], fastafile:str=None, spaces:bool=True) -> list[SeqRecord]:
     '''
     Obtain the sequences of protein's IDs
 
@@ -18,6 +18,9 @@ def get_seq(IDs:list[str], fastafile:str=None) -> list[SeqRecord]:
         List of protein's IDs
     fastafile : str, optional
         Path of a fasta file to write the sequences
+    spaces : bool, optional
+        Include spaces in the descriptions of the FASTA file
+        Otherwise, replace them with underscores (def: True)
 
     Returns
     -------
@@ -34,6 +37,10 @@ def get_seq(IDs:list[str], fastafile:str=None) -> list[SeqRecord]:
     if len(seq_list) != len(IDs):
         not_found = set(IDs) - set([seq_record.id for seq_record in seq_list])
         logger.warning(f"WARNING: Unable to obtain sequences for: {', '.join(not_found)}")
+    if not spaces:
+        logger.debug("Replacing spaces with underscores in the descriptions of the FASTA file")
+        for seq_record in seq_list:
+            seq_record.description = seq_record.description.replace(" ", "_")
     if fastafile:
         logger.debug(f"Saving sequences to '{fastafile}'")
         SeqIO.write(seq_list, fastafile, "fasta")

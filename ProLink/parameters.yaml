@@ -7,7 +7,6 @@ Blast:
   min_low_identity_seqs: 1
   expected_min_identity: 0.25
   additional_hits: 2000
-  remove_gaps: True
 
 Clustering:
   cluster_seqs: False

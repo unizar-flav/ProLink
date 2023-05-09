@@ -1,10 +1,6 @@
 
 import logging
 import subprocess
-from multiprocessing import cpu_count
-from tempfile import NamedTemporaryFile
-
-from Bio.SeqRecord import SeqRecord
 
 from .. import ProLink_path
 
@@ -53,31 +49,3 @@ def tree(tree_type:str, bootstrap_replications:int, muscle_output:str, mega_outp
     if mega_run.returncode != 0:
         logger.error(f"ERROR: MEGA-CC failed")
         raise RuntimeError(f"MEGA-CC failed")
-
-def blastp_run(seq_record:SeqRecord, blast_filename:str, threads:int=0, **kwargs) -> None:
-    '''
-    Run locally 'blastp' for a single sequence record against a database
-
-    Parameters
-    ----------
-    seq_record : SeqRecord
-        Sequence to search
-    blast_filename : str
-        Path of the file to write the BLAST results (XML format)
-    threads : int, optional
-        Number of threads to use (def: all available)
-    '''
-    threads = threads or cpu_count()
-    with NamedTemporaryFile(mode='w') as f:
-        f.write(seq_record.format('fasta'))
-        f.flush()
-        additional_args = []
-        for i, j in kwargs.items():
-            additional_args.append(f'-{i}')
-            additional_args.append(f'{j}')
-        blastp_cmd = ['blastp', '-query', f.name, '-out', blast_filename, '-outfmt', '5', '-num_threads', str(threads)] + additional_args
-        logger.debug(f"Running 'blastp' for {seq_record.id}:  {' '.join(blastp_cmd)}")
-        blastp_run = subprocess.run(blastp_cmd)
-        if blastp_run.returncode != 0:
-            logger.error(f"ERROR: local 'blastp' for {seq_record.id} failed")
-            raise RuntimeError(f"Error running 'blastp' for {seq_record.id}")
