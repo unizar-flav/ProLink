@@ -2,11 +2,10 @@
 import logging
 import os
 import subprocess
-from csv import reader
+from copy import copy
 from textwrap import dedent
 
 from Bio import SeqIO
-from Bio.Seq import Seq
 from Bio.SeqRecord import SeqRecord
 
 
@@ -51,27 +50,31 @@ def cluster(found_sequences_fastafile:str,
     if alfatclust_run.returncode != 0:
         logger.error(f"ERROR: ALFATClust failed")
         raise RuntimeError(f"ALFATClust failed")
-    clustered_sequences = []
+
+    logger.info(f"Parsing clustering results")
+    found_sequences = SeqIO.parse(found_sequences_fastafile, "fasta")
     with open(cluster_results_file, 'r') as f:
-        csv_reader = reader(f)
-        header = next(csv_reader)
-        if header != None:
-            for row in csv_reader:
-                cluster_center_seq_description = row[4]
-                cluster_id = "C"+row[0]
-                for seq_record in SeqIO.parse(found_sequences_fastafile, "fasta"):
-                    if seq_record.description == cluster_center_seq_description:
-                        rec_c = SeqRecord(
-                            Seq(str(seq_record.seq)),
-                            id= cluster_id + cluster_center_seq_description #.replace(" <unknown description>", "") + "|" +domains,
-                            )
-                        rec_c.description = ""
-                        clustered_sequences.append(rec_c)
-                        break
+        cluster_results = f.readlines()
+    cluster_center_ndx = [n+1 for n, line in enumerate(cluster_results) if line.startswith("#Cluster")]
+    clustered_sequences = []
+    for id, ndx in enumerate(cluster_center_ndx, 1):
+        cluster_center_seq = cluster_results[ndx].strip()
+        logging.debug(f"Cluster {id}: {cluster_center_seq}")
+        cluster_id_str = f"C{id}--"
+        for seq_record in found_sequences:
+            if seq_record.description.strip() == cluster_center_seq:
+                seq_record_central = copy(seq_record)
+                seq_record_central.id = cluster_id_str + cluster_center_seq
+                seq_record_central.description = ""
+                clustered_sequences.append(seq_record_central)
+                break
+        else:
+            logger.warning(f"WARNING: Cluster {id} central sequence not found in the sequences file: {cluster_center_seq}")
+
     logger.debug(f"Writing clustered sequences to '{cluster_results_fastafile}'")
     SeqIO.write(clustered_sequences, cluster_results_fastafile, "fasta")
     n_clusters = len(clustered_sequences)
-    logger.info(f"Clustering done. Number of clusters: {n_clusters}")
+    logger.info(f"Clustering done. Number of clusters: {n_clusters}\n")
     return n_clusters
 
 def p_cluster(found_sequences_fastafile:str,
