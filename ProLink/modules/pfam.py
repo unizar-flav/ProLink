@@ -1,6 +1,7 @@
 
 import logging
 import urllib
+from urllib.error import HTTPError
 
 from Bio import SeqIO
 from Bio.Seq import Seq
@@ -39,8 +40,17 @@ def search_hmmer_pfam(seq:str) -> dict:
     result_request = urllib.request.Request(modified_res_url)
     try:
         tsv = urllib.request.urlopen(result_request).read().decode()
+    except HTTPError as e:
+        if e.code == 404:
+            logger.error("No matching Pfam domains were found.")
+        elif e.code == 500:
+            logger.error("An error occurred on the server side while searching for Pfam domains. Try later or blame 'ebi.ac.uk'")
+        else:
+            logger.error("An unknown error occurred while searching for Pfam domains.")
+        raise e
     except:
-        raise Exception('No matching Pfam domains were found.')
+        logger.error("No matching Pfam domains were found.")
+        raise e
     lines = tsv.split('\n')
     keys = lines[0].split('\t')
     root = dict()
@@ -85,8 +95,9 @@ def fasta_to_dfasta(seq_record:SeqRecord, fasta_input:str, fasta_output:str) -> 
     '''
     try:
         my_sequence_domains = search_hmmer_pfam(str(seq_record.seq)).keys()
-    except:
-        raise Exception('No matching Pfam domains were found for the query sequence.')
+    except Exception as e:
+        logger.error(f"An error occurred while searching for Pfam domains of '{seq_record.id}'")
+        raise e
     d_sequences = []
     for seq_record in SeqIO.parse(fasta_input, "fasta"):
         try:

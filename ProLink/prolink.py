@@ -127,7 +127,8 @@ def pro_link(query_proteins:list[str], parameters_default:dict = parameters_defa
                     fasta_to_dfasta(seq_record, sequences_fastafile, sequences_fastafile_pfam)
                     sequences_fastafile = sequences_fastafile_pfam
                 except:
-                    logger.warning("WARNING: Errors while checking Pfam domains. No Pfam domains found. Skipping.")
+                    logger.debug("", exc_info=True)
+                    logger.warning("WARNING: Errors while checking Pfam domains. Skipping.")
 
             if align_seqs:
                 logger.info("\nAligning sequences")
