@@ -79,6 +79,7 @@ def pro_link(query_proteins:list[str], parameters_default:dict = parameters_defa
             logger.info(f"\n> {seq_record.id} - {seq_record.description}")
             logger.debug(f"{seq_record.seq}")
     except Exception as e:
+        logger.debug("", exc_info=True)
         logger.error(f"ERROR: Obtaining sequences failed (Wrong query?): {e}")
         return
 
@@ -143,10 +144,10 @@ def pro_link(query_proteins:list[str], parameters_default:dict = parameters_defa
                 logger.info("\nSkipping alignment (and logo and tree))")
 
         except Exception as e:
-            logger.error(f"ERROR: {e}")
+            logger.debug("", exc_info=True)
             logger.error(f"ERROR: Fatal error on query {seq_record.id}. Aborting.")
             continue
 
-        logger.info(f"Process finished for query {seq_record.id}.\n\n")
+        logger.info(f"\nProcess finished for query {seq_record.id}\n\n")
 
     logger.info(f"End of ProLink. Process finished for all queries.\n\n")
