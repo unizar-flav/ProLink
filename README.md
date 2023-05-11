@@ -25,6 +25,9 @@ The script is designed to be executed in Google Colab.
 | cluster_seqs                              | Boolean parameter to select if clustering the sequences or not.                                  |
 | similarity                                | Initial similarity treshold to group the sequences into clusters.                                |
 | pro_clustering_                           | Boolean parameter to select "pro clustering" or regular clustering.                              |
+| similarity_step                           | Step to increase or decrease the similarity threshold while "pro_clustering"                     |
+| min_number_of_clusters_to_cluster_again   | Minimum number of clusters allowed when using "Pro clustering".                                  |
+| max_number_of_clusters_to_cluster_again   | Maximum number of clusters allowed when using "Pro clustering".                                  |
 | check_pfam_domains                        | Boolean parameter to select if checking the Pfam domains of the sequences or not.                |
 | align_seqs                                | Boolean parameter to select if aligning the sequences or not.                                    |
 | generate_logo                             | Boolean parameter to select if generating a sequence logo or not.                                |
@@ -38,8 +41,6 @@ The script is designed to be executed in Google Colab.
 | min_low_identity_seqs                     | Minimum number of low identity seqs to find when using "Pro BLAST".                                |             1|
 | expected_min_identity                     | Maximum identity percentage to consider a sequence a low identity seq when using "Pro BLAST".      |          0.25|
 | additional_hits                           | Number of additional sequences to find when using "Pro BLAST".                                     |          2000|
-| min_number_of_clusters_to_cluster_again   | Minimum number of clusters allowed when using "Pro clustering".                                    |           250|
-| max_number_of_clusters_to_cluster_again   | Maximum number of clusters allowed when using "Pro clustering".                                    |           700|
 | weblogo_format                            | Output format when using generate_logo.                                                            | 'png'        |
 | bootstrap_replications                    | Number of bootstrap replications when generating the tree. Needs to be 100, 250, 500, 1000 or 2000.|           100|
 | outputs_dir                               | Name of the outputs directory.                                                                     | 'outputs'    |

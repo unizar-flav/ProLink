@@ -81,7 +81,8 @@ def p_cluster(found_sequences_fastafile:str,
               cluster_results_file:str,
               cluster_evaluation_file:str,
               cluster_results_fastafile:str,
-              n_clusters_range:list[int]) -> int:
+              n_clusters_range:list[int],
+              similarity_step:float=0.05) -> int:
     '''
     Pro Cluster sequences with ALFATClust
 
@@ -99,21 +100,29 @@ def p_cluster(found_sequences_fastafile:str,
         Path of the file with the clustered sequences (FASTA format)
     n_clusters_range : list[int]
         Range of number of clusters to cluster the sequences
+    similarity_step : float, optional
+        Step to increase or decrease the similarity threshold (def: 0.05)
 
     Returns
     -------
     int
         Number of clusters
     '''
+    #TODO: dinamic similarity_step (guess from previous iteration results)
     max_iter = 100
+    similarities = set()
     for iteration in range(max_iter):
         logger.info(f"Pro Clustering iteration {iteration+1}\n")
         n_clusters = cluster(found_sequences_fastafile, similarity, cluster_results_file, cluster_evaluation_file, cluster_results_fastafile)
         if n_clusters_range[0] <= n_clusters <= n_clusters_range[1]:
             break
         logging.info(f"Number of clusters {n_clusters} not in range {n_clusters_range}")
+        if similarity in similarities:
+            logger.warning(f"WARNING: Pro Clustering failed converging (new similarity already used)")
+            break
         sign = 1 if n_clusters < n_clusters_range[0] else -1
-        similarity += sign * 0.1
+        similarity += sign * similarity_step
+        similarities.add(similarity)
         logger.info(f"Clustering again with similarity = {similarity}")
         logger.debug(f"Removing files: '{cluster_results_file}', '{cluster_evaluation_file}', '{cluster_results_fastafile}'")
         os.remove(cluster_results_file)

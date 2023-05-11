@@ -12,8 +12,9 @@ Clustering:
   cluster_seqs: False
   similarity: 0.5
   pro_clustering_: False
-  min_number_of_clusters_to_cluster_again: 250
-  max_number_of_clusters_to_cluster_again: 700
+  similarity_step: 0.05
+  min_number_of_clusters_to_cluster_again: 50
+  max_number_of_clusters_to_cluster_again: 300
 
 Pfam domains:
   check_pfam_domains: False
