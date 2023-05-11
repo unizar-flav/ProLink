@@ -115,16 +115,18 @@ def pro_link(query_proteins:list[str], parameters_default:dict = parameters_defa
                     cluster(found_sequences_fastafile, similarity, cluster_results_file, cluster_evaluation_file, cluster_results_fastafile)
                 sequences_fastafile = cluster_results_fastafile
                 sequences_fastafile_pfam = f"{output_dir_n}/cluster_results_evaluation_{similarity}_pfam.fasta"
+                pfam_output = f"{output_dir_n}/cluster_results_evaluation_{similarity}_pfam.txt"
                 muscle_output = f"{output_dir_n}/cluster_results_evaluation_{similarity}_aligned.fasta"
             else:
                 sequences_fastafile = found_sequences_fastafile
                 sequences_fastafile_pfam = f"{output_dir_n}/found_sequences_pfam.fasta"
+                pfam_output = f"{output_dir_n}/found_sequences_pfam.txt"
                 muscle_output = f"{output_dir_n}/found_sequences_aligned.fasta"
 
             if check_pfam_domains:
                 logger.info("\nChecking Pfam domains")
                 try:
-                    fasta_to_dfasta(seq_record, sequences_fastafile, sequences_fastafile_pfam)
+                    fasta_to_dfasta(seq_record, sequences_fastafile, sequences_fastafile_pfam, pfam_output)
                     sequences_fastafile = sequences_fastafile_pfam
                 except:
                     logger.debug("", exc_info=True)

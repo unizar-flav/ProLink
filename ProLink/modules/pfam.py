@@ -1,22 +1,20 @@
 
 import logging
-import urllib
-from urllib.error import HTTPError
+from copy import copy
+from xml.dom import minidom
 
+import requests
 from Bio import SeqIO
-from Bio.Seq import Seq
 from Bio.SeqRecord import SeqRecord
 
 
 logger = logging.getLogger()
 
-def search_hmmer_pfam(seq:str) -> dict:
+def search_hmmer_pfam(seq:str) -> list[dict]:
     '''
     Use HMMER to search for the Pfam families of a sequence
 
     HMMER: Biosequence analysis using profile hidden Markov Models
-
-    Adapted from ProDy: prody.database.pfam @ github.com/ProDy/ProDy
 
     Parameters
     ----------
@@ -25,62 +23,38 @@ def search_hmmer_pfam(seq:str) -> dict:
 
     Returns
     -------
-    dict
-        Dictionary with the Pfam families and information of them
+    domain_hits : list[dict]
+        List of dictionaries with the Pfam families and information of them
+        Common keys: 'name', 'acc', 'bias', 'desc', 'evalue', 'flags', 'hindex', 'ndom',
+                     'nincluded', 'nregions', 'nreported', 'pvalue', 'score', 'taxid'
     '''
+    # request to HMMER
+    hmmscan_url = 'https://www.ebi.ac.uk/Tools/hmmer/search/hmmscan'
+    header = {'Expect': '', 'Accept': 'text/xml'}
     parameters = {
         'hmmdb': 'pfam',
-        'seq': f">Seq\n{seq}"}
-    request = urllib.request.Request(
-        'https://www.ebi.ac.uk/Tools/hmmer/search/hmmscan',
-        urllib.parse.urlencode(parameters).encode('utf-8'))
-    results_url = urllib.request.urlopen(request).geturl()
-    res_params = {'format': 'tsv'}
-    modified_res_url = results_url.replace('results', 'download') + '?' + urllib.parse.urlencode(res_params)
-    result_request = urllib.request.Request(modified_res_url)
-    try:
-        tsv = urllib.request.urlopen(result_request).read().decode()
-    except HTTPError as e:
-        if e.code == 404:
-            logger.error("No matching Pfam domains were found.")
-        elif e.code == 500:
-            logger.error("An error occurred on the server side while searching for Pfam domains. Try later or blame 'ebi.ac.uk'")
+        'seq': f">Seq\n{seq}"
+        }
+    response = requests.post(hmmscan_url, headers=header, data=parameters)
+    # check response status code
+    if response.status_code != 200:
+        if response.status_code == 500:
+            logger.error("ERROR: Bad response from the server side while searching for Pfam domains. Try later or blame 'ebi.ac.uk'")
+        elif response.status_code == 400:
+            logger.error(f"ERROR: Bad request while searching for Pfam domains. Check your query sequence: {seq}")
         else:
-            logger.error("An unknown error occurred while searching for Pfam domains.")
-        raise e
-    except:
-        logger.error("No matching Pfam domains were found.")
-        raise e
-    lines = tsv.split('\n')
-    keys = lines[0].split('\t')
-    root = dict()
-    for i, line in enumerate(lines[1:-1]):
-        root[i] = dict()
-        for j, key in enumerate(keys):
-            root[i][key] = line.split('\t')[j]
-    matches = dict()
-    for child in root.values():
-        accession = child['Family Accession']
-        pfam_id = accession.split('.')[0]
-        matches[pfam_id] = dict()
-        matches[pfam_id]['accession'] = accession
-        matches[pfam_id]['class'] = 'Domain'
-        matches[pfam_id]['id'] = child['Family id']
-        matches[pfam_id]['locations'] = dict()
-        matches[pfam_id]['locations']['ali_end'] = child['Ali. End']
-        matches[pfam_id]['locations']['ali_start'] = child['Ali. Start']
-        matches[pfam_id]['locations']['bitscore'] = child['Bit Score']
-        matches[pfam_id]['locations']['end'] = child['Env. End']
-        matches[pfam_id]['locations']['cond_evalue'] = child['Cond. E-value']
-        matches[pfam_id]['locations']['ind_evalue'] = child['Ind. E-value']
-        matches[pfam_id]['locations']['evidence'] = 'hmmer v3.0'
-        matches[pfam_id]['locations']['hmm_end'] = child['Model End']
-        matches[pfam_id]['locations']['hmm_start'] = child['Model Start']
-        matches[pfam_id]['locations']['start'] = child['Env. Start']
-        matches[pfam_id]['type'] = 'Pfam-A'
-    return matches
+            logger.error(f"ERROR: Something went wrong while searching for Pfam domains. Error code: {response.status_code}")
+        logger.debug(f"HMMER response:\n{response.text}")
+        raise Exception(f"Something went wrong while searching for Pfam domains: Error {response.status_code}")
+    # parse XML response
+    response_xml = minidom.parseString(response.text)
+    hits = response_xml.getElementsByTagName('hits')
+    domain_hits = []
+    for hit in hits:
+        domain_hits.append({key: value for key, value in hit.attributes.items()})
+    return domain_hits
 
-def fasta_to_dfasta(seq_record:SeqRecord, fasta_input:str, fasta_output:str) -> None:
+def fasta_to_dfasta(seq_record:SeqRecord, fasta_input:str, fasta_output:str, pfam_output:str=None) -> None:
     '''
     Find the Pfam domain of a sequence and compare them with the Pfam domains of the sequences in a fasta file
 
@@ -92,29 +66,58 @@ def fasta_to_dfasta(seq_record:SeqRecord, fasta_input:str, fasta_output:str) -> 
         Input fasta file to read
     fasta_output : str
         Output fasta file to write
+    pfam_output : str, optional
+        Output file to write the Pfam domains of the sequences (def: None)
     '''
+    def domain_names(domain_hits:list[dict]) -> list[str]:
+        '''Get the names of the domains from the results of HMMER'''
+        names = [domain['name'] for domain in domain_hits]
+        if len(domain_hits) == 0:
+            logger.warning(f"WARNING: No Pfam domains found for '{seq_record.id}'")
+            names = ["No_domains_found"]
+        elif len(domain_hits) > 1:
+            logger.warning(f"WARNING: Multiple Pfam domain found for '{seq_record.id}'")
+        return names
+    # query sequence
     try:
-        my_sequence_domains = search_hmmer_pfam(str(seq_record.seq)).keys()
+        my_seq_domain_hits = search_hmmer_pfam(str(seq_record.seq))
     except Exception as e:
-        logger.error(f"An error occurred while searching for Pfam domains of '{seq_record.id}'")
+        logger.error(f"An error occurred while searching for Pfam domains of query sequence")
         raise e
-    d_sequences = []
-    for seq_record in SeqIO.parse(fasta_input, "fasta"):
+    my_seq_domain_name = domain_names(my_seq_domain_hits)
+    logger.info(f"Pfam domains found for query sequence '{seq_record.id}': {', '.join(my_seq_domain_name)}")
+    # found sequences
+    sequences_domain_hits = []
+    sequences_domain = []
+    #TODO: parallelize or request all sequences at once
+    sequences = list(SeqIO.parse(fasta_input, "fasta"))
+    for seq_record in sequences:
         try:
-            subject_sequence_domains = search_hmmer_pfam(str(seq_record.seq)).keys()
+            seq_domain_hits = search_hmmer_pfam(str(seq_record.seq))
         except:
-            subject_sequence_domains = "No_domains_found"
-        if my_sequence_domains != subject_sequence_domains:
-            domains = "DD:" + str(subject_sequence_domains).replace("dict_keys", "").replace("([", "").replace("])", "").replace("'", "")
+            logger.warning(f"WARNING: An error occurred while searching for Pfam domains of '{seq_record.id}'")
+            seq_domain_hits = []
+        sequences_domain_hits.append(seq_domain_hits)
+        seq_domain_name = domain_names(seq_domain_hits)
+        common_domains = set(my_seq_domain_name).intersection(seq_domain_name)
+        if common_domains and len(common_domains) == len(my_seq_domain_name):
+            domain = "Same_Domains"
         else:
-            domains = "SD"
-        rec_d = SeqRecord(Seq(str(seq_record.seq)),
-                          id=seq_record.id + seq_record.description + "|" + domains,
-                          description="")
-        string = rec_d.id
-        new_string = string[:string.find("|_") + 1].replace("ref", "") + string[string.find("[") + 1:string.find("]")] + string[string.find("]|") + 1:]
-        rec_d.id = new_string
-        rec_d.description = ""
-        d_sequences.append(rec_d)
-    logger.debug(f"Writing Pfam domains to '{fasta_output}'")
-    SeqIO.write(d_sequences, fasta_output, "fasta")
+            domain = "Different_Domains"
+        seq = copy(seq_record)
+        seq.id = f"{seq.id}---{domain}"
+        seq.description = ""
+        sequences_domain.append(seq)
+    logger.debug(f"Writing sequences and Pfam domains to '{fasta_output}'")
+    SeqIO.write(sequences_domain, fasta_output, "fasta")
+    # write Pfam domains output
+    if pfam_output:
+        logger.debug(f"Writing Pfam domains to '{pfam_output}'")
+        with open(pfam_output, "w") as f:
+            f.write(f"#Query\tDomain (Accession)\n\n")
+            name_acc = [f"{hit['name']} ({hit['acc']})" for hit in my_seq_domain_hits]
+            f.write(f"{seq_record.id}\t{'   '.join(name_acc)}\n")
+            f.write("\n\n")
+            for seq_record, seq_domain_hits in zip(sequences, sequences_domain_hits):
+                name_acc = [f"{hit['name']} ({hit['acc']})" for hit in seq_domain_hits]
+                f.write(f"{seq_record.id}\t{'   '.join(name_acc)}\n")

@@ -1,3 +1,4 @@
 biopython
 pyyaml
+requests
 weblogo

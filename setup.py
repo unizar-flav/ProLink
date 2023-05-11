@@ -22,10 +22,12 @@ setup(
         "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
         "Intended Audience :: Science/Research",
         "Topic :: Scientific/Engineering :: Bio-Informatics"
     ],
-    install_requires=["biopython", "pyyaml", "weblogo"],
+    install_requires=["biopython", "pyyaml", "requests", "weblogo"],
     packages=["ProLink", "ProLink.modules"],
     package_data={"ProLink": ["parameters.yaml", "mega_configs/*"]},
     include_package_data=True,
