@@ -105,7 +105,7 @@ def fasta_to_dfasta(seq_record:SeqRecord, fasta_input:str, fasta_output:str, pfa
         else:
             domain = "Different_Domains"
         seq = copy(seq_record)
-        seq.id = f"{seq.id}---{domain}"
+        seq.id = f"{seq.description}---{domain}"
         seq.description = ""
         sequences_domain.append(seq)
     logger.debug(f"Writing sequences and Pfam domains to '{fasta_output}'")
