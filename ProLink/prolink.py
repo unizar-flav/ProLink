@@ -105,9 +105,9 @@ def pro_link(query_proteins:list[str], parameters_default:dict = parameters_defa
                 blast_parse(blast_filename, found_sequences_fastafile, expected_min_identity, True, max_low_identity_seqs)
 
             if cluster_seqs:
-                cluster_results_file = f"{output_dir_n}/cluster_results_{similarity}"
-                cluster_evaluation_file = f"{output_dir_n}/cluster_results_evaluation_{similarity}"
-                cluster_results_fastafile = f"{output_dir_n}/cluster_results_evaluation_{similarity}.fasta"
+                cluster_results_file = f"{output_dir_n}/cluster_seqs.txt"
+                cluster_evaluation_file = f"{output_dir_n}/cluster_seqs_eval.csv"
+                cluster_results_fastafile = f"{output_dir_n}/cluster_seqs_eval.fasta"
                 if pro_clustering_:
                     logger.info(f"\n###  Pro Clustering  ###\n")
                     p_cluster(found_sequences_fastafile, similarity, cluster_results_file, cluster_evaluation_file, cluster_results_fastafile, [min_number_of_clusters_to_cluster_again, max_number_of_clusters_to_cluster_again], similarity_step)
@@ -115,14 +115,16 @@ def pro_link(query_proteins:list[str], parameters_default:dict = parameters_defa
                     logger.info(f"\n###  Clustering  ###\n")
                     cluster(found_sequences_fastafile, similarity, cluster_results_file, cluster_evaluation_file, cluster_results_fastafile)
                 sequences_fastafile = cluster_results_fastafile
-                sequences_fastafile_pfam = f"{output_dir_n}/cluster_results_evaluation_{similarity}_pfam.fasta"
-                pfam_output = f"{output_dir_n}/cluster_results_evaluation_{similarity}_pfam.txt"
-                muscle_output = f"{output_dir_n}/cluster_results_evaluation_{similarity}_aligned.fasta"
+                sequences_fastafile_pfam = f"{output_dir_n}/cluster_seqs_eval_pfam.fasta"
+                pfam_output = f"{output_dir_n}/cluster_seqs_eval_pfam.txt"
+                muscle_output = f"{output_dir_n}/cluster_seqs_eval_aligned.fasta"
+                mega_output = f"{output_dir_n}/cluster_seqs_eval_aligned.mega"
             else:
                 sequences_fastafile = found_sequences_fastafile
-                sequences_fastafile_pfam = f"{output_dir_n}/found_sequences_pfam.fasta"
-                pfam_output = f"{output_dir_n}/found_sequences_pfam.txt"
-                muscle_output = f"{output_dir_n}/found_sequences_aligned.fasta"
+                sequences_fastafile_pfam = f"{output_dir_n}/found_seqs_pfam.fasta"
+                pfam_output = f"{output_dir_n}/found_seqs_pfam.txt"
+                muscle_output = f"{output_dir_n}/found_seqs_aligned.fasta"
+                mega_output = f"{output_dir_n}/found_seqs_aligned.mega"
 
             if check_pfam_domains:
                 logger.info("\nChecking Pfam domains")
@@ -142,7 +144,6 @@ def pro_link(query_proteins:list[str], parameters_default:dict = parameters_defa
                     weblogo3(muscle_output, weblogo_output, weblogo_format)
                 if generate_tree:
                     logger.info("\nGenerating tree")
-                    mega_output = f"{output_dir_n}/cluster_results_evaluation_{similarity}_aligned.mega"
                     tree(tree_type, bootstrap_replications, muscle_output, mega_output)
             else:
                 logger.info("\nSkipping alignment (and logo and tree))")
