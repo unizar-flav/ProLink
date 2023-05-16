@@ -18,8 +18,9 @@ r"""
 import logging
 import os
 from copy import deepcopy
+from datetime import datetime
 
-from . import ProLink_path, parameters_default
+from . import __version__, ProLink_path, parameters_default
 from .modules.blast import blast, blast_parse, p_blast
 from .modules.clustering import cluster, p_cluster
 from .modules.obtaining_sequences import get_seq
@@ -31,6 +32,9 @@ from .modules.weblogo import weblogo3
 logger = logging.getLogger()
 
 def pro_link(query_proteins:list[str], parameters_default:dict = parameters_default, **parameters) -> None:
+
+    time_start = datetime.utcnow()
+    logger.info(f"ProLink v{__version__} started at {time_start.strftime('%Y-%m-%d %H:%M:%S')} UTC\n")
 
     logger.debug(f"ProLink path: {ProLink_path}")
     logger.debug(f"Default parameters: {parameters_default}")
@@ -155,4 +159,6 @@ def pro_link(query_proteins:list[str], parameters_default:dict = parameters_defa
 
         logger.info(f"\nProcess finished for query {seq_record.id}\n\n")
 
-    logger.info(f"End of ProLink. Process finished for all queries.\n\n")
+    time_elapsed = datetime.utcnow() - time_start
+    logger.info(f"End of ProLink. Process finished for all queries.\n" +
+                f"Time elapsed: {time_elapsed.seconds//3600 + 24*time_elapsed.days}h {(time_elapsed.seconds//60)%60}m {time_elapsed.seconds%60}s\n\n")

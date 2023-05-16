@@ -7,6 +7,8 @@ import os
 import yaml
 
 
+__version__ = '0.1.0'
+
 # set up logging
 logging.basicConfig(
     level=logging.INFO,
