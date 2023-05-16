@@ -3,6 +3,8 @@ Blast:
   blast_database: refseq_protein
   blast_local: False
   pro_blast_: False
+  length_restrict: False
+  length_margin: 0.5
   max_low_identity_seqs: 1
   min_low_identity_seqs: 1
   expected_min_identity: 0.25

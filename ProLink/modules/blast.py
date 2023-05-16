@@ -100,7 +100,8 @@ def blast_parse(blast_filename:str,
                 expected_min_identity:float,
                 include_low_identity:bool = True,
                 max_low_identity_seqs:int = None,
-                max_found_sequences:int = None) -> int:
+                max_found_sequences:int = None,
+                lengths:list[int]=[]) -> int:
     '''
     Parse BLAST results to obtain the unique found sequences
 
@@ -122,6 +123,8 @@ def blast_parse(blast_filename:str,
         Maximum number of low identity hits, infinite by default (def: None)
     max_found_sequences : int, optional
         Maximum number of found sequences, infinite by default (def: None)
+    lengths : list[int], optional
+        Lengths of the sequences to restrict to, minimum and maximum (def: all)
 
     Returns
     -------
@@ -161,7 +164,7 @@ def blast_parse(blast_filename:str,
     accession_numbers = list(set(accession_numbers))
     logger.info(f"\nFound {len(accession_numbers)} sequences from {n_hsp} high-scoring segments ({n_low_identity_hsp} with low identity)\n")
     logger.debug(f"Fetching sequences with known accession numbers")
-    get_seq(accession_numbers, found_sequences_fastafile, spaces=False)
+    get_seq(accession_numbers, found_sequences_fastafile, lengths=lengths, spaces=False)
     return n_low_identity_hsp
 
 def p_blast(seq_record:SeqRecord,
@@ -172,6 +175,7 @@ def p_blast(seq_record:SeqRecord,
             max_low_identity_seqs:int,
             additional_hits:int,
             hitlist:int,
+            lengths:list[int]=[],
             database:str = None,
             local:bool = False,
             **kwargs) -> None:
@@ -196,6 +200,8 @@ def p_blast(seq_record:SeqRecord,
         Number of additional hits to add on each iteration
     hitlist : int
         Initial number of hits to search
+    lengths : list[int], optional
+        Lengths of the sequences to restrict to, minimum and maximum (def: all)
     database : str
         Database to search in (def: taken from 'parameters_default')
     local : bool, optional
@@ -209,7 +215,7 @@ def p_blast(seq_record:SeqRecord,
     for iteration in range(max_iter):
         logger.info(f"Pro BLAST iteration {iteration + 1}\n")
         blast(seq_record, blast_filename, database, hitlist, local, **kwargs)
-        n_low_identity_seqs = blast_parse(blast_filename, found_sequences_fastafile, expected_min_identity, True, max_low_identity_seqs, max_hitlist)
+        n_low_identity_seqs = blast_parse(blast_filename, found_sequences_fastafile, expected_min_identity, True, max_low_identity_seqs, max_hitlist, lengths)
         if n_low_identity_seqs >= min_low_identity_seqs or hitlist >= max_hitlist:
             break
         hitlist += additional_hits

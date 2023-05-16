@@ -50,6 +50,8 @@ def pro_link(query_proteins:list[str], parameters_default:dict = parameters_defa
     blast_database = str(parameters['blast_database'])
     blast_local = bool(parameters['blast_local'])
     pro_blast_ = bool(parameters['pro_blast_'])
+    length_restrict = bool(parameters['length_restrict'])
+    length_margin = float(parameters['length_margin'])
     max_low_identity_seqs = int(parameters['max_low_identity_seqs'])
     min_low_identity_seqs = int(parameters['min_low_identity_seqs'])
     expected_min_identity = float(parameters['expected_min_identity'])
@@ -91,7 +93,7 @@ def pro_link(query_proteins:list[str], parameters_default:dict = parameters_defa
     for seq_n, seq_record in enumerate(my_sequences, 1):
 
         try:
-            logger.info(f"\nSequence {seq_n:02d}: {seq_record.id}\n")
+            logger.info(f"\n\n@@@@  Sequence {seq_n:02d}: {seq_record.id}\n")
 
             output_dir_n = f"./{outputs_dir}/{seq_n:02d}_{seq_record.id}"
             logger.debug(f"Create output directory for sequence {seq_n:02d}: {output_dir_n}")
@@ -99,14 +101,20 @@ def pro_link(query_proteins:list[str], parameters_default:dict = parameters_defa
 
             blast_filename = f"{output_dir_n}/blast_results.xml"
             found_sequences_fastafile = f"{output_dir_n}/found_sequences.fasta"
+            if length_restrict:
+                length_margin_seq = int(length_margin*len(seq_record.seq))
+                length_range = [len(seq_record.seq) - length_margin_seq, len(seq_record.seq) + length_margin_seq]
+                logger.debug(f"Length restriction range: {length_range[0]} - {length_range[1]}")
+            else:
+                length_range = []
 
             if pro_blast_:
                 logger.info(f"\n###  Pro BLAST  ###\n")
-                p_blast(seq_record, blast_filename, found_sequences_fastafile, expected_min_identity, min_low_identity_seqs, max_low_identity_seqs, additional_hits, hitlist_size, blast_database, blast_local)
+                p_blast(seq_record, blast_filename, found_sequences_fastafile, expected_min_identity, min_low_identity_seqs, max_low_identity_seqs, additional_hits, hitlist_size, length_range, blast_database, blast_local)
             else:
                 logger.info(f"\n###  BLAST  ###\n")
                 blast(seq_record, blast_filename, blast_database, hitlist_size, blast_local)
-                blast_parse(blast_filename, found_sequences_fastafile, expected_min_identity, True, max_low_identity_seqs)
+                blast_parse(blast_filename, found_sequences_fastafile, expected_min_identity, True, max_low_identity_seqs, None, length_range)
 
             if cluster_seqs:
                 cluster_results_file = f"{output_dir_n}/cluster_seqs.txt"
