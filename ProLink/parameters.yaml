@@ -23,6 +23,7 @@ Pfam domains:
 
 Alignment:
   align_seqs: False
+  trim: False
 
 Weblogo:
   generate_logo: False

@@ -26,6 +26,7 @@ from .modules.clustering import cluster, p_cluster
 from .modules.obtaining_sequences import get_seq
 from .modules.pfam import fasta_to_dfasta
 from .modules.subprocess_functions import align, tree
+from .modules.trim import trim_align
 from .modules.weblogo import weblogo3
 
 
@@ -67,6 +68,7 @@ def pro_link(query_proteins:list[str], parameters_default:dict = parameters_defa
     check_pfam_domains = bool(parameters['check_pfam_domains'])
     # Alignment
     align_seqs = bool(parameters['align_seqs'])
+    trim = bool(parameters['trim'])
     # Weblogo
     generate_logo = bool(parameters['generate_logo'])
     weblogo_format = str(parameters['weblogo_format'])
@@ -129,14 +131,12 @@ def pro_link(query_proteins:list[str], parameters_default:dict = parameters_defa
                 sequences_fastafile = cluster_results_fastafile
                 sequences_fastafile_pfam = f"{output_dir_n}/cluster_seqs_eval_pfam.fasta"
                 pfam_output = f"{output_dir_n}/cluster_seqs_eval_pfam.txt"
-                muscle_output = f"{output_dir_n}/cluster_seqs_eval_aligned.fasta"
-                mega_output = f"{output_dir_n}/cluster_seqs_eval_aligned.mega"
+                align_basename = f"{output_dir_n}/cluster_seqs_eval_aligned"
             else:
                 sequences_fastafile = found_sequences_fastafile
                 sequences_fastafile_pfam = f"{output_dir_n}/found_seqs_pfam.fasta"
                 pfam_output = f"{output_dir_n}/found_seqs_pfam.txt"
-                muscle_output = f"{output_dir_n}/found_seqs_aligned.fasta"
-                mega_output = f"{output_dir_n}/found_seqs_aligned.mega"
+                align_basename = f"{output_dir_n}/found_seqs_aligned"
 
             if check_pfam_domains:
                 logger.info("\nChecking Pfam domains")
@@ -149,14 +149,21 @@ def pro_link(query_proteins:list[str], parameters_default:dict = parameters_defa
 
             if align_seqs:
                 logger.info("\nAligning sequences")
-                align(sequences_fastafile, muscle_output)
+                aligned_fastafile = f"{align_basename}.fasta"
+                align(sequences_fastafile, aligned_fastafile)
+                if trim:
+                    logger.info("\nTrimming alignment")
+                    align_output_trim = f"{align_basename}_trim.fasta"
+                    trim_align(aligned_fastafile, align_output_trim)
+                    aligned_fastafile = align_output_trim
                 if generate_logo:
                     logger.info("\nGenerating sequence logo")
                     weblogo_output = f"{output_dir_n}/logo.{weblogo_format}"
-                    weblogo3(muscle_output, weblogo_output, weblogo_format)
+                    weblogo3(aligned_fastafile, weblogo_output, weblogo_format)
                 if generate_tree:
                     logger.info("\nGenerating tree")
-                    tree(tree_type, bootstrap_replications, muscle_output, mega_output)
+                    mega_output = f"{aligned_fastafile}.mega"
+                    tree(tree_type, bootstrap_replications, aligned_fastafile, mega_output)
             else:
                 logger.info("\nSkipping alignment (and logo and tree))")
 

@@ -20,19 +20,20 @@ The script is designed to be executed in Google Colab.
 | query_proteins                            | UniProt code of the query proteins. Eg: "ABQ62066.1, ABQ62091.1, ABQ62490.1".                    |
 | hitlist_size                              | Number of found sequences obtained via Blast.                                                    |
 | blast_database                            | Database used in blast.                                                                          |
-| pro_blast_                                | Boolean parameter to select "Pro BLAST" or regular BLAST.                                        |
-| length_restrict                           | Boolean parameter to resctrict the length of the found sequences with respect the query.         |
+| pro_blast_                                | Boolean to select "Pro BLAST" or regular BLAST.                                                  |
+| length_restrict                           | Boolean to resctrict the length of the found sequences with respect the query.                   |
 | length_margin                             | Number to multiply the query length and restrict the min and max length of the found sequences.  |
-| cluster_seqs                              | Boolean parameter to select if clustering the sequences.                                         |
+| cluster_seqs                              | Boolean to select if clustering the sequences.                                                   |
 | similarity                                | Initial similarity treshold to group the sequences into clusters.                                |
-| pro_clustering_                           | Boolean parameter to select "Pro Clustering" or regular clustering.                              |
+| pro_clustering_                           | Boolean to select "Pro Clustering" or regular clustering.                                        |
 | similarity_step                           | Step to increase or decrease the similarity threshold while "pro_clustering".                    |
 | min_number_of_clusters_to_cluster_again   | Minimum number of clusters allowed when using "Pro Clustering".                                  |
 | max_number_of_clusters_to_cluster_again   | Maximum number of clusters allowed when using "Pro Clustering".                                  |
-| check_pfam_domains                        | Boolean parameter to select if checking the Pfam domains of the sequences.                       |
-| align_seqs                                | Boolean parameter to select if aligning the sequences.                                           |
-| generate_logo                             | Boolean parameter to select if generating a sequence logo.                                       |
-| generate_tree                             | Boolean parameter to select if generating a phylogenetic tree.                                   |
+| check_pfam_domains                        | Boolean to select if checking the Pfam domains of the sequences.                                 |
+| align_seqs                                | Boolean to select if aligning the sequences.                                                     |
+| trim                                      | Boolean to select if trimming the alignment retaining phylogenetically-informative sites.        |
+| generate_logo                             | Boolean to select if generating a sequence logo.                                                 |
+| generate_tree                             | Boolean to select if generating a phylogenetic tree.                                             |
 | tree_type                                 | Type of phylogenetic tree. Needs to be either "NJ" (Neighbor Joining) or "ML" (Maximum Likehood).|
 
 ***Advanced parameters (in ProLink/parameters.yaml)***
