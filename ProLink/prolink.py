@@ -23,7 +23,7 @@ from datetime import datetime
 from . import __version__, ProLink_path, parameters_default
 from .modules.blast import blast, blast_parse, p_blast
 from .modules.clustering import cluster, p_cluster
-from .modules.obtaining_sequences import get_seq
+from .modules.obtaining_sequences import check_seq_in, get_seq
 from .modules.pfam import fasta_to_dfasta
 from .modules.subprocess_functions import align, tree
 from .modules.trim import trim_align
@@ -117,6 +117,8 @@ def pro_link(query_proteins:list[str], parameters_default:dict = parameters_defa
                 logger.info(f"\n###  BLAST  ###\n")
                 blast(seq_record, blast_filename, blast_database, hitlist_size, blast_local)
                 blast_parse(blast_filename, found_sequences_fastafile, expected_min_identity, True, max_low_identity_seqs, None, length_range)
+
+            check_seq_in(seq_record, found_sequences_fastafile)
 
             if cluster_seqs:
                 cluster_results_file = f"{output_dir_n}/cluster_seqs.txt"
