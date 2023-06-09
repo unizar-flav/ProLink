@@ -153,15 +153,19 @@ def pro_link(query_proteins:list[str], parameters_default:dict = parameters_defa
                 logger.info("\nAligning sequences")
                 aligned_fastafile = f"{align_basename}.fasta"
                 align(sequences_fastafile, aligned_fastafile)
+                if generate_logo:
+                    logger.info("\nGenerating sequence logo")
+                    weblogo_output = f"{output_dir_n}/logo.{weblogo_format}"
+                    weblogo3(aligned_fastafile, weblogo_output, weblogo_format)
                 if trim:
                     logger.info("\nTrimming alignment")
                     align_output_trim = f"{align_basename}_trim.fasta"
                     trim_align(aligned_fastafile, align_output_trim)
                     aligned_fastafile = align_output_trim
-                if generate_logo:
-                    logger.info("\nGenerating sequence logo")
-                    weblogo_output = f"{output_dir_n}/logo.{weblogo_format}"
-                    weblogo3(aligned_fastafile, weblogo_output, weblogo_format)
+                    if generate_logo:
+                        logger.info("\nGenerating trimmed sequence logo")
+                        weblogo_output_trim = f"{output_dir_n}/logo_trim.{weblogo_format}"
+                        weblogo3(aligned_fastafile, weblogo_output_trim, weblogo_format)
                 if generate_tree:
                     logger.info("\nGenerating tree")
                     mega_output = f"{aligned_fastafile}.mega"
