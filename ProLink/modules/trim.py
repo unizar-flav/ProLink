@@ -32,5 +32,5 @@ def trim_align(alignment_fastafile:str, alignment_trim_fastafile:str, mode:str='
         gaps = 0.9,
         complement = False,
         mode = TrimmingMode(mode),
-        use_log = True
+        use_log = False
         )
