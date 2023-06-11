@@ -1,0 +1,29 @@
+name: prolink
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - python=3.10
+  - pip
+  - git
+  - pyyaml
+  - requests
+  - biopython
+  - bioconda::muscle=5
+  - bioconda::clipkit
+  - bioconda::weblogo
+  - ghostscript
+  # ALFATClust
+  - numpy
+  - scipy
+  - pandas
+  - python-igraph
+  - leidenalg
+  - bioconda::mash=2
+  - bioconda::mmseqs2=14
+  - pip:
+    - git+https://github.com/unizar-flav/ProLink.git
+  # MANUAL INSTALLATION REQUIRED
+  # mega-cc=10  @ www.megasoftware.net
+  # alfatclust  @ github.com/unizar-flav/AFLATClust
