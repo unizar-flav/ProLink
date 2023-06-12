@@ -14,7 +14,7 @@ dependencies:
   - bioconda::clipkit
   - bioconda::weblogo
   - ghostscript
-  # ALFATClust
+  # ALFATClust dependencies
   - numpy
   - scipy
   - pandas
@@ -22,8 +22,9 @@ dependencies:
   - leidenalg
   - bioconda::mash=2
   - bioconda::mmseqs2=14
+  # ProLink
   - pip:
     - git+https://github.com/unizar-flav/ProLink.git
-  # MANUAL INSTALLATION REQUIRED
-  # mega-cc=10  @ www.megasoftware.net
-  # alfatclust  @ github.com/unizar-flav/AFLATClust
+  # Manual installation
+  # mega-cc=10  @ https://www.megasoftware.net
+  # alfatclust  @ https://github.com/unizar-flav/ALFATClust
