@@ -1,5 +1,6 @@
 
 import logging
+from textwrap import dedent
 
 from clipkit.clipkit import execute as clipkit_execute
 from clipkit.helpers import SeqType
@@ -23,7 +24,7 @@ def trim_align(alignment_fastafile:str, alignment_trim_fastafile:str, mode:str='
         Modes: 'smart-gap', 'gappy', 'kpic', 'kpic-smart-gap', 'kpic-gappy', 'kpi', 'kpi-smart-gap', 'kpi-gappy'
     '''
     logger.info(f"\n-- Trimming alignment with ClipKIT\n")
-    clipkit_execute(
+    clipkit_stats = clipkit_execute(
         input_file = alignment_fastafile,
         input_file_format = 'fasta',
         output_file = alignment_trim_fastafile,
@@ -33,4 +34,13 @@ def trim_align(alignment_fastafile:str, alignment_trim_fastafile:str, mode:str='
         complement = False,
         mode = TrimmingMode(mode),
         use_log = False
-        )
+        )["stats"]
+    logger.info(dedent(f"""\
+        Trimming statistics:
+        Alignment file:           {alignment_fastafile}
+        Trimmed alignment file:   {alignment_trim_fastafile}
+        Trimming mode:            {mode}
+        Number of sites kept:     {clipkit_stats["output_length"]}
+        Number of sites trimmed:  {clipkit_stats["trimmed_length"]}
+        Percentage of alignment trimmed: {clipkit_stats["trimmed_percentage"]:.3f}%
+        """))
