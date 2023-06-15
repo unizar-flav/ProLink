@@ -118,7 +118,7 @@ def pro_link(query_proteins:list[str], parameters_default:dict = parameters_defa
                 blast(seq_record, blast_filename, blast_database, hitlist_size, blast_local)
                 blast_parse(blast_filename, found_sequences_fastafile, expected_min_identity, True, max_low_identity_seqs, None, length_range)
 
-            check_seq_in(seq_record, found_sequences_fastafile)
+            check_seq_in(seq_record, found_sequences_fastafile, rewrite=True, spaces=False)
 
             if cluster_seqs:
                 cluster_results_file = f"{output_dir_n}/cluster_seqs.txt"
@@ -175,10 +175,10 @@ def pro_link(query_proteins:list[str], parameters_default:dict = parameters_defa
 
         except Exception as e:
             logger.debug("", exc_info=True)
-            logger.error(f"ERROR: Fatal error on query {seq_record.id}. Aborting.")
+            logger.error(f"\nERROR: Fatal error on query {seq_record.id}. Aborting.")
             continue
 
-        logger.info(f"\nProcess finished for query {seq_record.id}\n\n")
+        logger.info(f"\n\nProcess finished for query {seq_record.id}\n\n")
 
     time_elapsed = datetime.utcnow() - time_start
     logger.info(f"End of ProLink. Process finished for all queries.\n" +
