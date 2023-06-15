@@ -54,7 +54,7 @@ def get_seq(IDs:list[str], fastafile:str='', lengths:list[int]=[], spaces:bool=T
         SeqIO.write(seq_list, fastafile, "fasta")
     return seq_list
 
-def check_seq_in(seq:SeqRecord, fastafile:str, rewrite:bool=True) -> bool:
+def check_seq_in(seq:SeqRecord, fastafile:str, rewrite:bool=True, spaces:bool=True) -> bool:
     '''
     Check if a sequence is in a FASTA file
 
@@ -66,6 +66,9 @@ def check_seq_in(seq:SeqRecord, fastafile:str, rewrite:bool=True) -> bool:
         Path of the fasta file to read (and write if not found)
     rewrite : bool, optional
         Rewrite the fasta file with the query sequence if not found (def: True)
+    spaces : bool, optional
+        Include spaces in the description of the sequence in the FASTA file
+        Otherwise, replace them with underscores (def: True)
 
     Returns
     -------
@@ -77,6 +80,9 @@ def check_seq_in(seq:SeqRecord, fastafile:str, rewrite:bool=True) -> bool:
     logger.info(f"Query sequence {'found' if seq_in else 'not found'} in '{fastafile}'")
     if not seq_in and rewrite:
         logger.info(f"Prepending query sequence in '{fastafile}'")
+        if not spaces:
+            logger.debug("Replacing spaces with underscores in the description")
+            seq.description = seq.description.replace(" ", "_")
         fastafile_seqs.insert(0, seq)
         SeqIO.write(fastafile_seqs, fastafile, "fasta")
     return seq_in
