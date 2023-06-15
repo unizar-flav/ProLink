@@ -139,6 +139,9 @@ def blast_parse(blast_filename:str,
     n_hsp = 0
     n_low_identity_hsp = 0
     accession_numbers = []
+    if not records.alignments:
+        logger.error(f"No BLAST alignments found in '{blast_filename}'")
+        raise RuntimeError("No BLAST alignments found")
     for alignment in records.alignments:
         if 'partial' in alignment.title.lower():
             logger.debug(f"Partial found. Skipping sequence '{alignment.title}'")
