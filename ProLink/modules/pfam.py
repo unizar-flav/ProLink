@@ -1,7 +1,7 @@
 
+import json
 import logging
 from copy import copy
-from xml.dom import minidom
 
 import requests
 from Bio import SeqIO
@@ -23,14 +23,14 @@ def search_hmmer_pfam(seq:str) -> list[dict]:
 
     Returns
     -------
-    domain_hits : list[dict]
+    list[dict]
         List of dictionaries with the Pfam families and information of them
-        Common keys: 'name', 'acc', 'bias', 'desc', 'evalue', 'flags', 'hindex', 'ndom',
-                     'nincluded', 'nregions', 'nreported', 'pvalue', 'score', 'taxid'
+        Common keys: 'flags', 'nregions', 'ndom', 'name', 'score', 'bias', 'taxid', 'acc',
+                     'domains', 'nincluded', 'evalue', 'desc', 'pvalue', 'nreported', 'hindex'
     '''
     # request to HMMER
     hmmscan_url = 'https://www.ebi.ac.uk/Tools/hmmer/search/hmmscan'
-    header = {'Expect': '', 'Accept': 'text/xml'}
+    header = {'Expect': '', 'Accept': 'application/json'}
     parameters = {
         'hmmdb': 'pfam',
         'seq': f">Seq\n{seq}"
@@ -46,13 +46,9 @@ def search_hmmer_pfam(seq:str) -> list[dict]:
             logger.error(f"ERROR: Something went wrong while searching for Pfam domains. Error code: {response.status_code}")
         logger.debug(f"HMMER response:\n{response.text}")
         raise Exception(f"Something went wrong while searching for Pfam domains: Error {response.status_code}")
-    # parse XML response
-    response_xml = minidom.parseString(response.text)
-    hits = response_xml.getElementsByTagName('hits')
-    domain_hits = []
-    for hit in hits:
-        domain_hits.append({key: value for key, value in hit.attributes.items()})
-    return domain_hits
+    # parse JSON response
+    response_json = json.loads(response.text)
+    return response_json['results']['hits']
 
 def fasta_to_dfasta(seq_record:SeqRecord, fasta_input:str, fasta_output:str, pfam_output:str=None) -> None:
     '''
