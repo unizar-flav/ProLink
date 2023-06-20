@@ -45,9 +45,9 @@ def cluster(found_sequences_fastafile:str,
         Evaluation file:          '{cluster_evaluation_file}'
         """))
     alfatclust_cmd = ['alfatclust.py', '-i', found_sequences_fastafile, '-o', cluster_results_file, '-e', cluster_evaluation_file, '-ea' ,'-l' , str(similarity)]
-    logging.debug(f"ALFATClust command: {alfatclust_cmd}")
+    logging.debug(f"ALFATClust command: {' '.join(alfatclust_cmd)}")
     alfatclust_run = subprocess.run(alfatclust_cmd)
-    if alfatclust_run.returncode != 0:
+    if alfatclust_run.returncode != 0 or not os.path.exists(cluster_results_file):
         logger.error(f"ERROR: ALFATClust failed")
         raise RuntimeError(f"ALFATClust failed")
 
