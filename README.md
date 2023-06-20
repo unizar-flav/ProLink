@@ -17,7 +17,7 @@ The script is designed to be executed in Google Colab. Although it can be instal
 ***Parameters***
 | Argument name                             | Description                                                                                      |
 | ----------------------------------------- | -------------------------------------------------------------------------------------------------|
-| query_proteins                            | Protein sequence code to query. Will be searched on [NCBI](www.ncbi.nlm.nih.gov/Entrez).         |
+| query_proteins                            | Protein sequence code to query. Will be searched on [NCBI](https://www.ncbi.nlm.nih.gov/Entrez). |
 | hitlist_size                              | Number of found sequences to obtain after BLAST.                                                 |
 | blast_database                            | Database used in BLAST.                                                                          |
 | pro_blast_                                | Boolean to select [*Pro BLAST*](#pro-blast) or regular *BLAST*.                                  |
@@ -58,21 +58,15 @@ The script is designed to be executed in Google Colab. Although it can be instal
 
 *Pro BLAST* allows to search for homologous sequences via the BLAST tool, but making sure that low identity seqs are also represented in the output.
 
-Firstly, a regular BLAST is launched and `hitlist_size` seqs are obtained.
+Firstly, a regular BLAST is launched and `hitlist_size` seqs are obtained. If the number of low identity seqs in the found seqs are below the `min_low_identity_seqs` parameter, a new regular BLAST will be launched but with hitlist_size += `additional_hits`. It will stop when the number of low identity seqs reach `max_low_identity_seqs`.
 
-If the number of low identity seqs in the found seqs are below the `min_low_identity_seqs` parameter, a new regular BLAST will be launched but with hitlist_size += `additional_hits`.
+### Pro Clustering
 
-It will stop when the number of low identity seqs reach `max_low_identity_seqs`, or when more than 10000 sequences are found (this limit is due to the computing capacity of the Google collab servers when clustering. In a future update, this value will be included as an advanced parameter).
-
-### Pro clustering
-
-ALFATClust is the tool that is used to cluster the sequences. It is a recent and relatively fast tool, but it does not let the user choose the number of clusters produced when grouping the sequences.
+[ALFATClust](https://github.com/phglab/ALFATClust) is the tool that is used to cluster the sequences. It is a recent and relatively fast tool, but it does not let the user choose the number of clusters produced when grouping the sequences.
 
 *Pro Clustering* allows to obtain a number of clusters in a determined range.
 
-Firstly, a regular clustering with the determined similarity is executed.
-
-If the number of clusters is avobe the `max_number_of_clusters_to_cluster_again` value, the sequences will be clustered again but with similarity -= `similarity_step`, in order to obtain an inferior number of clusters. On the contrary, if the number of clusters is below the `min_number_of_clusters_to_cluster_again`, the similarity requested will be increased.
+Firstly, a regular clustering with the determined similarity is executed. If the number of clusters is avobe the `max_number_of_clusters_to_cluster_again` value, the sequences will be clustered again but with similarity -= `similarity_step`, in order to obtain an inferior number of clusters. On the contrary, if the number of clusters is below the `min_number_of_clusters_to_cluster_again`, the similarity requested will be increased.
 
 
 ## References

@@ -213,13 +213,12 @@ def p_blast(seq_record:SeqRecord,
     **kwargs
         Additional keyword arguments to pass to the 'qblast' function or 'blastp' program
     '''
-    max_hitlist = 10000     # Google Colab limit
     max_iter = 100
     for iteration in range(max_iter):
         logger.info(f"Pro BLAST iteration {iteration + 1}\n")
         blast(seq_record, blast_filename, database, hitlist, local, **kwargs)
-        n_low_identity_seqs = blast_parse(blast_filename, found_sequences_fastafile, expected_min_identity, True, max_low_identity_seqs, max_hitlist, lengths)
-        if n_low_identity_seqs >= min_low_identity_seqs or hitlist >= max_hitlist:
+        n_low_identity_seqs = blast_parse(blast_filename, found_sequences_fastafile, expected_min_identity, True, max_low_identity_seqs, None, lengths)
+        if n_low_identity_seqs >= min_low_identity_seqs:
             break
         hitlist += additional_hits
         logger.info(f"The number of low identity sequences is below the desired value\nBlasting again with {hitlist} hits")

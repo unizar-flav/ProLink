@@ -31,11 +31,14 @@ def get_seq(IDs:list[str], fastafile:str='', lengths:list[int]=[], spaces:bool=T
     '''
     seq_list = []
     IDs = [IDs] if isinstance(IDs, str) else IDs
-    Entrez.email = "example@example.com"
-    with Entrez.efetch(db="protein", rettype="gb", retmode="text", id=IDs) as handle:
-        for seq_record in SeqIO.parse(handle, "gb"):
-            rec = SeqRecord(Seq(str(seq_record.seq)), id=seq_record.id, description=seq_record.description)
-            seq_list.append(rec)
+    # break IDs into chunks of 1000
+    IDs_chunks = [IDs[i:i + 1000] for i in range(0, len(IDs), 1000)]
+    for IDs_chunk in IDs_chunks:
+        Entrez.email = "example@example.com"
+        with Entrez.efetch(db="protein", rettype="gb", retmode="text", id=IDs_chunk) as handle:
+            for seq_record in SeqIO.parse(handle, "gb"):
+                rec = SeqRecord(Seq(str(seq_record.seq)), id=seq_record.id, description=seq_record.description)
+                seq_list.append(rec)
     if len(seq_list) != len(IDs):
         not_found = set(IDs) - set([seq_record.id for seq_record in seq_list])
         logger.warning(f"WARNING: Unable to obtain sequences for: {', '.join(not_found)}")
