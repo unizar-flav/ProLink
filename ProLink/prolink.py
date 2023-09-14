@@ -22,7 +22,7 @@ from datetime import datetime
 
 from . import __version__, ProLink_path, parameters_default
 from .modules.blast import blast, blast_parse, p_blast
-from .modules.clustering import cluster, p_cluster
+from .modules.clustering import cluster_mmseqs, p_cluster
 from .modules.obtaining_sequences import check_seq_in, get_seq
 from .modules.pfam import fasta_to_dfasta
 from .modules.subprocess_functions import align, tree
@@ -102,7 +102,7 @@ def pro_link(query_proteins:list[str], parameters_default:dict = parameters_defa
             os.makedirs(output_dir_n, exist_ok=True)
 
             blast_filename = f"{output_dir_n}/blast_results.xml"
-            found_sequences_fastafile = f"{output_dir_n}/found_sequences.fasta"
+            found_sequences_fastafile = f"{output_dir_n}/seqs_blast.fasta"
             if length_restrict:
                 length_margin_seq = int(length_margin*len(seq_record.seq))
                 length_range = [len(seq_record.seq) - length_margin_seq, len(seq_record.seq) + length_margin_seq]
@@ -121,24 +121,23 @@ def pro_link(query_proteins:list[str], parameters_default:dict = parameters_defa
             check_seq_in(seq_record, found_sequences_fastafile, rewrite=True, spaces=False)
 
             if cluster_seqs:
-                cluster_results_file = f"{output_dir_n}/cluster_seqs.txt"
-                cluster_evaluation_file = f"{output_dir_n}/cluster_seqs_eval.csv"
-                cluster_results_fastafile = f"{output_dir_n}/cluster_seqs_eval.fasta"
+                cluster_results = f"{output_dir_n}/seqs_cluster"
+                cluster_results_fastafile = f"{cluster_results}.fasta"
                 if pro_clustering_:
                     logger.info(f"\n###  Pro Clustering  ###\n")
-                    p_cluster(found_sequences_fastafile, similarity, cluster_results_file, cluster_evaluation_file, cluster_results_fastafile, [min_number_of_clusters_to_cluster_again, max_number_of_clusters_to_cluster_again], similarity_step)
+                    p_cluster(found_sequences_fastafile, cluster_results, [min_number_of_clusters_to_cluster_again, max_number_of_clusters_to_cluster_again], similarity, similarity_step)
                 else:
                     logger.info(f"\n###  Clustering  ###\n")
-                    cluster(found_sequences_fastafile, similarity, cluster_results_file, cluster_evaluation_file, cluster_results_fastafile)
+                    cluster_mmseqs(found_sequences_fastafile, cluster_results, similarity)
                 sequences_fastafile = cluster_results_fastafile
-                sequences_fastafile_pfam = f"{output_dir_n}/cluster_seqs_eval_pfam.fasta"
-                pfam_output = f"{output_dir_n}/cluster_seqs_eval_pfam.txt"
-                align_basename = f"{output_dir_n}/cluster_seqs_eval_aligned"
+                sequences_fastafile_pfam = f"{output_dir_n}/seqs_cluster_pfam.fasta"
+                pfam_output = f"{output_dir_n}/seqs_cluster_pfam.txt"
+                align_basename = f"{output_dir_n}/seqs_cluster_aligned"
             else:
                 sequences_fastafile = found_sequences_fastafile
-                sequences_fastafile_pfam = f"{output_dir_n}/found_seqs_pfam.fasta"
-                pfam_output = f"{output_dir_n}/found_seqs_pfam.txt"
-                align_basename = f"{output_dir_n}/found_seqs_aligned"
+                sequences_fastafile_pfam = f"{output_dir_n}/seqs_blast_pfam.fasta"
+                pfam_output = f"{output_dir_n}/seqs_blast_pfam.txt"
+                align_basename = f"{output_dir_n}/seqs_blast_aligned"
 
             if check_pfam_domains:
                 logger.info("\nChecking Pfam domains")

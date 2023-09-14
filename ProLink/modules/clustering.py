@@ -3,6 +3,7 @@ import logging
 import os
 import subprocess
 from copy import copy
+from tempfile import TemporaryDirectory
 from textwrap import dedent
 
 from Bio import SeqIO
@@ -11,11 +12,95 @@ from Bio.SeqRecord import SeqRecord
 
 logger = logging.getLogger()
 
-def cluster(found_sequences_fastafile:str,
-            similarity:float,
-            cluster_results_file:str,
-            cluster_evaluation_file:str,
-            cluster_results_fastafile:str) -> int:
+def cluster_mmseqs(found_sequences_fastafile:str,
+                   cluster_results:str,
+                   similarity:float=0.6) -> int:
+    '''
+    Cluster sequences with MMseqs2
+
+    Parameters
+    ----------
+    found_sequences_fastafile : str
+        Path of the file with the sequences to cluster (FASTA format)
+    cluster_results : str
+        Basename for the files with the clustering results (.tsv, .txt, .csv and .fasta)
+    similarity : float, optional
+        Minimum sequence similarity/identity for clustering together (0-1) (def: 0.6)
+
+    Returns
+    -------
+    int
+        Number of clusters
+    '''
+    # similarity between 0 and 1
+    similarity = min(max(similarity, 0), 1)
+    # output files
+    cluster_results_tsv = f"{cluster_results}.tsv"
+    cluster_results_txt = f"{cluster_results}.txt"
+    cluster_results_csv = f"{cluster_results}.csv"
+    cluster_results_fasta = f"{cluster_results}.fasta"
+    # check if file exists and remove it
+    for file in [cluster_results_tsv, cluster_results_txt, cluster_results_csv, cluster_results_fasta]:
+        if os.path.exists(file):
+            logger.debug(f"Removing file: '{file}'")
+            os.remove(file)
+    logging.info(dedent(f"""
+        -- Clustering sequences with MMseqs2
+        Minimum sequence identity:  {similarity}
+        Input file:                '{found_sequences_fastafile}'
+        Results files:             '{cluster_results_txt}' / '{cluster_results_csv}' / '{cluster_results_fasta}'
+        """))
+    # perform the clustering
+    with TemporaryDirectory() as tmp_dir:
+        create_db_cmd = ['mmseqs', 'createdb', '--dbtype', '1', '--shuffle', '0', '--createdb-mode', '0', found_sequences_fastafile, os.path.join(tmp_dir, 'input_DB')]
+        logging.debug(f"MMseqs2 create DB command: {' '.join(create_db_cmd)}")
+        create_db_run = subprocess.run(create_db_cmd)
+        cluster_cmd = ['mmseqs', 'cluster', '--cluster-mode', '0', '--min-seq-id', str(similarity), os.path.join(tmp_dir, 'input_DB'), os.path.join(tmp_dir, 'cluster_DB'), os.path.join(tmp_dir, 'tmp')]
+        logging.debug(f"MMseqs2 cluster command: {' '.join(cluster_cmd)}")
+        cluster_run = subprocess.run(cluster_cmd)
+        createtsv_cmd = ['mmseqs', 'createtsv', '--first-seq-as-repr', '0', '--full-header', '0', '--idx-seq-src', '0', os.path.join(tmp_dir, 'input_DB'), os.path.join(tmp_dir, 'input_DB'), os.path.join(tmp_dir, 'cluster_DB'), cluster_results_tsv]
+        logging.debug(f"MMseqs2 createtsv command: {' '.join(createtsv_cmd)}")
+        createtsv_run = subprocess.run(createtsv_cmd)
+    # process the '.tsv' file
+    found_sequences = list(SeqIO.parse(found_sequences_fastafile, "fasta"))
+    with open(cluster_results_tsv, 'r') as f:
+        cluster_results = f.readlines()
+    clusters = {}
+    with open(cluster_results_tsv, 'r') as f:
+        for line in f:
+            ref, seq = line.strip().split()
+            clusters.setdefault(ref, [])
+            for seq_record in found_sequences:
+                if seq_record.id == seq:
+                    clusters[ref].append(seq_record)
+                    break
+    logging.info(f"Clustering done. Number of clusters: {len(clusters)}")
+    # write '.txt' file
+    with open(cluster_results_txt, 'w') as f:
+        for n_cluster, (ref, seqs) in enumerate(clusters.items(), 1):
+            f.write(f"#Cluster {n_cluster}\n")
+            for seq in seqs:
+                f.write(f"{seq.description}\n")
+    # write '.csv' file
+    with open(cluster_results_csv, 'w') as f:
+        f.write(f"# Cluster ID, No. of sequences, Center sequence\n")
+        for n_cluster, (ref, seqs) in enumerate(clusters.items(), 1):
+            f.write(f"{n_cluster}, {len(seqs)}, {seqs[0].description}\n")
+    # write '.fasta' file
+    clusters_fastafile = []
+    for n_cluster, (ref, seqs) in enumerate(clusters.items(), 1):
+        seq = copy(seqs[0])
+        seq.id = f"{seq.description}---C{n_cluster}"
+        seq.description = ""
+        clusters_fastafile.append(seq)
+    SeqIO.write(clusters_fastafile, cluster_results_fasta, "fasta")
+    return len(clusters)
+
+def cluster_alfatclust(found_sequences_fastafile:str,
+                       similarity:float,
+                       cluster_results_file:str,
+                       cluster_evaluation_file:str,
+                       cluster_results_fastafile:str) -> int:
     '''
     Cluster sequences with ALFATClust
 
@@ -77,31 +162,25 @@ def cluster(found_sequences_fastafile:str,
     return n_clusters
 
 def p_cluster(found_sequences_fastafile:str,
-              similarity:float,
-              cluster_results_file:str,
-              cluster_evaluation_file:str,
-              cluster_results_fastafile:str,
+              cluster_results:str,
               n_clusters_range:list[int],
-              similarity_step:float=0.05) -> int:
+              similarity:float=0.6,
+              similarity_step:float=0.02) -> int:
     '''
-    Pro Cluster sequences with ALFATClust
+    Pro Cluster sequences with MMseqs2
 
     Parameters
     ----------
     found_sequences_fastafile : str
         Path of the file with the sequences to cluster (FASTA format)
-    similarity : float
-        Similarity threshold for clustering
-    cluster_results_file : str
-        Path of the file with the clustering results
-    cluster_evaluation_file : str
-        Path of the file with the clustering evaluation
-    cluster_results_fastafile : str
-        Path of the file with the clustered sequences (FASTA format)
+    cluster_results : str
+        Basename for the files with the clustering results (.tsv, .txt, .csv and .fasta)
     n_clusters_range : list[int]
         Range of number of clusters to cluster the sequences
+    similarity : float, optional
+        Minimum sequence similarity/identity for clustering together (0-1) (def: 0.6)
     similarity_step : float, optional
-        Step to increase or decrease the similarity threshold (def: 0.05)
+        Step to increase or decrease the identity threshold (def: 0.02)
 
     Returns
     -------
@@ -110,24 +189,20 @@ def p_cluster(found_sequences_fastafile:str,
     '''
     #TODO: dinamic similarity_step (guess from previous iteration results)
     max_iter = 100
-    similarities = set()
+    min_ids = set()
     for iteration in range(max_iter):
         logger.info(f"Pro Clustering iteration {iteration+1}\n")
-        n_clusters = cluster(found_sequences_fastafile, similarity, cluster_results_file, cluster_evaluation_file, cluster_results_fastafile)
+        n_clusters = cluster_mmseqs(found_sequences_fastafile, cluster_results, similarity)
         if n_clusters_range[0] <= n_clusters <= n_clusters_range[1]:
             break
         logging.info(f"Number of clusters {n_clusters} not in range {n_clusters_range}")
-        if similarity in similarities:
-            logger.warning(f"WARNING: Pro Clustering failed converging (new similarity already used)")
+        if similarity in min_ids:
+            logger.warning(f"WARNING: Pro Clustering failed converging (similarity already used)")
             break
         sign = 1 if n_clusters < n_clusters_range[0] else -1
         similarity += sign * similarity_step
-        similarities.add(similarity)
+        min_ids.add(similarity)
         logger.info(f"Clustering again with similarity = {similarity}")
-        logger.debug(f"Removing files: '{cluster_results_file}', '{cluster_evaluation_file}', '{cluster_results_fastafile}'")
-        os.remove(cluster_results_file)
-        os.remove(cluster_evaluation_file)
-        os.remove(cluster_results_fastafile)
     else:
         logger.error(f"ERROR: Pro Clustering failed: maximum number of iterations reached")
         raise Exception("Maximum number of iterations reached")
