@@ -1,5 +1,5 @@
 biopython
-clipkit
+clipkit==1
 pyyaml
 requests
 weblogo

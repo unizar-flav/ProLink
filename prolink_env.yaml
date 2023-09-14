@@ -13,7 +13,7 @@ dependencies:
   - requests
   - biopython
   - bioconda::muscle=5
-  - bioconda::clipkit
+  - bioconda::clipkit=1
   - bioconda::weblogo
   - ghostscript
 
