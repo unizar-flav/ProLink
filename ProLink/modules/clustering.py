@@ -188,20 +188,24 @@ def p_cluster(found_sequences_fastafile:str,
         Number of clusters
     '''
     #TODO: dinamic similarity_step (guess from previous iteration results)
+    found_sequences = list(SeqIO.parse(found_sequences_fastafile, "fasta"))
+    n_clusters_range = sorted(n_clusters_range)
+    n_clusters_range = [max(n_clusters_range[0], len(found_sequences)), min(n_clusters_range[1], len(found_sequences))]
+    logger.info(f"Pro Clustering looking for {n_clusters_range[0]}-{n_clusters_range[1]} clusters")
     max_iter = 100
-    min_ids = set()
+    similarities = set()
     for iteration in range(max_iter):
         logger.info(f"Pro Clustering iteration {iteration+1}\n")
         n_clusters = cluster_mmseqs(found_sequences_fastafile, cluster_results, similarity)
         if n_clusters_range[0] <= n_clusters <= n_clusters_range[1]:
             break
         logging.info(f"Number of clusters {n_clusters} not in range {n_clusters_range}")
-        if similarity in min_ids:
+        if similarity in similarities:
             logger.warning(f"WARNING: Pro Clustering failed converging (similarity already used)")
             break
         sign = 1 if n_clusters < n_clusters_range[0] else -1
         similarity += sign * similarity_step
-        min_ids.add(similarity)
+        similarities.add(similarity)
         logger.info(f"Clustering again with similarity = {similarity}")
     else:
         logger.error(f"ERROR: Pro Clustering failed: maximum number of iterations reached")
