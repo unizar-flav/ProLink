@@ -28,10 +28,10 @@ setup(
         "Topic :: Scientific/Engineering :: Bio-Informatics"
     ],
     install_requires=[
-        "biopython", 
-        "clipkit", 
-        "pyyaml", 
-        "requests", 
+        "biopython",
+        "clipkit<2",
+        "pyyaml",
+        "requests",
         "weblogo"
     ],
     packages=["ProLink", "ProLink.modules"],
