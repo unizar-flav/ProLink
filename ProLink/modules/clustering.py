@@ -190,7 +190,7 @@ def p_cluster(found_sequences_fastafile:str,
     #TODO: dinamic similarity_step (guess from previous iteration results)
     found_sequences = list(SeqIO.parse(found_sequences_fastafile, "fasta"))
     n_clusters_range = sorted(n_clusters_range)
-    n_clusters_range = [max(n_clusters_range[0], len(found_sequences)), min(n_clusters_range[1], len(found_sequences))]
+    n_clusters_range = [min(n_clusters_range[0], len(found_sequences)), min(n_clusters_range[1], len(found_sequences))]
     logger.info(f"Pro Clustering looking for {n_clusters_range[0]}-{n_clusters_range[1]} clusters")
     max_iter = 100
     similarities = set()
