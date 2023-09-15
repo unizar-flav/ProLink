@@ -29,7 +29,7 @@ setup(
     ],
     install_requires=[
         "biopython",
-        "clipkit<2",
+        "clipkit",
         "pyyaml",
         "requests",
         "weblogo"
