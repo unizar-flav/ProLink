@@ -12,9 +12,9 @@ Blast:
 
 Clustering:
   cluster_seqs: False
-  similarity: 0.6
+  min_seq_id: 0.6
   pro_clustering_: False
-  similarity_step: 0.02
+  min_seq_id_step: 0.02
   min_number_of_clusters_to_cluster_again: 50
   max_number_of_clusters_to_cluster_again: 300
 

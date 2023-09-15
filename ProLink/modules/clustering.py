@@ -14,7 +14,7 @@ logger = logging.getLogger()
 
 def cluster_mmseqs(found_sequences_fastafile:str,
                    cluster_results:str,
-                   similarity:float=0.6) -> int:
+                   min_seq_id:float=0.6) -> int:
     '''
     Cluster sequences with MMseqs2
 
@@ -24,16 +24,16 @@ def cluster_mmseqs(found_sequences_fastafile:str,
         Path of the file with the sequences to cluster (FASTA format)
     cluster_results : str
         Basename for the files with the clustering results (.tsv, .txt, .csv and .fasta)
-    similarity : float, optional
-        Minimum sequence similarity/identity for clustering together (0-1) (def: 0.6)
+    min_seq_id : float, optional
+        Minimum sequence identity for clustering together (0-1) (def: 0.6)
 
     Returns
     -------
     int
         Number of clusters
     '''
-    # similarity between 0 and 1
-    similarity = min(max(similarity, 0), 1)
+    # min_seq_id between 0 and 1
+    min_seq_id = min(max(min_seq_id, 0), 1)
     # output files
     cluster_results_tsv = f"{cluster_results}.tsv"
     cluster_results_txt = f"{cluster_results}.txt"
@@ -46,7 +46,7 @@ def cluster_mmseqs(found_sequences_fastafile:str,
             os.remove(file)
     logging.info(dedent(f"""
         -- Clustering sequences with MMseqs2
-        Minimum sequence identity:  {similarity}
+        Minimum sequence identity:  {min_seq_id}
         Input file:                '{found_sequences_fastafile}'
         Results files:             '{cluster_results_txt}' / '{cluster_results_csv}' / '{cluster_results_fasta}'
         """))
@@ -55,7 +55,7 @@ def cluster_mmseqs(found_sequences_fastafile:str,
         create_db_cmd = ['mmseqs', 'createdb', '--dbtype', '1', '--shuffle', '0', '--createdb-mode', '0', found_sequences_fastafile, os.path.join(tmp_dir, 'input_DB')]
         logging.debug(f"MMseqs2 create DB command: {' '.join(create_db_cmd)}")
         create_db_run = subprocess.run(create_db_cmd)
-        cluster_cmd = ['mmseqs', 'cluster', '--cluster-mode', '0', '--min-seq-id', str(similarity), os.path.join(tmp_dir, 'input_DB'), os.path.join(tmp_dir, 'cluster_DB'), os.path.join(tmp_dir, 'tmp')]
+        cluster_cmd = ['mmseqs', 'cluster', '--cluster-mode', '0', '--min-seq-id', str(min_seq_id), os.path.join(tmp_dir, 'input_DB'), os.path.join(tmp_dir, 'cluster_DB'), os.path.join(tmp_dir, 'tmp')]
         logging.debug(f"MMseqs2 cluster command: {' '.join(cluster_cmd)}")
         cluster_run = subprocess.run(cluster_cmd)
         createtsv_cmd = ['mmseqs', 'createtsv', '--first-seq-as-repr', '0', '--full-header', '0', '--idx-seq-src', '0', os.path.join(tmp_dir, 'input_DB'), os.path.join(tmp_dir, 'input_DB'), os.path.join(tmp_dir, 'cluster_DB'), cluster_results_tsv]
@@ -164,8 +164,8 @@ def cluster_alfatclust(found_sequences_fastafile:str,
 def p_cluster(found_sequences_fastafile:str,
               cluster_results:str,
               n_clusters_range:list[int],
-              similarity:float=0.6,
-              similarity_step:float=0.02) -> int:
+              min_seq_id:float=0.6,
+              min_seq_id_step:float=0.02) -> int:
     '''
     Pro Cluster sequences with MMseqs2
 
@@ -177,9 +177,9 @@ def p_cluster(found_sequences_fastafile:str,
         Basename for the files with the clustering results (.tsv, .txt, .csv and .fasta)
     n_clusters_range : list[int]
         Range of number of clusters to cluster the sequences
-    similarity : float, optional
-        Minimum sequence similarity/identity for clustering together (0-1) (def: 0.6)
-    similarity_step : float, optional
+    min_seq_id : float, optional
+        Minimum sequence identity for clustering together (0-1) (def: 0.6)
+    min_seq_id_step : float, optional
         Step to increase or decrease the identity threshold (def: 0.02)
 
     Returns
@@ -187,26 +187,26 @@ def p_cluster(found_sequences_fastafile:str,
     int
         Number of clusters
     '''
-    #TODO: dinamic similarity_step (guess from previous iteration results)
+    #TODO: dinamic min_seq_id_step (guess from previous iteration results)
     found_sequences = list(SeqIO.parse(found_sequences_fastafile, "fasta"))
     n_clusters_range = sorted(n_clusters_range)
     n_clusters_range = [min(n_clusters_range[0], len(found_sequences)), min(n_clusters_range[1], len(found_sequences))]
     logger.info(f"Pro Clustering looking for {n_clusters_range[0]}-{n_clusters_range[1]} clusters")
     max_iter = 100
-    similarities = set()
+    min_seq_ids = set()
     for iteration in range(max_iter):
         logger.info(f"Pro Clustering iteration {iteration+1}\n")
-        n_clusters = cluster_mmseqs(found_sequences_fastafile, cluster_results, similarity)
+        n_clusters = cluster_mmseqs(found_sequences_fastafile, cluster_results, min_seq_id)
         if n_clusters_range[0] <= n_clusters <= n_clusters_range[1]:
             break
         logging.info(f"Number of clusters {n_clusters} not in range {n_clusters_range}")
-        if similarity in similarities:
-            logger.warning(f"WARNING: Pro Clustering failed converging (similarity already used)")
+        if min_seq_id in min_seq_ids:
+            logger.warning(f"WARNING: Pro Clustering failed converging (min_seq_id already used)")
             break
         sign = 1 if n_clusters < n_clusters_range[0] else -1
-        similarity += sign * similarity_step
-        similarities.add(similarity)
-        logger.info(f"Clustering again with similarity = {similarity}")
+        min_seq_id += sign * min_seq_id_step
+        min_seq_ids.add(min_seq_id)
+        logger.info(f"Clustering again with min_seq_id = {min_seq_id}")
     else:
         logger.error(f"ERROR: Pro Clustering failed: maximum number of iterations reached")
         raise Exception("Maximum number of iterations reached")

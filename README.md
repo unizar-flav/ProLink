@@ -24,9 +24,9 @@ The script is designed to be executed in Google Colab. Although it can be instal
 | length_restrict                           | Boolean to resctrict the length of the found sequences with respect the query.                   |
 | length_margin                             | Number to multiply the query length and restrict the min and max length of the found sequences.  |
 | cluster_seqs                              | Boolean to select if clustering the sequences.                                                   |
-| similarity                                | Initial similarity treshold to group the sequences into clusters.                                |
+| min_seq_id                                | Initial minimum sequence identity treshold to cluster together (0-1).                            |
 | pro_clustering_                           | Boolean to select [*Pro Clustering*](#pro-clustering) or regular clustering.                     |
-| similarity_step                           | Step to increase or decrease the similarity threshold while *Pro Clustering*.                    |
+| min_seq_id_step                           | Step to increase or decrease the minimum sequence identity threshold while *Pro Clustering*.     |
 | min_number_of_clusters_to_cluster_again   | Minimum number of clusters allowed when using *Pro Clustering*.                                  |
 | max_number_of_clusters_to_cluster_again   | Maximum number of clusters allowed when using *Pro Clustering*.                                  |
 | check_pfam_domains                        | Boolean to select if checking the Pfam domains of the sequences.                                 |
@@ -66,7 +66,7 @@ Firstly, a regular BLAST is launched and `hitlist_size` seqs are obtained. If th
 
 *Pro Clustering* allows to obtain a number of clusters in a determined range.
 
-Firstly, a regular clustering with the determined similarity is executed. If the number of clusters is avobe the `max_number_of_clusters_to_cluster_again` value, the sequences will be clustered again but with similarity -= `similarity_step`, in order to obtain an inferior number of clusters. On the contrary, if the number of clusters is below the `min_number_of_clusters_to_cluster_again`, the similarity requested will be increased.
+Firstly, a regular clustering with the determined minimum sequence identity is executed. If the number of clusters is avobe the `max_number_of_clusters_to_cluster_again` value, the sequences will be clustered again but with min_seq_id -= `min_seq_id_step`, in order to obtain an inferior number of clusters. On the contrary, if the number of clusters is below the `min_number_of_clusters_to_cluster_again`, the min_seq_id requested will be increased.
 
 
 ## References

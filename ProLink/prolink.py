@@ -59,9 +59,9 @@ def pro_link(query_proteins:list[str], parameters_default:dict = parameters_defa
     additional_hits = int(parameters['additional_hits'])
     # Clustering
     cluster_seqs = bool(parameters['cluster_seqs'])
-    similarity = float(parameters['similarity'])
+    min_seq_id = float(parameters['min_seq_id'])
     pro_clustering_ = bool(parameters['pro_clustering_'])
-    similarity_step = float(parameters['similarity_step'])
+    min_seq_id_step = float(parameters['min_seq_id_step'])
     min_number_of_clusters_to_cluster_again = int(parameters['min_number_of_clusters_to_cluster_again'])
     max_number_of_clusters_to_cluster_again = int(parameters['max_number_of_clusters_to_cluster_again'])
     # Pfam domains
@@ -125,10 +125,10 @@ def pro_link(query_proteins:list[str], parameters_default:dict = parameters_defa
                 cluster_results_fastafile = f"{cluster_results}.fasta"
                 if pro_clustering_:
                     logger.info(f"\n###  Pro Clustering  ###\n")
-                    p_cluster(found_sequences_fastafile, cluster_results, [min_number_of_clusters_to_cluster_again, max_number_of_clusters_to_cluster_again], similarity, similarity_step)
+                    p_cluster(found_sequences_fastafile, cluster_results, [min_number_of_clusters_to_cluster_again, max_number_of_clusters_to_cluster_again], min_seq_id, min_seq_id_step)
                 else:
                     logger.info(f"\n###  Clustering  ###\n")
-                    cluster_mmseqs(found_sequences_fastafile, cluster_results, similarity)
+                    cluster_mmseqs(found_sequences_fastafile, cluster_results, min_seq_id)
                 sequences_fastafile = cluster_results_fastafile
                 sequences_fastafile_pfam = f"{output_dir_n}/seqs_cluster_pfam.fasta"
                 pfam_output = f"{output_dir_n}/seqs_cluster_pfam.txt"
