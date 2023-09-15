@@ -102,7 +102,7 @@ def cluster_alfatclust(found_sequences_fastafile:str,
                        cluster_evaluation_file:str,
                        cluster_results_fastafile:str) -> int:
     '''
-    Cluster sequences with ALFATClust
+    [Deprecated] Cluster sequences with ALFATClust
 
     Parameters
     ----------
@@ -122,6 +122,7 @@ def cluster_alfatclust(found_sequences_fastafile:str,
     int
         Number of clusters
     '''
+    raise DeprecationWarning("Clustering by ALFATClust is deprecated")
     logging.info(dedent(f"""
         -- Clustering sequences with ALFATClust
         Similarity:               {similarity}
