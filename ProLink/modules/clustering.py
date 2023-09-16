@@ -52,13 +52,13 @@ def cluster_mmseqs(found_sequences_fastafile:str,
         """))
     # perform the clustering
     with TemporaryDirectory() as tmp_dir:
-        create_db_cmd = ['mmseqs', 'createdb', '--dbtype', '1', '--shuffle', '0', '--createdb-mode', '0', found_sequences_fastafile, os.path.join(tmp_dir, 'input_DB')]
+        create_db_cmd = ['mmseqs', 'createdb', '-v', '1', '--dbtype', '1', '--shuffle', '0', '--createdb-mode', '0', found_sequences_fastafile, os.path.join(tmp_dir, 'input_DB')]
         logging.debug(f"MMseqs2 create DB command: {' '.join(create_db_cmd)}")
         create_db_run = subprocess.run(create_db_cmd)
-        cluster_cmd = ['mmseqs', 'cluster', '--cluster-mode', '0', '--min-seq-id', str(min_seq_id), os.path.join(tmp_dir, 'input_DB'), os.path.join(tmp_dir, 'cluster_DB'), os.path.join(tmp_dir, 'tmp')]
+        cluster_cmd = ['mmseqs', 'cluster', '-v', '1', '--cluster-mode', '0', '--min-seq-id', str(min_seq_id), os.path.join(tmp_dir, 'input_DB'), os.path.join(tmp_dir, 'cluster_DB'), os.path.join(tmp_dir, 'tmp')]
         logging.debug(f"MMseqs2 cluster command: {' '.join(cluster_cmd)}")
         cluster_run = subprocess.run(cluster_cmd)
-        createtsv_cmd = ['mmseqs', 'createtsv', '--first-seq-as-repr', '0', '--full-header', '0', '--idx-seq-src', '0', os.path.join(tmp_dir, 'input_DB'), os.path.join(tmp_dir, 'input_DB'), os.path.join(tmp_dir, 'cluster_DB'), cluster_results_tsv]
+        createtsv_cmd = ['mmseqs', 'createtsv', '-v', '1', '--first-seq-as-repr', '0', '--full-header', '0', '--idx-seq-src', '0', os.path.join(tmp_dir, 'input_DB'), os.path.join(tmp_dir, 'input_DB'), os.path.join(tmp_dir, 'cluster_DB'), cluster_results_tsv]
         logging.debug(f"MMseqs2 createtsv command: {' '.join(createtsv_cmd)}")
         createtsv_run = subprocess.run(createtsv_cmd)
     # process the '.tsv' file
