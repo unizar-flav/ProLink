@@ -22,7 +22,7 @@ from datetime import datetime
 
 from . import __version__, ProLink_path, parameters_default
 from .modules.blast import blast, blast_parse, p_blast
-from .modules.clustering import cluster_mmseqs, p_cluster
+from .modules.clustering import cluster_mmseqs, cluster_pro
 from .modules.obtaining_sequences import check_seq_in, get_seq
 from .modules.pfam import fasta_to_dfasta
 from .modules.subprocess_functions import align, tree
@@ -125,7 +125,7 @@ def pro_link(query_proteins:list[str], parameters_default:dict = parameters_defa
                 cluster_results_fastafile = f"{cluster_results}.fasta"
                 if pro_clustering_:
                     logger.info(f"\n###  Pro Clustering  ###\n")
-                    p_cluster(found_sequences_fastafile, cluster_results, [min_number_of_clusters_to_cluster_again, max_number_of_clusters_to_cluster_again], min_seq_id, min_seq_id_step)
+                    cluster_pro(found_sequences_fastafile, cluster_results, [min_number_of_clusters_to_cluster_again, max_number_of_clusters_to_cluster_again], min_seq_id, min_seq_id_step)
                 else:
                     logger.info(f"\n###  Clustering  ###\n")
                     cluster_mmseqs(found_sequences_fastafile, cluster_results, min_seq_id)

@@ -14,7 +14,7 @@ logger = logging.getLogger()
 
 def cluster_mmseqs(found_sequences_fastafile:str,
                    cluster_results:str,
-                   min_seq_id:float=0.6) -> int:
+                   min_seq_id:float=0.6) -> list[SeqRecord]:
     '''
     Cluster sequences with MMseqs2
 
@@ -29,8 +29,8 @@ def cluster_mmseqs(found_sequences_fastafile:str,
 
     Returns
     -------
-    int
-        Number of clusters
+    list[SeqRecord]
+        List of central sequences of the clusters
     '''
     # min_seq_id between 0 and 1
     min_seq_id = min(max(min_seq_id, 0), 1)
@@ -46,7 +46,7 @@ def cluster_mmseqs(found_sequences_fastafile:str,
             os.remove(file)
     logging.info(dedent(f"""
         -- Clustering sequences with MMseqs2
-        Minimum sequence identity:  {min_seq_id}
+        Minimum sequence identity:  {round(min_seq_id, 2)}
         Input file:                '{found_sequences_fastafile}'
         Results files:             '{cluster_results_txt}' / '{cluster_results_csv}' / '{cluster_results_fasta}'
         """))
@@ -94,7 +94,7 @@ def cluster_mmseqs(found_sequences_fastafile:str,
         seq.description = ""
         clusters_fastafile.append(seq)
     SeqIO.write(clusters_fastafile, cluster_results_fasta, "fasta")
-    return len(clusters)
+    return clusters_fastafile
 
 def cluster_alfatclust(found_sequences_fastafile:str,
                        similarity:float,
@@ -162,11 +162,11 @@ def cluster_alfatclust(found_sequences_fastafile:str,
     logger.info(f"Clustering done. Number of clusters: {n_clusters}\n")
     return n_clusters
 
-def p_cluster(found_sequences_fastafile:str,
+def cluster_pro(found_sequences_fastafile:str,
               cluster_results:str,
               n_clusters_range:list[int],
               min_seq_id:float=0.6,
-              min_seq_id_step:float=0.02) -> int:
+              min_seq_id_step:float=0.02) -> list[SeqRecord]:
     '''
     Pro Cluster sequences with MMseqs2
 
@@ -185,31 +185,33 @@ def p_cluster(found_sequences_fastafile:str,
 
     Returns
     -------
-    int
-        Number of clusters
+    list[SeqRecord]
+        List of central sequences of the clusters
     '''
     #TODO: dinamic min_seq_id_step (guess from previous iteration results)
     found_sequences = list(SeqIO.parse(found_sequences_fastafile, "fasta"))
     n_clusters_range = sorted(n_clusters_range)
     n_clusters_range = [min(n_clusters_range[0], len(found_sequences)), min(n_clusters_range[1], len(found_sequences))]
+    n_clusters_range_mean = sum(n_clusters_range) / 2
     logger.info(f"Pro Clustering looking for {n_clusters_range[0]}-{n_clusters_range[1]} clusters")
     max_iter = 100
     min_seq_ids = set()
     for iteration in range(max_iter):
-        logger.info(f"Pro Clustering iteration {iteration+1}\n")
-        n_clusters = cluster_mmseqs(found_sequences_fastafile, cluster_results, min_seq_id)
+        logger.info(f"\nPro Clustering iteration {iteration+1}\n")
+        clusters = cluster_mmseqs(found_sequences_fastafile, cluster_results, min_seq_id)
+        n_clusters = len(clusters)
         if n_clusters_range[0] <= n_clusters <= n_clusters_range[1]:
             break
         logging.info(f"Number of clusters {n_clusters} not in range {n_clusters_range}")
+        sign = 1 if n_clusters < n_clusters_range_mean else -1
+        min_seq_id += sign * min_seq_id_step
         if min_seq_id in min_seq_ids:
             logger.warning(f"WARNING: Pro Clustering failed converging (min_seq_id already used)")
             break
-        sign = 1 if n_clusters < n_clusters_range[0] else -1
-        min_seq_id += sign * min_seq_id_step
-        min_seq_ids.add(min_seq_id)
-        logger.info(f"Clustering again with min_seq_id = {min_seq_id}")
+        else:
+            min_seq_ids.add(min_seq_id)
     else:
         logger.error(f"ERROR: Pro Clustering failed: maximum number of iterations reached")
         raise Exception("Maximum number of iterations reached")
     logger.info(f"Pro Clustering done succesfully: {n_clusters} clusters found\n")
-    return n_clusters
+    return clusters
