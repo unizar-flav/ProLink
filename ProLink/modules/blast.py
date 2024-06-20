@@ -32,7 +32,7 @@ def blastp_local(seq_record:SeqRecord,
     threads : int, optional
         Number of threads to use (def: all available)
     '''
-    threads = threads or cpu_count()
+    threads = threads or len(os.sched_getaffinity(0))
     with NamedTemporaryFile(mode='w') as f:
         f.write(seq_record.format('fasta'))
         f.flush()
