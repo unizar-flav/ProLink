@@ -14,7 +14,7 @@ dependencies:
   - biopython
   - bioconda::mmseqs2=14
   - bioconda::muscle=5
-  - bioconda::clipkit<2
+  - bioconda::clipkit>=2.3
   - bioconda::weblogo
   - ghostscript
 
