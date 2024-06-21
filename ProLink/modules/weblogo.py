@@ -37,7 +37,7 @@ def weblogo3(sequences_input:str, output:str, format:str='png', dpi:int=300) -> 
         logo_format = weblogo.LogoFormat(logo_data, logo_options)
         graph = weblogo.formatters[format](logo_data, logo_format)
     except RuntimeError:
-        logger.error(f"ERROR: WebLogo failed, trying with fallback DPI ({dpi_fallback})")
+        logger.warning(f"WARNING: WebLogo failed rendering with requested DPI ({dpi}). Trying again with fallback DPI ({dpi_fallback}).")
         logo_options = weblogo.LogoOptions(
             stacks_per_line = 80,
             resolution = dpi_fallback,
