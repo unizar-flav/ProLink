@@ -10,7 +10,7 @@ with open(os.path.join(current_path, "README.md")) as f:
 
 setup(
     name="ProLink",
-    version="0.1.0",
+    version="0.2.0",
     description="Execute multiple proteomic analysis tools automatically",
     long_description=readme_text,
     long_description_content_type="text/markdown",
