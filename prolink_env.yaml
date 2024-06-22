@@ -12,7 +12,7 @@ dependencies:
   - pyyaml
   - requests
   - biopython
-  - bioconda::mmseqs2=14
+  - bioconda::mmseqs2=15
   - bioconda::muscle=5
   - bioconda::clipkit>=2.3
   - bioconda::weblogo
