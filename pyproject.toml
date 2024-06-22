@@ -1,0 +1,43 @@
+[build-system]
+requires = ["setuptools>=45", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ProLink"
+version = "0.2.0"
+description = "Execute multiple proteomic analysis tools automatically"
+readme = "README.md"
+requires-python = ">=3.9"
+license = {text = "GPLv3"}
+authors = [
+    {name = "Víctor Sanz"},
+    {name = "Sergio Boneta"}
+]
+classifiers = [
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Bio-Informatics"
+]
+dependencies = [
+    "biopython",
+    "clipkit",
+    "pyyaml",
+    "requests",
+    "weblogo"
+]
+
+[project.urls]
+Homepage = "https://github.com/unizar-flav/ProLink"
+
+[project.scripts]
+prolink = "ProLink.__main__:main"
+
+[tool.setuptools]
+packages = ["ProLink", "ProLink.modules"]
+
+[tool.setuptools.package-data]
+ProLink = ["parameters.yaml", "mega_configs/*"]
