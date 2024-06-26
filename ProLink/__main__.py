@@ -15,14 +15,14 @@ def main():
         prog='prolink',
         description='Excecute multiple proteomic analysis tools automatically')
     parser.add_argument('-v', '--version', action='version', version=f'ProLink v{__version__}')
-    parser.add_argument('QUERY_CODE', type=str, nargs='+',
-        help='Sequence codes of the protein(s) to query')
+    parser.add_argument('QUERY_CODE', type=str,
+        help='Sequence code of the protein to query')
     parser.add_argument('-f', '--file', metavar='.yml', type=str,
         help='File in YAML format with extra options to pass')
     parser.add_argument('--opt', metavar="opt=val", nargs='+', type=str,
         help='Extra options to pass: option name and value, separated by an equal (e.g. --opt opt1=val1 opt2=val2)')
-    parser.add_argument('-o', '--outputs_dir', metavar='<>', type=str,
-        help=f'Directory to write the outputs (def: \'{parameters_default["outputs_dir"]}\'))')
+    parser.add_argument('-o', '--output', metavar='<>', type=str,
+        help=f'Directory to write the outputs (def: \'ProLink_QUERY_CODE\'))')
     parser.add_argument('--verbose', action='store_true',
         help='Verbose mode')
     args = parser.parse_args()
@@ -59,8 +59,8 @@ def main():
             options[opt_val[0]] = opt_val[1]
 
     # outputs directory
-    if args.outputs_dir:
-        options['outputs_dir'] = args.outputs_dir
+    if args.output:
+        options['output_dir'] = args.output
 
     pro_link(args.QUERY_CODE, **options)
 

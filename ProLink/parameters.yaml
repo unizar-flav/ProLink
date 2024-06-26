@@ -35,4 +35,4 @@ Tree:
   bootstrap_replications: 100
 
 Outputs:
-  outputs_dir: outputs
+  output_dir: ""
