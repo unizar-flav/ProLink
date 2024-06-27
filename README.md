@@ -10,9 +10,13 @@ ProLink is a python script that allows to execute multiple proteomic analysis to
 ## Usage
 This software is intended to be executed in Google Colab. To run it, open [this notebook](https://colab.research.google.com/github/unizar-flav/ProLink/blob/master/ProLink.ipynb) and follow these steps:
 
-**Step 1:** Run the first cell in order to install the dependencies required for the script. It is only needed to do once everytime the execution environment is initialized.
+**Step 1:** Run the first cell in order to install the dependencies required. It is only needed to do once everytime the execution environment is initialized.
 
 **Step 2:** Introduce the desired parameters in the form of the second cell and execute it.
+
+**Step 3:** Run the "Execute the script" cell. This may take a while to be completed. Check the box `extra_verbose` for an enriched output beyond the standard.
+
+**Step 4:** Download the results as a zip file by running the last cell.
 
 ***Parameters***
 | Argument name                             | Description                                                                                      |
@@ -47,25 +51,21 @@ This software is intended to be executed in Google Colab. To run it, open [this 
 | bootstrap_replications                    | Number of bootstrap replications when generating the tree. Needs to be 100, 250, 500, 1000 or 2000.|           100 |
 | output_dir                                | Name of the outputs directory.                                                                     |            '' |
 
-**Step 3:** Run the "Execute the script" cell. This may take a while to be completed. Check the box `extra_verbose` for an enriched output beyond the standard.
-
-**Step 4:** Download the results as a zip file.
-
 
 ### Local installation
-This software can also be installed locally in a Linux machine. To do so, the [*conda*](https://github.com/conda-forge/miniforge) package manager is advised.
+This software can also be installed locally in a Linux machine. To do so, installing it with the [*conda*](https://github.com/conda-forge/miniforge) package manager is advised.
 
-Clone this repository and use the file `prolink_env.yaml` to create an environment with almost all the required dependencies. Aditionally, [MEGA](https://www.megasoftware.net/) dependency must be installed manually.
+Clone this repository and use the file `prolink_env.yaml` to create an environment with almost all the required dependencies. Aditionally, [MEGA](https://www.megasoftware.net) dependency must be installed manually.
 
 ```bash
-clone https://github.com/unizar-flav/ProLink
+git clone https://github.com/unizar-flav/ProLink
 conda env create -f ProLink/prolink_env.yaml
 ```
 
-To run it locally, use the following command:
+To run it locally, use the following command. For additional help on the usage, run it with `--help`.
 
 ```bash
-prolink [-h] [-v] [-f .yml] [--opt opt=val [opt=val ...]] [-o <>] [--verbose] QUERY_CODE
+prolink [-f .yml] [--opt opt=val [opt=val ...]] [--verbose] QUERY_CODE
 ```
 
 
@@ -81,7 +81,7 @@ Firstly, a regular BLAST is launched and `hitlist_size` seqs are obtained. If th
 
 *Pro Clustering* allows to obtain a number of clusters in a determined range, unlike regular clusterings that uses [MMseqs2](https://github.com/soedinglab/MMseqs2) to get an undetermined number of clusters based on a similarity value.
 
-Firstly, a regular clustering with the determined minimum sequence identity is executed. If the number of clusters is avobe the `max_number_of_clusters_to_cluster_again` value, the sequences will be clustered again but with min_seq_id -= `min_seq_id_step`, in order to obtain an inferior number of clusters. On the contrary, if the number of clusters is below the `min_number_of_clusters_to_cluster_again`, the min_seq_id requested will be increased.
+Firstly, a regular clustering with the determined minimum sequence identity is executed. If the number of clusters is avobe the `max_number_of_clusters_to_cluster_again` value, the sequences will be clustered again but with min_seq_id += `min_seq_id_step`, in order to obtain an inferior number of clusters. On the contrary, if the number of clusters is below the `min_number_of_clusters_to_cluster_again`, the min_seq_id requested will be decreased.
 
 
 ## References
