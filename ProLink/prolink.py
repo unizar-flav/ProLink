@@ -34,7 +34,7 @@ logger = logging.getLogger()
 
 def pro_link(query:str, parameters_default:dict = parameters_default, **parameters) -> None:
     '''
-    Main function to run ProLink
+    Main function to run ProLink with a single query
 
     Parameters
     ----------
@@ -189,3 +189,25 @@ def pro_link(query:str, parameters_default:dict = parameters_default, **paramete
     time_elapsed = datetime.now(timezone.utc) - time_start
     logger.info(f"\n\nProcess finished for query {query}\n" +
                 f"Time elapsed: {time_elapsed.seconds//3600 + 24*time_elapsed.days}h {(time_elapsed.seconds//60)%60}m {time_elapsed.seconds%60}s\n\n")
+
+    return
+
+def pro_link_multiple(query_list:list[str], parameters_default:dict = parameters_default, **parameters) -> None:
+    '''
+    Run ProLink with multiple queries
+
+    Parameters
+    ----------
+    query_list : list[str]
+        List of sequence codes of the proteins to query
+    parameters_default : dict, optional
+        Default parameters for ProLink (def: taken from 'parameters_default')
+    **parameters : dict
+        Extra parameters to pass to ProLink
+    '''
+    for query in query_list:
+        try:
+            pro_link(query, parameters_default, **parameters)
+        except:
+            continue
+    return
