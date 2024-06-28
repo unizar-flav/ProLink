@@ -55,14 +55,14 @@ This software is intended to be executed in Google Colab. To run it, open [this 
 ### Local installation
 This software can also be installed locally in a Linux machine. To do so, installing it with the [*conda*](https://github.com/conda-forge/miniforge) package manager is advised.
 
-Clone this repository and use the file `prolink_env.yaml` to create an environment with almost all the required dependencies. Aditionally, [MEGA](https://www.megasoftware.net) dependency must be installed manually.
+Use the file `prolink_env.yaml` to create an environment with almost all the required dependencies. Activate it afterwards. Aditionally, [MEGA](https://www.megasoftware.net) must be installed manually if you expect to generate trees.
 
 ```bash
-git clone https://github.com/unizar-flav/ProLink
-conda env create -f ProLink/prolink_env.yaml
+conda env create -f https://raw.githubusercontent.com/unizar-flav/ProLink/main/prolink_env.yaml
+conda activate prolink
 ```
 
-To run it locally, use the following command. For additional help on the usage, run it with `--help`.
+To run it locally, use the following command. For additional help on the usage: ```prolink --help```
 
 ```bash
 prolink [-f .yml] [--opt opt=val [opt=val ...]] [--verbose] QUERY_CODE
