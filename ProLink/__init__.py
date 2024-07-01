@@ -14,7 +14,6 @@ logging.basicConfig(
     level=logging.INFO,
     format='%(message)s',
     handlers=[
-        logging.FileHandler('ProLink.log', mode='w'),
         logging.StreamHandler()
         ]
     )
@@ -28,4 +27,4 @@ with open(os.path.join(ProLink_path, 'parameters.yaml'), 'r') as f:
     parameters_default = {key: value for section in parameters_yaml.values() for key, value in section.items()}
 
 # main function and parameters for better import and usage
-from .prolink import pro_link
+from .prolink import pro_link, pro_link_multiple
