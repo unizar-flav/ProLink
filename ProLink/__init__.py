@@ -14,7 +14,6 @@ logging.basicConfig(
     level=logging.INFO,
     format='%(message)s',
     handlers=[
-        logging.FileHandler('ProLink.log', mode='w'),
         logging.StreamHandler()
         ]
     )

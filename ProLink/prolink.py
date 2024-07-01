@@ -46,6 +46,10 @@ def pro_link(query:str, parameters_default:dict = parameters_default, **paramete
         Extra parameters to pass to ProLink
     '''
 
+    # Add logger file handler if not present
+    if not any(isinstance(handler, logging.FileHandler) for handler in logger.handlers):
+        logger.addHandler(logging.FileHandler(f"{query}.log", mode='w'))
+
     time_start = datetime.now(timezone.utc)
     logger.info(f"ProLink v{__version__} started at {time_start.strftime('%Y-%m-%d %H:%M:%S')} UTC\n")
 
@@ -205,6 +209,11 @@ def pro_link_multiple(query_list:list[str], parameters_default:dict = parameters
     **parameters : dict
         Extra parameters to pass to ProLink
     '''
+
+    # Add logger file handler if not present
+    if not any(isinstance(handler, logging.FileHandler) for handler in logger.handlers):
+        logger.addHandler(logging.FileHandler(f"ProLink.log", mode='w'))
+
     for query in query_list:
         try:
             pro_link(query, parameters_default, **parameters)
