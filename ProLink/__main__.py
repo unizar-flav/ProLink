@@ -13,7 +13,7 @@ logger = logging.getLogger()
 def main():
     parser = argparse.ArgumentParser(
         prog='prolink',
-        description='Excecute multiple proteomic analysis tools automatically')
+        description='Execute multiple proteomic analysis tools automatically')
     parser.add_argument('-v', '--version', action='version', version=f'ProLink v{__version__}')
     parser.add_argument('QUERY_CODE', type=str,
         help='Sequence code of the protein to query')
@@ -22,7 +22,7 @@ def main():
     parser.add_argument('--opt', metavar="opt=val", nargs='+', type=str,
         help='Extra options to pass: option name and value, separated by an equal (e.g. --opt opt1=val1 opt2=val2)')
     parser.add_argument('-o', '--output', metavar='<>', type=str,
-        help=f'Directory to write the outputs (def: \'ProLink_QUERY_CODE\'))')
+        help=f'Directory to create and write the outputs (def: \'QUERY_CODE\'))')
     parser.add_argument('--verbose', action='store_true',
         help='Verbose mode')
     args = parser.parse_args()
