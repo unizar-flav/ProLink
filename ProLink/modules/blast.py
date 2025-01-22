@@ -170,18 +170,18 @@ def blast_parse(blast_filename:str,
     get_seq(accession_numbers, found_sequences_fastafile, lengths=lengths, spaces=False)
     return n_low_identity_hsp
 
-def p_blast(seq_record:SeqRecord,
-            blast_filename:str,
-            found_sequences_fastafile:str,
-            expected_min_identity:float,
-            min_low_identity_seqs:int,
-            max_low_identity_seqs:int,
-            additional_hits:int,
-            hitlist:int,
-            lengths:list[int]=[],
-            database:str = None,
-            local:bool = False,
-            **kwargs) -> None:
+def blast_pro(seq_record:SeqRecord,
+              blast_filename:str,
+              found_sequences_fastafile:str,
+              expected_min_identity:float,
+              min_low_identity_seqs:int,
+              max_low_identity_seqs:int,
+              additional_hits:int,
+              hitlist:int,
+              lengths:list[int]=[],
+              database:str = None,
+              local:bool = False,
+              **kwargs) -> None:
     '''
     Perform a Pro BLAST search of a sequence
 

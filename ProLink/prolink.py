@@ -21,7 +21,7 @@ from copy import deepcopy
 from datetime import datetime, timezone
 
 from . import __version__, ProLink_path, parameters_default
-from .modules.blast import blast, blast_parse, p_blast
+from .modules.blast import blast, blast_parse, blast_pro
 from .modules.clustering import cluster_mmseqs, cluster_pro
 from .modules.obtaining_sequences import check_seq_in, get_seq
 from .modules.pfam import fasta_to_dfasta
@@ -126,7 +126,7 @@ def pro_link(query:str, parameters_default:dict = parameters_default, **paramete
 
         if pro_blast_:
             logger.info(f"\n###  Pro BLAST  ###\n")
-            p_blast(seq_record, blast_filename, found_sequences_fastafile, expected_min_identity, min_low_identity_seqs, max_low_identity_seqs, additional_hits, hitlist_size, length_range, blast_database, blast_local)
+            blast_pro(seq_record, blast_filename, found_sequences_fastafile, expected_min_identity, min_low_identity_seqs, max_low_identity_seqs, additional_hits, hitlist_size, length_range, blast_database, blast_local)
         else:
             logger.info(f"\n###  BLAST  ###\n")
             blast(seq_record, blast_filename, blast_database, hitlist_size, blast_local)
