@@ -24,7 +24,7 @@ from . import __version__, ProLink_path, parameters_default
 from .modules.blast import blast, blast_parse, blast_pro
 from .modules.clustering import cluster_mmseqs, cluster_pro
 from .modules.obtaining_sequences import check_seq_in, get_seq
-from .modules.pfam import fasta_to_dfasta
+from .modules.pfam import pfam_fasta
 from .modules.subprocess_functions import align, tree
 from .modules.trim import trim_align
 from .modules.weblogo import weblogo3
@@ -156,7 +156,7 @@ def pro_link(query:str, parameters_default:dict = parameters_default, **paramete
         if check_pfam_domains:
             logger.info("\nChecking Pfam domains")
             try:
-                fasta_to_dfasta(seq_record, sequences_fastafile, sequences_fastafile_pfam, pfam_output)
+                pfam_fasta(seq_record, sequences_fastafile, sequences_fastafile_pfam, pfam_output)
                 sequences_fastafile = sequences_fastafile_pfam
             except:
                 logger.debug("", exc_info=True)

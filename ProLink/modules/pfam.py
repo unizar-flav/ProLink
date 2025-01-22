@@ -10,7 +10,7 @@ from Bio.SeqRecord import SeqRecord
 
 logger = logging.getLogger()
 
-def search_hmmer_pfam(seq:str) -> list[dict]:
+def pfam_seq_hmmer(seq:str) -> list[dict]:
     '''
     Use HMMER to search for the Pfam families of a sequence
 
@@ -50,7 +50,10 @@ def search_hmmer_pfam(seq:str) -> list[dict]:
     response_json = json.loads(response.text)
     return response_json['results']['hits']
 
-def fasta_to_dfasta(seq_record:SeqRecord, fasta_input:str, fasta_output:str, pfam_output:str=None) -> None:
+def pfam_fasta(seq_record:SeqRecord, 
+               fasta_input:str, 
+               fasta_output:str, 
+               pfam_output:str=None) -> None:
     '''
     Find the Pfam domain of a sequence and compare them with the Pfam domains of the sequences in a fasta file
 
@@ -76,7 +79,7 @@ def fasta_to_dfasta(seq_record:SeqRecord, fasta_input:str, fasta_output:str, pfa
         return names
     # query sequence
     try:
-        my_seq_domain_hits = search_hmmer_pfam(str(seq_record.seq))
+        my_seq_domain_hits = pfam_seq_hmmer(str(seq_record.seq))
     except Exception as e:
         logger.error(f"An error occurred while searching for Pfam domains of query sequence")
         raise e
@@ -89,7 +92,7 @@ def fasta_to_dfasta(seq_record:SeqRecord, fasta_input:str, fasta_output:str, pfa
     sequences = list(SeqIO.parse(fasta_input, "fasta"))
     for seq_record in sequences:
         try:
-            seq_domain_hits = search_hmmer_pfam(str(seq_record.seq))
+            seq_domain_hits = pfam_seq_hmmer(str(seq_record.seq))
         except:
             logger.warning(f"WARNING: An error occurred while searching for Pfam domains of '{seq_record.id}'")
             seq_domain_hits = []
