@@ -154,7 +154,7 @@ def pro_link(query:str, parameters_default:dict = parameters_default, **paramete
                 identity_blast,
                 include_low_identity_seqs,
                 max_low_identity_seqs,
-                None,
+                -1,
                 length_range)
 
         check_seq_in(seq_record, found_sequences_fastafile, rewrite=True, spaces=False)
