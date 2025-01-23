@@ -3,7 +3,6 @@
 [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/unizar-flav/ProLink/blob/master/ProLink.ipynb)
 
 
-## Overview
 ProLink is a python script that allows to execute multiple proteomic analysis tools automatically.
 
 
@@ -14,7 +13,7 @@ This software is intended to be executed in Google Colab. To run it, open [this 
 
 **Step 2:** Introduce the desired parameters in the form of the second cell and execute it.
 
-**Step 3:** Run the "Execute the script" cell. This may take a while to be completed. Check the box `extra_verbose` for an enriched output beyond the standard.
+**Step 3:** Run the "Execute the script" cell. This may take a while to be completed. Check the box `extra_verbose` for an enriched output beyond the standard (troubleshooting).
 
 **Step 4:** Download the results as a zip file by running the last cell.
 
@@ -47,16 +46,16 @@ This software is intended to be executed in Google Colab. To run it, open [this 
 | generate_logo                             | Boolean to trigger the generation of a sequence logo image.                                      |
 | | |
 | generate_tree                             | Boolean to trigger the generation of a phylogenetic tree.                                        |
-| tree_type                                 | Type of phylogenetic tree. Either "NJ" (Neighbor Joining) or "ML" (Maximum Likehood).            |
+| tree_type                                 | Type of phylogenetic tree. Either "NJ" (Neighbour Joining) or "ML" (Maximum Likelihood).         |
+| bootstrap_replications                    | Number of bootstrap replications when generating the tree. Either 100, 250, 500, 1000 or 2000.   |
 
 ***Advanced parameters (in ProLink/parameters.yaml)***
-| Argument                                  | Description                                                                                        | Default value |
-| ----------------------------------------- | ---------------------------------------------------------------------------------------------------|---------------|
-| max_low_identity_seqs                     | Maximum number of low identity seqs to include (-1 for infinite).                                  |            -1 |
-| additional_hits                           | Number of additional sequences to find when using "Pro BLAST".                                     |          2000 |
-| weblogo_format                            | Output format when using generate_logo.                                                            |         'png' |
-| bootstrap_replications                    | Number of bootstrap replications when generating the tree. Needs to be 100, 250, 500, 1000 or 2000.|           100 |
-| output_dir                                | Name of the outputs directory. Query name by default.                                              |            '' |
+| Argument                                  | Description                                                                                      | Default value |
+| ----------------------------------------- | -------------------------------------------------------------------------------------------------|---------------|
+| max_low_identity_seqs                     | Maximum number of low identity seqs to include (-1 for infinite).                                |            -1 |
+| additional_hits                           | Number of additional sequences to find when using "Pro BLAST".                                   |          2000 |
+| weblogo_format                            | Output format when using generate_logo.                                                          |         'png' |
+| output_dir                                | Name of the outputs directory. Query name by default.                                            |            '' |
 
 
 ### Local installation
