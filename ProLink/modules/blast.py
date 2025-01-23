@@ -97,10 +97,10 @@ def blast(seq_record:SeqRecord,
 
 def blast_parse(blast_filename:str,
                 found_sequences_fastafile:str,
-                expected_min_identity:float,
-                include_low_identity:bool = True,
-                max_low_identity_seqs:int = None,
-                max_found_sequences:int = None,
+                min_identity:float,
+                include_low_identity_seqs:bool = True,
+                max_low_identity_seqs:int = -1,
+                max_found_sequences:int = -1,
                 lengths:list[int]=[]) -> int:
     '''
     Parse BLAST results to obtain the unique found sequences
@@ -115,14 +115,14 @@ def blast_parse(blast_filename:str,
         Path of the file containing BLAST results (XML format)
     found_sequences_fastafile : str
         Path of the file to write the found sequences (FASTA format)
-    expected_min_identity : float
-        Minimum identity percentage expected in the found hits (0 to 1)
-    include_low_identity : bool, optional
+    min_identity : float
+        Minimum identity fraction expected in the found hits (0 to 1)
+    include_low_identity_seqs : bool, optional
         Include low identity hits in the found sequences (def: True)
     max_low_identity_seqs : int, optional
-        Maximum number of low identity hits, infinite by default (def: None)
+        Maximum number of low identity hits, infinite by default (def: -1)
     max_found_sequences : int, optional
-        Maximum number of found sequences, infinite by default (def: None)
+        Maximum number of found sequences, infinite by default (def: -1)
     lengths : list[int], optional
         Lengths of the sequences to restrict to, minimum and maximum (def: all)
 
@@ -131,6 +131,8 @@ def blast_parse(blast_filename:str,
     n_low_identity_hsp : int
         Number of found hits with identity lower than the expected
     '''
+    max_low_identity_seqs = max_low_identity_seqs if max_low_identity_seqs >= 0 else float('inf')
+    max_found_sequences = max_found_sequences if max_found_sequences >= 0 else float('inf')
     logger.debug(f"Parsing BLAST results from '{blast_filename}'")
     with open(blast_filename, "r") as f:
         xml_string = f.read()
@@ -151,17 +153,17 @@ def blast_parse(blast_filename:str,
         for hsp in alignment.hsps:
             logger.debug(f"> {alignment.title}\n{hsp.sbjct}")
             identity = hsp.identities / alignment.length
-            if identity < expected_min_identity:
-                logger.debug(f"Low identity hit found: {identity:.2f} ({'seq included' if include_low_identity else 'seq not included'})")
-                if not include_low_identity:
+            if identity < min_identity:
+                logger.debug(f"Low identity hit found: {identity:.2f} ({'seq included' if include_low_identity_seqs else 'seq not included'})")
+                if not include_low_identity_seqs:
                     continue
                 n_low_identity_hsp += 1
-            if include_low_identity or identity >= expected_min_identity:
+            if include_low_identity_seqs or identity >= min_identity:
                 accession_numbers.append(accession_number)
                 n_hsp += 1
-        if max_low_identity_seqs and n_low_identity_hsp >= max_low_identity_seqs:
-            include_low_identity = False
-        if max_found_sequences and len(accession_numbers) >= max_found_sequences:
+        if n_low_identity_hsp >= max_low_identity_seqs:
+            include_low_identity_seqs = False
+        if len(accession_numbers) >= max_found_sequences:
             logger.info("Maximum number of required found sequences reached")
             break
     accession_numbers = list(set(accession_numbers))
@@ -173,12 +175,13 @@ def blast_parse(blast_filename:str,
 def blast_pro(seq_record:SeqRecord,
               blast_filename:str,
               found_sequences_fastafile:str,
-              expected_min_identity:float,
+              min_identity:float,
               min_low_identity_seqs:int,
               max_low_identity_seqs:int,
               additional_hits:int,
               hitlist:int,
               lengths:list[int]=[],
+              include_low_identity_seqs:bool = True,
               database:str = None,
               local:bool = False,
               **kwargs) -> None:
@@ -193,8 +196,8 @@ def blast_pro(seq_record:SeqRecord,
         Path of the file to write the BLAST results (XML format)
     found_sequences_fastafile : str
         Path of the file to write the found sequences (FASTA format)
-    expected_min_identity : float
-        Minimum identity percentage expected in the found identity (0 to 1)
+    min_identity : float
+        Minimum identity fraction expected in the found identity (0 to 1)
     min_low_identity_seqs : int
         Minimum number of low identity hits
     max_low_identity_seqs : int
@@ -205,6 +208,8 @@ def blast_pro(seq_record:SeqRecord,
         Initial number of hits to search
     lengths : list[int], optional
         Lengths of the sequences to restrict to, minimum and maximum (def: all)
+    include_low_identity_seqs : bool, optional
+        Include low identity hits in the found sequences (def: True)
     database : str
         Database to search in (def: taken from 'parameters_default')
     local : bool, optional
@@ -217,7 +222,7 @@ def blast_pro(seq_record:SeqRecord,
     for iteration in range(max_iter):
         logger.info(f"Pro BLAST iteration {iteration + 1}\n")
         blast(seq_record, blast_filename, database, hitlist, local, **kwargs)
-        n_low_identity_seqs = blast_parse(blast_filename, found_sequences_fastafile, expected_min_identity, True, max_low_identity_seqs, None, lengths)
+        n_low_identity_seqs = blast_parse(blast_filename, found_sequences_fastafile, min_identity, include_low_identity_seqs, max_low_identity_seqs, None, lengths)
         if n_low_identity_seqs >= min_low_identity_seqs:
             break
         hitlist += additional_hits

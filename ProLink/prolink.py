@@ -9,9 +9,9 @@ r"""
          / /_/ // /   / // // /___ / / / / / // _ \
         / ____//_/   /____//_____//_/ /_/ /_//_/ \_\
        / /
-      / /                    Created by Víctor Sanz
-     /_/                    University of Zaragoza
-
+      / /                     Created by Víctor Sanz
+     /_/                  Continued by Sergio Boneta
+                              University of Zaragoza
 
 """
 
@@ -66,20 +66,21 @@ def pro_link(query:str, parameters_default:dict = parameters_default, **paramete
     hitlist_size = int(parameters['hitlist_size'])
     blast_database = str(parameters['blast_database'])
     blast_local = bool(parameters['blast_local'])
-    pro_blast_ = bool(parameters['pro_blast_'])
     length_restrict = bool(parameters['length_restrict'])
     length_margin = float(parameters['length_margin'])
-    max_low_identity_seqs = int(parameters['max_low_identity_seqs'])
+    include_low_identity_seqs = bool(parameters['include_low_identity_seqs'])
+    identity_blast = float(parameters['identity_blast'])
+    pro_blast_ = bool(parameters['pro_blast_'])
     min_low_identity_seqs = int(parameters['min_low_identity_seqs'])
-    expected_min_identity = float(parameters['expected_min_identity'])
+    max_low_identity_seqs = int(parameters['max_low_identity_seqs'])
     additional_hits = int(parameters['additional_hits'])
     # Clustering
     cluster_seqs = bool(parameters['cluster_seqs'])
-    min_seq_id = float(parameters['min_seq_id'])
+    identity_cluster = float(parameters['identity_cluster'])
     pro_clustering_ = bool(parameters['pro_clustering_'])
-    min_seq_id_step = float(parameters['min_seq_id_step'])
-    min_number_of_clusters_to_cluster_again = int(parameters['min_number_of_clusters_to_cluster_again'])
-    max_number_of_clusters_to_cluster_again = int(parameters['max_number_of_clusters_to_cluster_again'])
+    identity_cluster_step = float(parameters['identity_cluster_step'])
+    min_number_clusters = int(parameters['min_number_clusters'])
+    max_number_clusters = int(parameters['max_number_clusters'])
     # Pfam domains
     check_pfam_domains = bool(parameters['check_pfam_domains'])
     # Alignment
@@ -126,11 +127,35 @@ def pro_link(query:str, parameters_default:dict = parameters_default, **paramete
 
         if pro_blast_:
             logger.info(f"\n###  Pro BLAST  ###\n")
-            blast_pro(seq_record, blast_filename, found_sequences_fastafile, expected_min_identity, min_low_identity_seqs, max_low_identity_seqs, additional_hits, hitlist_size, length_range, blast_database, blast_local)
+            blast_pro(
+                seq_record,
+                blast_filename,
+                found_sequences_fastafile,
+                identity_blast,
+                min_low_identity_seqs,
+                max_low_identity_seqs,
+                additional_hits,
+                hitlist_size,
+                length_range,
+                include_low_identity_seqs,
+                blast_database,
+                blast_local)
         else:
             logger.info(f"\n###  BLAST  ###\n")
-            blast(seq_record, blast_filename, blast_database, hitlist_size, blast_local)
-            blast_parse(blast_filename, found_sequences_fastafile, expected_min_identity, True, max_low_identity_seqs, None, length_range)
+            blast(
+                seq_record,
+                blast_filename,
+                blast_database,
+                hitlist_size,
+                blast_local)
+            blast_parse(
+                blast_filename,
+                found_sequences_fastafile,
+                identity_blast,
+                include_low_identity_seqs,
+                max_low_identity_seqs,
+                None,
+                length_range)
 
         check_seq_in(seq_record, found_sequences_fastafile, rewrite=True, spaces=False)
 
@@ -139,10 +164,10 @@ def pro_link(query:str, parameters_default:dict = parameters_default, **paramete
             cluster_results_fastafile = f"{cluster_results}.fasta"
             if pro_clustering_:
                 logger.info(f"\n###  Pro Clustering  ###\n")
-                cluster_pro(found_sequences_fastafile, cluster_results, [min_number_of_clusters_to_cluster_again, max_number_of_clusters_to_cluster_again], min_seq_id, min_seq_id_step)
+                cluster_pro(found_sequences_fastafile, cluster_results, [min_number_clusters, max_number_clusters], identity_cluster, identity_cluster_step)
             else:
                 logger.info(f"\n###  Clustering  ###\n")
-                cluster_mmseqs(found_sequences_fastafile, cluster_results, min_seq_id)
+                cluster_mmseqs(found_sequences_fastafile, cluster_results, identity_cluster)
             sequences_fastafile = cluster_results_fastafile
             sequences_fastafile_pfam = f"{output_dir}/seqs_cluster_pfam.fasta"
             pfam_output = f"{output_dir}/seqs_cluster_pfam.txt"

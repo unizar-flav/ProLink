@@ -14,7 +14,7 @@ logger = logging.getLogger()
 
 def cluster_mmseqs(found_sequences_fastafile:str,
                    cluster_results:str,
-                   min_seq_id:float=0.6) -> list[SeqRecord]:
+                   min_identity:float=0.6) -> list[SeqRecord]:
     '''
     Cluster sequences with MMseqs2
 
@@ -24,7 +24,7 @@ def cluster_mmseqs(found_sequences_fastafile:str,
         Path of the file with the sequences to cluster (FASTA format)
     cluster_results : str
         Basename for the files with the clustering results (.tsv, .txt, .csv and .fasta)
-    min_seq_id : float, optional
+    min_identity : float, optional
         Minimum sequence identity for clustering together (0-1) (def: 0.6)
 
     Returns
@@ -32,8 +32,9 @@ def cluster_mmseqs(found_sequences_fastafile:str,
     list[SeqRecord]
         List of central sequences of the clusters
     '''
-    # min_seq_id between 0 and 1
-    min_seq_id = min(max(min_seq_id, 0), 1)
+    #TODO: add newer versions of MMseqs2 with GPU support
+    # min_identity between 0 and 1
+    min_identity = min(max(min_identity, 0), 1)
     # output files
     cluster_results_tsv = f"{cluster_results}.tsv"
     cluster_results_txt = f"{cluster_results}.txt"
@@ -46,7 +47,7 @@ def cluster_mmseqs(found_sequences_fastafile:str,
             os.remove(file)
     logging.info(dedent(f"""
         -- Clustering sequences with MMseqs2
-        Minimum sequence identity:  {round(min_seq_id, 2)}
+        Minimum sequence identity:  {round(min_identity, 2)}
         Input file:                '{found_sequences_fastafile}'
         Results files:             '{cluster_results_txt}' / '{cluster_results_csv}' / '{cluster_results_fasta}'
         """))
@@ -55,7 +56,7 @@ def cluster_mmseqs(found_sequences_fastafile:str,
         create_db_cmd = ['mmseqs', 'createdb', '-v', '1', '--dbtype', '1', '--shuffle', '0', '--createdb-mode', '0', found_sequences_fastafile, os.path.join(tmp_dir, 'input_DB')]
         logging.debug(f"MMseqs2 create DB command: {' '.join(create_db_cmd)}")
         create_db_run = subprocess.run(create_db_cmd)
-        cluster_cmd = ['mmseqs', 'cluster', '-v', '1', '--cluster-mode', '0', '--min-seq-id', str(min_seq_id), os.path.join(tmp_dir, 'input_DB'), os.path.join(tmp_dir, 'cluster_DB'), os.path.join(tmp_dir, 'tmp')]
+        cluster_cmd = ['mmseqs', 'cluster', '-v', '1', '--cluster-mode', '0', '--min-seq-id', str(min_identity), os.path.join(tmp_dir, 'input_DB'), os.path.join(tmp_dir, 'cluster_DB'), os.path.join(tmp_dir, 'tmp')]
         logging.debug(f"MMseqs2 cluster command: {' '.join(cluster_cmd)}")
         cluster_run = subprocess.run(cluster_cmd)
         createtsv_cmd = ['mmseqs', 'createtsv', '-v', '1', '--first-seq-as-repr', '0', '--full-header', '0', '--idx-seq-src', '0', os.path.join(tmp_dir, 'input_DB'), os.path.join(tmp_dir, 'input_DB'), os.path.join(tmp_dir, 'cluster_DB'), cluster_results_tsv]
@@ -165,8 +166,8 @@ def cluster_alfatclust(found_sequences_fastafile:str,
 def cluster_pro(found_sequences_fastafile:str,
               cluster_results:str,
               n_clusters_range:list[int],
-              min_seq_id:float=0.6,
-              min_seq_id_step:float=0.02) -> list[SeqRecord]:
+              min_identity:float=0.6,
+              min_identity_step:float=0.02) -> list[SeqRecord]:
     '''
     Pro Cluster sequences with MMseqs2
 
@@ -178,9 +179,9 @@ def cluster_pro(found_sequences_fastafile:str,
         Basename for the files with the clustering results (.tsv, .txt, .csv and .fasta)
     n_clusters_range : list[int]
         Range of number of clusters to cluster the sequences
-    min_seq_id : float, optional
+    min_identity : float, optional
         Minimum sequence identity for clustering together (0-1) (def: 0.6)
-    min_seq_id_step : float, optional
+    min_identity_step : float, optional
         Step to increase or decrease the identity threshold (def: 0.02)
 
     Returns
@@ -188,7 +189,7 @@ def cluster_pro(found_sequences_fastafile:str,
     list[SeqRecord]
         List of central sequences of the clusters
     '''
-    #TODO: dinamic min_seq_id_step (guess from previous iteration results)
+    #TODO: dinamic min_identity_step (guess from previous iteration results)
     found_sequences = list(SeqIO.parse(found_sequences_fastafile, "fasta"))
     n_clusters_range = sorted(n_clusters_range)
     n_clusters_range = [min(n_clusters_range[0], len(found_sequences)), min(n_clusters_range[1], len(found_sequences))]
@@ -198,18 +199,18 @@ def cluster_pro(found_sequences_fastafile:str,
     min_seq_ids = set()
     for iteration in range(max_iter):
         logger.info(f"\nPro Clustering iteration {iteration+1}\n")
-        clusters = cluster_mmseqs(found_sequences_fastafile, cluster_results, min_seq_id)
+        clusters = cluster_mmseqs(found_sequences_fastafile, cluster_results, min_identity)
         n_clusters = len(clusters)
         if n_clusters_range[0] <= n_clusters <= n_clusters_range[1]:
             break
         logging.info(f"Number of clusters {n_clusters} not in range {n_clusters_range}")
         sign = 1 if n_clusters < n_clusters_range_mean else -1
-        min_seq_id += sign * min_seq_id_step
-        if min_seq_id in min_seq_ids:
-            logger.warning(f"WARNING: Pro Clustering failed converging (min_seq_id already used)")
+        min_identity += sign * min_identity_step
+        if min_identity in min_seq_ids:
+            logger.warning(f"WARNING: Pro Clustering failed converging ('min_identity_cluster' already used)")
             break
         else:
-            min_seq_ids.add(min_seq_id)
+            min_seq_ids.add(min_identity)
     else:
         logger.error(f"ERROR: Pro Clustering failed: maximum number of iterations reached")
         raise Exception("Maximum number of iterations reached")

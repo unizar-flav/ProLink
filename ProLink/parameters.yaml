@@ -1,22 +1,23 @@
 Blast:
-  hitlist_size: 5000
-  blast_database: refseq_protein
+  hitlist_size: 1000
+  blast_database: pdbaa
   blast_local: False
-  pro_blast_: False
   length_restrict: False
   length_margin: 0.5
-  max_low_identity_seqs: 1
-  min_low_identity_seqs: 1
-  expected_min_identity: 0.25
+  include_low_identity_seqs: True
+  identity_blast: 0.25
+  pro_blast_: False
+  min_low_identity_seqs: 0
+  max_low_identity_seqs: -1
   additional_hits: 2000
 
 Clustering:
   cluster_seqs: False
-  min_seq_id: 0.6
+  identity_cluster: 0.6
   pro_clustering_: False
-  min_seq_id_step: 0.02
-  min_number_of_clusters_to_cluster_again: 50
-  max_number_of_clusters_to_cluster_again: 300
+  identity_cluster_step: 0.02
+  min_number_clusters: 50
+  max_number_clusters: 300
 
 Pfam domains:
   check_pfam_domains: False

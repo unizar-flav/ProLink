@@ -19,41 +19,48 @@ This software is intended to be executed in Google Colab. To run it, open [this 
 **Step 4:** Download the results as a zip file by running the last cell.
 
 ***Parameters***
-| Argument name                             | Description                                                                                      |
+| Argument                                  | Description                                                                                      |
 | ----------------------------------------- | -------------------------------------------------------------------------------------------------|
 | query_proteins                            | Protein sequence code to query. Will be searched on [NCBI](https://www.ncbi.nlm.nih.gov/Entrez). |
+| | |
 | hitlist_size                              | Number of found sequences to obtain after BLAST.                                                 |
 | blast_database                            | Database used in BLAST.                                                                          |
-| pro_blast_                                | Boolean to select [*Pro BLAST*](#pro-blast) or regular *BLAST*.                                  |
 | length_restrict                           | Boolean to resctrict the length of the found sequences with respect the query.                   |
 | length_margin                             | Number to multiply the query length and restrict the min and max length of the found sequences.  |
-| cluster_seqs                              | Boolean to select if clustering the sequences.                                                   |
-| min_seq_id                                | Initial minimum sequence identity treshold to cluster together (0-1).                            |
+| include_low_identity_seqs                 | Boolean to include low identity sequences in the output.                                         |
+| identity_blast                            | Identity fraction to consider low identity (when using *Pro Blast* and to be included) (0-1).    |
+| pro_blast_                                | Boolean to select [*Pro BLAST*](#pro-blast) or regular *BLAST*.                                  |
+| min_low_identity_seqs                     | Minimum number of low identity seqs to find when using *Pro BLAST*.                              |
+| | |
+| cluster_seqs                              | Boolean to trigger the clustering of the sequences.                                              |
+| identity_cluster                          | Initial minimum sequence identity treshold to cluster together (0-1).                            |
 | pro_clustering_                           | Boolean to select [*Pro Clustering*](#pro-clustering) or regular clustering.                     |
-| min_seq_id_step                           | Step to increase or decrease the minimum sequence identity threshold while *Pro Clustering*.     |
-| min_number_of_clusters_to_cluster_again   | Minimum number of clusters allowed when using *Pro Clustering*.                                  |
-| max_number_of_clusters_to_cluster_again   | Maximum number of clusters allowed when using *Pro Clustering*.                                  |
-| check_pfam_domains                        | Boolean to select if checking the Pfam domains of the sequences.                                 |
-| align_seqs                                | Boolean to select if aligning the sequences.                                                     |
-| trim                                      | Boolean to select if trimming the alignment retaining phylogenetically-informative sites.        |
-| generate_logo                             | Boolean to select if generating a sequence logo.                                                 |
-| generate_tree                             | Boolean to select if generating a phylogenetic tree.                                             |
+| identity_cluster_step                     | Step to increase or decrease the minimum sequence identity threshold while *Pro Clustering*.     |
+| min_number_clusters                       | Minimum number of clusters allowed when using *Pro Clustering*.                                  |
+| max_number_clusters                       | Maximum number of clusters allowed when using *Pro Clustering*.                                  |
+| | |
+| check_pfam_domains                        | Boolean to trigger the checking of the Pfam domains of the query and sequences.                  |
+| | |
+| align_seqs                                | Boolean to trigger the alignment of sequences.                                                   |
+| trim                                      | Boolean to trigger trimming the alignment, retaining phylogenetically-informative sites.         |
+| | |
+| generate_logo                             | Boolean to trigger the generation of a sequence logo image.                                      |
+| | |
+| generate_tree                             | Boolean to trigger the generation of a phylogenetic tree.                                        |
 | tree_type                                 | Type of phylogenetic tree. Either "NJ" (Neighbor Joining) or "ML" (Maximum Likehood).            |
 
 ***Advanced parameters (in ProLink/parameters.yaml)***
-| Argument name                             | Description                                                                                        | Default value |
+| Argument                                  | Description                                                                                        | Default value |
 | ----------------------------------------- | ---------------------------------------------------------------------------------------------------|---------------|
-| max_low_identity_seqs                     | Maximum number of low identity seqs to find when using "Pro BLAST".                                |             1 |
-| min_low_identity_seqs                     | Minimum number of low identity seqs to find when using "Pro BLAST".                                |             1 |
-| expected_min_identity                     | Maximum identity percentage to consider a sequence a low identity seq when using "Pro BLAST".      |          0.25 |
+| max_low_identity_seqs                     | Maximum number of low identity seqs to include (-1 for infinite).                                  |            -1 |
 | additional_hits                           | Number of additional sequences to find when using "Pro BLAST".                                     |          2000 |
 | weblogo_format                            | Output format when using generate_logo.                                                            |         'png' |
 | bootstrap_replications                    | Number of bootstrap replications when generating the tree. Needs to be 100, 250, 500, 1000 or 2000.|           100 |
-| output_dir                                | Name of the outputs directory.                                                                     |            '' |
+| output_dir                                | Name of the outputs directory. Query name by default.                                              |            '' |
 
 
 ### Local installation
-This software can also be installed locally in a Linux machine. To do so, installing it with the [*conda*](https://github.com/conda-forge/miniforge) package manager is advised.
+This software can also be installed locally in a Linux machine. It is recomended to install it with the [*conda*](https://github.com/conda-forge/miniforge) package manager.
 
 Use the file `prolink_env.yaml` to create an environment with almost all the required dependencies. Activate it afterwards. Aditionally, [MEGA](https://www.megasoftware.net) must be installed manually if you expect to generate trees.
 
@@ -73,15 +80,15 @@ prolink [-f .yml] [--opt opt=val [opt=val ...]] [--verbose] QUERY_CODE
 
 ### Pro BLAST
 
-*Pro BLAST* allows to search for homologous sequences via the BLAST tool, but making sure that low identity seqs are also represented in the output.
+*Pro BLAST* allows to search for homologous sequences via the BLAST tool, but making sure that low identity sequences are also represented in the output.
 
-Firstly, a regular BLAST is launched and `hitlist_size` seqs are obtained. If the number of low identity seqs in the found seqs are below the `min_low_identity_seqs` parameter, a new regular BLAST will be launched but with hitlist_size += `additional_hits`. It will stop when the number of low identity seqs reach `max_low_identity_seqs`.
+Firstly, a regular BLAST is launched and `hitlist_size` sequences are obtained. If the number of low identity sequences in the found sequences are below the `min_low_identity_seqs` parameter, a new regular BLAST will be launched but with `hitlist_size += additional_hits`. It will stop when the number of low identity sequences is above the threshold.
 
 ### Pro Clustering
 
-*Pro Clustering* allows to obtain a number of clusters in a determined range, unlike regular clusterings that uses [MMseqs2](https://github.com/soedinglab/MMseqs2) to get an undetermined number of clusters based on a similarity value.
+*Pro Clustering* allows to obtain a number of clusters in a determined range, unlike regular clusterings that uses [MMseqs2](https://github.com/soedinglab/MMseqs2) to get an undetermined number of clusters based on a similarity value. It uses an iterative process to reach the number of clusters desired.
 
-Firstly, a regular clustering with the determined minimum sequence identity is executed. If the number of clusters is avobe the `max_number_of_clusters_to_cluster_again` value, the sequences will be clustered again but with min_seq_id += `min_seq_id_step`, in order to obtain an inferior number of clusters. On the contrary, if the number of clusters is below the `min_number_of_clusters_to_cluster_again`, the min_seq_id requested will be decreased.
+A regular clustering with the determined minimum sequence identity (`identity_cluster`) is initially executed. If the number of clusters is avobe the `max_number_clusters` value, the sequences will be clustered again but with `identity_cluster += identity_cluster_step`, in order to obtain an inferior number of clusters. On the contrary, if the number of clusters is below the `min_number_clusters`, then `identity_cluster` requested will be decreased.
 
 
 ## References
