@@ -96,6 +96,8 @@ A regular clustering with the determined minimum sequence identity (`identity_cl
 
   > Edgar, R. C. (2004). MUSCLE: multiple sequence alignment with high accuracy and high throughput. Nucleic Acids Research, 32(5), 1792-1797.
 
-  > Crooks, G. E., et al. (2004).  WebLogo: A sequence logo generator, Genome Research, 14:1188-1190.
+  > Crooks, G. E., et al. (2004). WebLogo: A sequence logo generator, Genome Research, 14:1188-1190.
 
-  > Tamura, K., et al. (2021) MEGA11: Molecular Evolutionary Genetics Analysis version 11. Molecular Biology and Evolution 38:3022-3027.
+  > Steenwyk, J. L. et al. (2020). ClipKIT: A multiple sequence alignment trimming software for accurate phylogenomic inference. PLoS Biology, 18(12).
+
+  > Kumar, S., et al. (2012). MEGA-CC: Computing core of molecular evolutionary genetics analysis program for automated and iterative data analysis. Bioinformatics, 28(20), 2685–2686.
