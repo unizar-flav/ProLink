@@ -92,10 +92,6 @@ A regular clustering with the determined minimum sequence identity (`identity_cl
 
 ## References
 
-  > Chiu, J.K.H., Ong, R.TH. (2022). Clustering biological sequences with dynamic sequence similarity threshold. BMC Bioinformatics 23, 108.
-
-  > Ondov, B. D., et al. (2016). Mash: fast genome and metagenome distance estimation using MinHash. Genome Biology, 17(1), 132.
-
   > Steinegger, M., Söding., J. (2017). MMseqs2 enables sensitive protein sequence searching for the analysis of massive data sets. Nature Biotechnology, 35, 1026.
 
   > Edgar, R. C. (2004). MUSCLE: multiple sequence alignment with high accuracy and high throughput. Nucleic Acids Research, 32(5), 1792-1797.
