@@ -222,7 +222,7 @@ def blast_pro(seq_record:SeqRecord,
     for iteration in range(max_iter):
         logger.info(f"Pro BLAST iteration {iteration + 1}\n")
         blast(seq_record, blast_filename, database, hitlist, local, **kwargs)
-        n_low_identity_seqs = blast_parse(blast_filename, found_sequences_fastafile, min_identity, include_low_identity_seqs, max_low_identity_seqs, None, lengths)
+        n_low_identity_seqs = blast_parse(blast_filename, found_sequences_fastafile, min_identity, include_low_identity_seqs, max_low_identity_seqs, -1, lengths)
         if n_low_identity_seqs >= min_low_identity_seqs:
             break
         hitlist += additional_hits
