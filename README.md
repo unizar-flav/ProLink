@@ -1,6 +1,6 @@
 # ***ProLink***
 
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/unizar-flav/ProLink/blob/master/ProLink.ipynb)
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/unizar-flav/ProLink/blob/revision-cambios/ProLink.ipynb)
 
 
 ProLink is a python script that allows to execute multiple proteomic analysis tools automatically.
