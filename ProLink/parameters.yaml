@@ -53,6 +53,9 @@ Tree:
   tree_type: NJ
   bootstrap_replications: 100
 
+Genetic context:
+  genetic_context: True
+
 Outputs:
   output_dir: ""
 

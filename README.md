@@ -52,6 +52,8 @@ This software is intended to be executed in Google Colab. To run it, open [this 
 | generate_tree                             | Trigger the generation of a phylogenetic tree.                                                   |
 | tree_type                                 | Type of phylogenetic tree. Either "NJ" (Neighbour Joining) or "ML" (Maximum Likelihood).         |
 | bootstrap_replications                    | Number of bootstrap replications when generating the tree. Either 100, 250, 500, 1000 or 2000.   |
+| | |
+| genetic_context                           | Trigger the obtention of the genomical neighborhood.                                             |
 
 ***Advanced parameters (in ProLink/parameters.yaml)***
 | Argument                                  | Description                                                                                      | Default value |
