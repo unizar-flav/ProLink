@@ -270,9 +270,9 @@ def pro_link(query:str, parameters_default:dict = parameters_default, **paramete
                 logger.info("Falling back to original FASTA file (seqs_cluster.fasta).")
 
  
-# Pfam domain check disabled.
-# The Pfam website is currently unstable.
-# It is preferable to rely on the Pfam annotations available in UniProt.
+      # Pfam domain check disabled.
+      # The Pfam website is currently unstable.
+      # It is preferable to rely on the Pfam annotations available in UniProt.
       
       #  if check_pfam_domains:
       #      logger.info("\n###  Checking Pfam domains  ###")
@@ -288,10 +288,16 @@ def pro_link(query:str, parameters_default:dict = parameters_default, **paramete
             logger.info("\n###  Aligning sequences  ###")
             aligned_fastafile = f"{align_basename}.fasta"
             align(sequences_fastafile, aligned_fastafile)
+          
             if generate_logo:
                 logger.info("\n###  Generating sequence logo  ###")
                 weblogo_output = f"{output_dir}/logo.{weblogo_format}"
-                weblogo3(aligned_fastafile, weblogo_output, weblogo_format)
+                # If WebLogo generation fails, continue execution.
+                try:
+                    weblogo3(aligned_fastafile, weblogo_output, weblogo_format)
+                except Exception as e:
+                    logger.debug("", exc_info=True)
+                    logger.warning(f"WARNING: Sequence logo generation failed: {e}")
             if trim:
                 logger.info("\n###  Trimming alignment  ###")
                 align_output_trim = f"{align_basename}_trim.fasta"
@@ -300,7 +306,13 @@ def pro_link(query:str, parameters_default:dict = parameters_default, **paramete
                 if generate_logo:
                     logger.info("\n###  Generating trimmed sequence logo  ###")
                     weblogo_output_trim = f"{output_dir}/logo_trim.{weblogo_format}"
-                    weblogo3(aligned_fastafile, weblogo_output_trim, weblogo_format)
+                    #  If trimmed WebLogo generation fails, continue execution.
+                    try:
+                        weblogo3(aligned_fastafile, weblogo_output_trim, weblogo_format)
+                    except Exception as e:
+                        logger.debug("", exc_info=True)
+                        logger.warning(f"WARNING: Trimmed sequence logo generation failed: {e}")
+                
             if generate_tree:
                 logger.info("\n###  Generating tree  ###")
                 mega_output = f"{aligned_fastafile}.nwk"
