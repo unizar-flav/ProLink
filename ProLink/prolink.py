@@ -269,16 +269,21 @@ def pro_link(query:str, parameters_default:dict = parameters_default, **paramete
                 sequences_fastafile = os.path.join(output_dir, "seqs_cluster.fasta")
                 logger.info("Falling back to original FASTA file (seqs_cluster.fasta).")
 
+ 
+# Pfam domain check disabled.
+# The Pfam website is currently unstable.
+# It is preferable to rely on the Pfam annotations available in UniProt.
+      
+      #  if check_pfam_domains:
+      #      logger.info("\n###  Checking Pfam domains  ###")
+      #      try:
+      #          pfam_fasta(seq_record, sequences_fastafile, sequences_fastafile_pfam, pfam_output)
+      #          sequences_fastafile = sequences_fastafile_pfam
+      #      except:
+      #          logger.debug("", exc_info=True)
+      #          logger.warning("WARNING: Errors while checking Pfam domains.")
 
-        if check_pfam_domains:
-            logger.info("\n###  Checking Pfam domains  ###")
-            try:
-                pfam_fasta(seq_record, sequences_fastafile, sequences_fastafile_pfam, pfam_output)
-                sequences_fastafile = sequences_fastafile_pfam
-            except:
-                logger.debug("", exc_info=True)
-                logger.warning("WARNING: Errors while checking Pfam domains.")
-
+ 
         if align_seqs:
             logger.info("\n###  Aligning sequences  ###")
             aligned_fastafile = f"{align_basename}.fasta"
