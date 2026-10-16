@@ -76,6 +76,7 @@ def pro_link(query:str, parameters_default:dict = parameters_default, **paramete
     hitlist_size = int(parameters['hitlist_size'])
     blast_database = str(parameters['blast_database'])
     blast_local = bool(parameters['blast_local'])
+    blast_xml = str(parameters.get('blast_xml') or '')
     length_restrict = bool(parameters['length_restrict'])
     length_margin = float(parameters['length_margin'])
     include_low_identity_seqs = bool(parameters['include_low_identity_seqs'])
@@ -149,6 +150,10 @@ def pro_link(query:str, parameters_default:dict = parameters_default, **paramete
         else:
             length_range = []
 
+        if blast_xml and pro_blast_:
+            logger.warning("WARNING: 'blast_xml' is incompatible with Pro BLAST. Using regular BLAST results")
+            pro_blast_ = False
+          
         if pro_blast_:
             logger.info(f"\n###  Pro BLAST  ###\n")
             blast_pro(
@@ -166,12 +171,15 @@ def pro_link(query:str, parameters_default:dict = parameters_default, **paramete
                 blast_local)
         else:
             logger.info(f"\n###  BLAST  ###\n")
-            blast(
-                seq_record,
-                blast_filename,
-                blast_database,
-                hitlist_size,
-                blast_local)
+            if blast_xml:
+                blast_from_xml(seq_record, blast_xml, blast_filename)
+            else:
+                blast(
+                    seq_record,
+                    blast_filename,
+                    blast_database,
+                    hitlist_size,
+                    blast_local)
             blast_parse(
                 blast_filename,
                 found_sequences_fastafile,
@@ -180,7 +188,6 @@ def pro_link(query:str, parameters_default:dict = parameters_default, **paramete
                 max_low_identity_seqs,
                 -1,
                 length_range)
-
         check_seq_in(seq_record, found_sequences_fastafile, rewrite=True, spaces=False)
 
         # Get WP from the query
