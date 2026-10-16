@@ -2,6 +2,7 @@ Blast:
   hitlist_size: 1000
   blast_database: pdbaa
   blast_local: False
+  blast_xml: ""
   length_restrict: False
   length_margin: 0.5
   include_low_identity_seqs: True
