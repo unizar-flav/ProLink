@@ -1,6 +1,7 @@
 
 import logging
 import os
+import shutil  #change to use xml from blast web
 import subprocess
 from io import StringIO
 from multiprocessing import cpu_count
@@ -46,6 +47,23 @@ def blastp_local(seq_record:SeqRecord,
         if blastp_run.returncode != 0:
             logger.error(f"ERROR: local 'blastp' for {seq_record.id} failed")
             raise RuntimeError(f"Error running 'blastp' for {seq_record.id}")
+
+def blast_from_xml(seq_record:SeqRecord,
+                   xml_path:str,
+                   blast_filename:str) -> None:
+    '''
+    Use an existing BLAST XML file (e.g. downloaded from the NCBI web) instead of running a search
+    '''
+    if not os.path.isfile(xml_path):
+        raise FileNotFoundError(f"BLAST XML file not found: '{xml_path}'")
+    with open(xml_path, "r") as f:
+        xml_string = f.read().replace('CREATE_VIEW', '')
+    record = NCBIXML.read(StringIO(xml_string))
+    query_len = getattr(record, 'query_letters', None)
+    if query_len and query_len != len(seq_record.seq):
+        raise ValueError(f"The XML '{xml_path}' is for a query of {query_len} aa, but {seq_record.id} has {len(seq_record.seq)} aa")
+    logger.info(f"-- Skipping BLAST search: using existing results '{xml_path}' ({len(record.alignments)} alignments)")
+    shutil.copyfile(xml_path, blast_filename)
 
 def blast(seq_record:SeqRecord,
           blast_filename:str,
